@@ -1,44 +1,257 @@
-# special-invention
-Method to setup and run a self organizing neural network on a quantum computer for personalized drug discovery
+# Neuron: A Composable Agent Framework Toolkit
 
-The Quantum Universal Exchange Language (Q-UEL) based on Dirac notation and algebra from quantum mechanics, along with its associated data mining and Hyperbolic Dirac Net (HDN) for probabilistic inference, has proven to be a useful architectural principle for knowledge management, analysis and prediction systems in medicine.
+Neuron is a comprehensive framework for building composable AI agent systems inspired by neuroscience principles. It provides tools for creating, deploying, and orchestrating networks of specialized AI agents that can communicate and collaborate to solve complex problems.
 
-The development of a new drug is an extremely laborious and time-consuming process. Thus, quite early on, computer methods have been used to further an understanding of
-the interactions of a drug with its receptor. Molecular modelling and rational drug design have become indispensable tools for the development of a new drug. Recently, combinatorial chemistry and high-throughput screening have been introduced in order to
-speed up the drug development process. These methods produce massive amounts of data that have to be analyzed in an efficient manner in order to make best use of these
-novel methods. We will show here that self-organizing neural networks, such as the one introduced by Kohonen, can be used both in rational drug design and in combinatorial chemistry.
-The application of neural networks in chemistry has increased dramatically in recent years. In a Kohonen neural network, the artificial neurons self-organize in
-an unsupervised learning process and, thus, can be used to generate topological feature maps. It will be shown here that this potential can be utilized to analyze the shape and
-surface properties of those three-dimensional objects responsible for biological activity, molecules. 
+## What Neuron Is For
 
-Q-UEL vs Predecessors:
+Neuron is designed for creating, deploying, and orchestrating networks of specialized AI agents that can communicate and collaborate to solve complex problems. It draws inspiration from how the human brain works, with different specialized regions cooperating through neural pathways.
 
-Q-UEL is not a major international standards effort, and currently, researchers tend to look to linked data formats based on SW technologies. These include Resource Description Framework (RDF), Web Ontology Language (OWL), Simple Knowledge Organization System
-(SKOS), and SPARQL . Others look to the original XML, often also considered as a tool of the Semantic Web (SW), but in any case attractive for linking information on the World Wide Web (WWW). The PRISMA approach to structured systematic reviews in medicine and for epidemiology should be mentioned because Q-UEL has also been used for that purpose. However, for certain interoperability aspects of PRISMA, it was found that an XML solution was more useful [9]. Bayes nets [3] and
-its causal model have been also expressed in XML.
+## Key Features
 
+- **Agent-Based Architecture**: Create specialized agents with different capabilities and behaviors.
+- **Dynamic Composition**: Build complex agent networks using circuit templates and connection patterns.
+- **Flexible Communication**: Enable sophisticated agent interactions through the SynapticBus messaging system.
+- **Multi-Level Memory**: Implement working, episodic, semantic, and procedural memory systems.
+- **Advanced Behavior Control**: Adjust agent behavior dynamically based on context and goals.
+- **Comprehensive Monitoring**: Track metrics, visualize system behavior, and detect issues.
+- **Extensible Design**: Enhance functionality through plugins and custom components.
 
-None of the main tools of the SW are extensively intrinsically probabilistic, although there have been diverse proposals, many of which are based on the BN expressed in XML. That is unfortunate. Not only does uncertainty abound in medicine but probabilities, or measures based on them, are needed as the basis of important metrics in evidence based medicine (and in epidemiology and public health generally). In effect, a physician is concerned with the probabilities that particular diseases are currently the best interpretation of the symptoms and clinical laboratory results (differential diagnosis), with the risk of specified diseases occurring in the future (risk factors, prognoses), with most probable causes (etiology), and with finding the therapeutic intervention that provides the probable opportunities for success.
+## Installation
 
-The pharmaceutical industry is concerned with selecting for development the drug candidates that will most probably succeed. Genomics usually introduces a whole new probabilistic element. Common inherited diseases often represent a complex interaction of many genes,involving control systems affected by past environment and therapeutic interventions. While for some diseases like sickle cell anemia and cystic fibrosis detection of one inherited mutation in each copy of DNA from
-the parents is a very persuasive indicator, mutations such as BRCA1 and BRCA2 represent a risk, not guarantee, of breast cancer, and absence of these mutations does not guarantee avoidance. 
+```bash
+# Clone the repository
+git clone https://github.com/neuron-framework/neuron.git
+cd neuron
 
-Such probabilistic outcome is similarly most commonly the case for other cancers, and cardiovascular, diabetic, behavioral, and many other disorders. The Bayes Net is probabilistic, but as a basis for probabilistic knowledge in the SW and clinical decision support it has other limitations. It is possible that the total adoption of BN-based methods as a standard for medicine have been impeded by controversy over the interpretation of BNs as a Directed Acyclic Graph (DAG) of probabilistic knowledge, originally justified by a causal model that is subject to some criticism. The DAG used to represent a net of probabilistic knowledge seems inconsistent with querying by a set (not ordered list) of tuples, with classical statistics and its adage that “Correlation does not imply causation” [14], the physics of bidirectional transitions in nature (e.g. Ref. [15]), and not least with the
-spirit of the WWW and SW that emphasize connectedness and a general “Web of Data consisting of all sorts of data types and forms”. The HDN allows the Bidirectional General Graph (BGG). 
+# Install the package
+pip install -e .
+```
 
+## Quick Start
 
-In these specific method and application, there is a one-to-one mapping of a single molecule into a single Kohonen network. However, a Kohonen network can also be used for the analysis of datasets of molecules, where several molecules are simultaneously mapped into one Kohonen network. In order to make full use of the potential of self-organizing networks, novel representations of molecular structures have been developed. These
-methods can be put into a clear hierarchy, starting from molecular topology going all the way to molecular surfaces. They do not only encode structural information, but also information on the properties of atoms or of molecular surfaces. 
+### Initializing the Framework
 
+```python
+from neuron import initialize, start
 
+# Initialize the framework
+core = initialize()
 
-References
-[1] B. Robson, O.K. Baek, The Engines of Hippocrates. From the Dawn of Medicine to Medical and Pharmaceutical Informatics, Wiley, 2009.
-[2] B. Robson, J. Garnier, Introduction to Proteins and Protein Engineering, Elsevier, 1988.
-[3] J. Pearl, Bayesian networks: a model of self-activated memory for evidential reasoning (UCLA technical report CSD-850017), in: Proceedings of the 7th Conference of the Cognitive Science Society, University of California, Irvine, CA, 1985, pp. 329–334.
-[4] B. Robson, Hyperbolic Dirac nets for medical decision support. Theory, methods, and comparison with BNs, Comput. Biol. Med. 51 (2014) 183–197.
-[5] B. Robson, Bidirectional general graphs for inference. Principles and implications for medicine, Comput. Biol. Med. 108 (2019) 382–399.
-[6] S. Deckelman, B. Robson, Split-complex numbers and Dirac bra-kets, Commun. Inf. Syst. 14 (3) (2015) 135–149.
-[7] B.Robson,P.T.Caruso,U.J.Balis,Suggestionsforawebbaseduniversalexchange and inference language for medicine, Comput. Biol. Med. 43 (12) (2013), 229- 2310.
-[8] G.S. Ginsbirg, H.F. Willard, Genomic and Precision Medicine. Foundations, Translation, and Implementation, Elsevier Inc., 2017.
-[9] M. Alloghani, D. Al-Jumeily, A. Hussain, A.J. Aljaaf, J. Mustafina, M. Khalaf, S. Y. Tan, The XML and semantic web: a systematic review on technologies, international conference Big data analytics, data mining and computational intelligence (last accessed 9/18/2019), http://www.iadisportal.org/digital-l ibrary/the-xml-and-semantic-web-a-systematic-review-on-technologies, 2019.
+# Start the framework
+start()
+```
+
+### Creating a Simple Agent
+
+```python
+from neuron import create_agent, ReflexAgent
+
+# Create a reflex agent
+agent_id = create_agent(ReflexAgent, name="MyAgent", description="A simple agent")
+
+# Get the agent
+agent = core.agent_manager.get_agent(agent_id)
+```
+
+### Building a Circuit
+
+```python
+from neuron import CircuitDefinition
+
+# Define a circuit
+circuit_def = CircuitDefinition.create(
+    name="SimpleCircuit",
+    description="A simple processing circuit",
+    agents={
+        "input": {
+            "type": "ReflexAgent",
+            "role": "INPUT",
+            "name": "Input Agent"
+        },
+        "processor": {
+            "type": "DeliberativeAgent",
+            "role": "PROCESSOR",
+            "name": "Processor Agent"
+        },
+        "output": {
+            "type": "ReflexAgent",
+            "role": "OUTPUT",
+            "name": "Output Agent"
+        }
+    },
+    connections=[
+        {
+            "source": "input",
+            "target": "processor",
+            "connection_type": "direct"
+        },
+        {
+            "source": "processor",
+            "target": "output",
+            "connection_type": "direct"
+        }
+    ]
+)
+
+# Create and deploy the circuit
+circuit_id = core.circuit_designer.create_circuit(circuit_def)
+core.circuit_designer.deploy_circuit(circuit_id)
+
+# Send input to the circuit
+core.circuit_designer.send_input(circuit_id, {"data": "Hello, world!"})
+```
+
+## Core Components
+
+Neuron is comprised of several key components that work together to create a flexible and powerful agent framework:
+
+### NeuronCore
+
+The central coordinator for the framework, responsible for initializing and managing all components.
+
+```python
+from neuron import NeuronCore
+
+# Get the singleton instance
+core = NeuronCore()
+```
+
+### Agents
+
+Specialized processing units that can receive and send messages, perform tasks, and learn from experience.
+
+```python
+# Create different types of agents
+reflex_agent = create_agent(ReflexAgent)
+deliberative_agent = create_agent(DeliberativeAgent)
+learning_agent = create_agent(LearningAgent)
+coordinator_agent = create_agent(CoordinatorAgent)
+```
+
+### Memory Systems
+
+Different types of memory for storing and retrieving information.
+
+```python
+# Access different memory types
+working_memory = core.memory_manager.get_memory_system(MemoryType.WORKING)
+episodic_memory = core.memory_manager.get_memory_system(MemoryType.EPISODIC)
+semantic_memory = core.memory_manager.get_memory_system(MemoryType.SEMANTIC)
+```
+
+### SynapticBus
+
+Communication system that enables message exchange between agents.
+
+```python
+# Send a message
+message = Message.create(
+    sender="agent1",
+    recipients=["agent2"],
+    content={"data": "Hello"}
+)
+await core.synaptic_bus.send(message)
+```
+
+### CircuitDesigner
+
+Tool for creating and managing networks of agents.
+
+```python
+# Create a circuit from a template
+circuit_id = await core.circuit_designer.create_from_template(
+    "sequential_pipeline",
+    {
+        "processor1_type": "DeliberativeAgent",
+        "processor2_type": "LearningAgent"
+    }
+)
+```
+
+### Behavior Control
+
+System for dynamically adjusting agent behavior.
+
+```python
+from neuron import BehaviorTrait, with_behavior_control
+
+# Enhance an agent with behavior control
+EnhancedAgent = with_behavior_control(ReflexAgent)
+agent = EnhancedAgent()
+
+# Adjust behavior traits
+agent.get_behavior_controller().set_trait(BehaviorTrait.CURIOSITY, 0.8)
+```
+
+### Monitoring
+
+System for tracking metrics and diagnosing issues.
+
+```python
+# Get system metrics
+metrics = core.neuro_monitor.get_metrics("system.*")
+
+# Check health status
+health = core.neuro_monitor.get_health_status()
+```
+
+## Command-Line Interface
+
+Neuron includes a command-line interface for managing the framework:
+
+```bash
+# Initialize the framework
+neuron init
+
+# Start the framework
+neuron start
+
+# View status
+neuron status --detailed
+
+# List available agent types
+neuron agent list
+
+# Create a circuit from a template
+neuron circuit create sequential_pipeline --params '{"processor1_type": "DeliberativeAgent"}'
+```
+
+## Neuroscience Foundations
+
+Neuron incorporates several principles from neuroscience:
+
+- **Specialized Processing Regions**: Agents with specific capabilities, like brain regions.
+- **Hierarchical Information Processing**: Circuit composition for progressive refinement.
+- **Neuroplasticity**: Learning and adaptation from experience.
+- **Working Memory and Attention**: Prioritization of information for processing.
+- **Predictive Processing**: Anticipation of inputs and outcomes.
+
+## Evaluation Metrics
+
+To determine if Neuron is right for your use case, consider these metrics:
+
+- **Task Complexity Analysis**: How complex are the problems you need to solve?
+- **Emergent Intelligence Metrics**: Do you need system-level capabilities beyond individual agents?
+- **Resource Efficiency**: How important are memory and CPU requirements?
+- **Robustness and Reliability**: What level of fault tolerance do you need?
+- **Development and Maintenance Metrics**: How much customization will you need?
+- **Explainability and Control**: How important is understanding the system's decisions?
+
+## Examples
+
+Check the `examples/` directory for detailed demonstrations of Neuron's capabilities:
+
+- `simple_agent.py`: Basic agent creation and usage
+- `memory_system.py`: Working with different memory types
+- `agent_communication.py`: Message passing between agents
+- `circuit_creation.py`: Building and deploying circuits
+- `behavior_control.py`: Adjusting agent behavior dynamically
+- `plugin_development.py`: Creating a custom plugin
+
+## Contributing
+
+Contributions are welcome! Please see `CONTRIBUTING.md` for guidelines.
+
+## License
+
+Neuron is released under the MIT License. See `LICENSE` for details.
