@@ -1,0 +1,25 @@
+# Core dependencies
+asyncio>=3.4.3
+typing-extensions>=4.0.0
+
+# Utilities
+pyyaml>=6.0
+jsonschema>=4.0.0
+
+# Monitoring
+psutil>=5.9.0
+
+# Visualization (optional)
+matplotlib>=3.5.0
+plotly>=5.8.0
+dash>=2.5.0
+
+# Web interface (optional)
+fastapi>=0.78.0
+uvicorn>=0.17.6
+jinja2>=3.1.2
+
+# Machine learning integrations (optional)
+numpy>=1.21.0
+pandas>=1.4.0
+scikit-learn>=1.0.0
