@@ -1,3 +1,5 @@
+THERE IS ALSO A  PROVISIONAL PATENT FILED ON THIS - PLEASE CREDIT IF YOU PLAN TO USE ANY PART OF THIS CODE
+
 # Neuron: A Composable Agent Framework Toolkit
 
 Neuron is a comprehensive framework for building composable AI agent systems inspired by neuroscience principles. It provides tools for creating, deploying, and orchestrating networks of specialized AI agents that can communicate and collaborate to solve complex problems.
