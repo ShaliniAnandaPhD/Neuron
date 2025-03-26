@@ -1,4 +1,10 @@
-THERE IS ALSO A  PROVISIONAL PATENT FILED ON THIS - PLEASE CREDIT IF YOU PLAN TO USE ANY PART OF THIS CODE
+Open Source Attribution Notice
+
+Using open source software without proper attribution or in violation of license terms is not only ethically problematic but may also constitute a legal violation. I believe in supporting the open source community that makes projects like this possible.
+
+If you're using code or tools from this repository or GitHub, please ensure you maintain all attribution notices and comply with all applicable licenses.
+
+-----------------------------------
 
 # Neuron: A Composable Agent Framework Toolkit
 
