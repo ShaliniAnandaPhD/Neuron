@@ -4,6 +4,8 @@ Using open source software without proper attribution or in violation of license
 
 If you're using code or tools from this repository or GitHub, please ensure you maintain all attribution notices and comply with all applicable licenses.
 
+The license above is a modified MIT LICENSE for the purpose of this project 👆
+
 -----------------------------------
 
 # Neuron: A Composable Agent Framework Toolkit
