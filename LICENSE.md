@@ -47,6 +47,6 @@ This software is released under the terms of the Modified MIT License with Enhan
 
 6. **Academic and Research Integrity**:
    - Use of this Software in academic or research contexts requires proper citation in accordance with scientific and academic standards, in addition to the attribution requirements specified above.
-   - Any publications resulting from use of this Software must cite: "Ananda, S. (2025). Neuron [Software]."
+   - Any publications resulting from use of this Software must cite: "Ananda, S. (2025). Neuron."
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
