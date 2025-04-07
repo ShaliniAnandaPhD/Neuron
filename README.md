@@ -26,6 +26,12 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 - **Comprehensive Monitoring**: Track metrics, visualize system behavior, and detect issues.
 - **Extensible Design**: Enhance functionality through plugins and custom components.
 
+Use cases:
+
+1) [The demo tackles a travel planning scenario with overlapping requirements - a family needs hotels with pools that are also accessible for mobility issues, while staying within budget and accommodating dietary restrictions] (https://www.linkedin.com/posts/shalinianandaphd_ai-neuroscienceintech-innovation-activity-7310052197210226688-Gq2s?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+2)[Neuron handling Customer Support: The scenario: A customer has two problems - wrong-sized sweater and missing pants from the same order] (https://www.linkedin.com/posts/shalinianandaphd_ai-customerexperience-neuroscienceintech-activity-7310046900240470016-8vs_?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+3) [Modular Reasoning Systems] (https://www.linkedin.com/posts/shalinianandaphd_technical-integration-of-prism-activity-7310016308371144704-yGZM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+
 ## Installation
 
 ```bash
