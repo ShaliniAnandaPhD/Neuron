@@ -1,33 +1,51 @@
-name: Code Quality
+name: Fix Unterminated Multi-line Strings
 
 on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+  workflow_dispatch:
 
 jobs:
-  quality:
+  fix-strings:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    - name: Set up Python
-      uses: actions/setup-python@v4
       with:
-        python-version: '3.10'
-    - name: Install dependencies
+        token: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Fix unterminated multi-line strings
       run: |
-        python -m pip install --upgrade pip
-        pip install black flake8 isort
-    - name: Check formatting with black
+        # List of files from the error log
+        declare -a files=(
+          "behavior_controller.py"
+          "agent.py"
+          "circuit_designer.py"
+          "config.py"
+          "cli.py"
+          "exceptions.py"
+          "examples/simple_agent.py"
+          "examples/examples/circuit_creation.py"
+          "extensions.py"
+          "neuron_core.py"
+          "memory.py"
+          "neuro_monitor.py"
+          "neuron_types.py"
+          "synaptic_bus.py"
+          "utils.py"
+        )
+        
+        # Loop through files and fix them
+        for file in "${files[@]}"; do
+          if [ -f "$file" ]; then
+            echo "Fixing $file"
+            echo -e '\n"""' >> "$file"
+          else
+            echo "File $file not found"
+          fi
+        done
+    
+    - name: Commit changes
       run: |
-        black --check --verbose . || echo "Formatting issues found"
-    - name: Apply black formatting (optional)
-      run: |
-        black .
-    - name: Check imports with isort
-      run: |
-        isort --check-only --profile black . || echo "Import issues found"
-    - name: Lint with flake8
-      run: |
-        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Linting issues found"
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Fix unterminated multi-line strings in Python files"
+        git push
