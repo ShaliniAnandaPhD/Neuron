@@ -1,0 +1,62 @@
+[
+  {
+    "query": "Just wondering if someone could help me with my account issue.",
+    "intent": "account_issue",
+    "urgency_level": "medium",
+    "tone_masking": true
+  },
+  {
+    "query": "My password reset isn't working, I've tried multiple times now.",
+    "intent": "account_issue",
+    "urgency_level": "high",
+    "tone_masking": false
+  },
+  {
+    "query": "Would it be possible to get some assistance with a small billing issue?",
+    "intent": "billing_issue",
+    "urgency_level": "medium",
+    "tone_masking": true
+  },
+  {
+    "query": "I've been charged twice this month, if you could please look into it when you have time.",
+    "intent": "billing_issue",
+    "urgency_level": "high",
+    "tone_masking": true
+  },
+  {
+    "query": "The system shows an error every time I try to log in.",
+    "intent": "account_issue",
+    "urgency_level": "medium",
+    "tone_masking": false
+  },
+  {
+    "query": "I know you're busy, but I need help with my account ASAP for a client demo.",
+    "intent": "account_issue",
+    "urgency_level": "high",
+    "tone_masking": true
+  },
+  {
+    "query": "Just a quick question about my recent bill, no rush.",
+    "intent": "billing_issue",
+    "urgency_level": "low",
+    "tone_masking": false
+  },
+  {
+    "query": "I'd appreciate if someone could help me understand this charge on my account.",
+    "intent": "billing_issue",
+    "urgency_level": "medium",
+    "tone_masking": true
+  },
+  {
+    "query": "I need my password reset immediately.",
+    "intent": "account_issue",
+    "urgency_level": "high",
+    "tone_masking": false
+  },
+  {
+    "query": "Can you tell me how to change my profile picture?",
+    "intent": "request_help",
+    "urgency_level": "low",
+    "tone_masking": false
+  }
+]
