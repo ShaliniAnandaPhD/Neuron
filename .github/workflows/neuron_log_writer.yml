@@ -1,0 +1,19 @@
+name: 📝 Neuron Log Writer
+
+on:
+  push:
+    paths:
+      - 'microservices/**'
+  workflow_dispatch:
+
+jobs:
+  write-log:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Create logs directory and write log
+        run: |
+          mkdir -p logs
+          echo "✅ Neuron log generated on $(date)" > logs/neuron_$(date +'%Y%m%d_%H%M%S').log
