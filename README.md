@@ -36,6 +36,11 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 3) [Modular Reasoning Systems: Exploring how modular architectures can enhance the reliability and performance of legal AI systems](https://www.linkedin.com/posts/shalinianandaphd_technical-integration-of-prism-activity-7310016308371144704-yGZM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
 
 
+## **Microservices**
+
+[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main&event=workflow_run)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
+
+
 ## Installation
 
 ```bash
