@@ -1,5 +1,6 @@
- 🧠 Neuron Micro-Audit Services  
-**What Breaks First. What Gets Fixed First.**  
+# 🧠 Neuron Micro-Audit Services
+**What Breaks First → What Gets Fixed First**
+
 Modular agents for failure detection and repair in complex, real-world AI pipelines.
 
 ---
@@ -7,9 +8,9 @@ Modular agents for failure detection and repair in complex, real-world AI pipeli
 ## ✨ Overview
 
 AI systems don’t break because they lack logic —  
-they break because they lose **context**, misread **intent**, collapse under **ambiguity**, or fail to track **emotional dynamics** over time.
+They break because they lose **context**, misread **intent**, collapse under **ambiguity**, or fail to track emotional dynamics over time.
 
-**Neuron Micro-Audit Services** is a library of self-contained diagnostic agents designed to detect and repair **specific failure modes** in LLM-based systems. Each microservice isolates a single fragility pattern — like sarcasm misinterpretation, multilingual drift, regulatory contradiction, or data formatting loss — and handles it with modular clarity.
+**Neuron Micro-Audit Services** is a growing library of **self-contained diagnostic agents**, each designed to detect and repair a specific fragility pattern in LLM-based systems. These modules are plug-and-play, composable, and explainable.
 
 ---
 
@@ -22,15 +23,17 @@ they break because they lose **context**, misread **intent**, collapse under **a
 | `UrgencyToneDisambiguator` | Polite masking in support requests | Escalates based on implied vs. explicit urgency |
 | `ComplianceConflictResolver` | Conflicting regional requirements (e.g., GDPR vs. US BSA) | Applies jurisdictional overrides + audit trails |
 | `BrokenThreadIntegrator` | Support threads with dropped context across platforms | Rebuilds continuity through identity + intent recovery |
-| `LegacyParserAgent` | Invalid/mixed formatting in legacy systems (e.g., COBOL data) | Normalizes inputs and validates hidden structure |
+| `LegacyParserAgent` | Invalid/mixed formatting in legacy systems (e.g., COBOL) | Normalizes inputs and validates hidden structure |
+
+Each module is independently runnable and follows a consistent agent circuit flow.
 
 ---
 
 ## 🧬 Architecture
 
-Each audit module is powered by the **Neuron Framework’s modular circuit-based pipeline**, and follows a consistent processing flow:
+Each audit module is powered by the Neuron Framework’s circuit-based pipeline:
 
-```
+```text
 [Input Stream] 
    → [Preprocessor] 
    → [Failure Signature Matcher] 
@@ -39,10 +42,10 @@ Each audit module is powered by the **Neuron Framework’s modular circuit-based
 ```
 
 All micro-audits:
-- Operate **independently or in sequence**
-- Emit **explainable failure logs**
-- Include **confidence metrics** and remediation trace
-- Integrate with `SynapticBus` for shared memory and `NeuroMonitor` for observability
+- Operate independently or in composed chains
+- Emit explainable failure logs
+- Include confidence metrics and remediation traces
+- Integrate with SynapticBus for shared memory and NeuroMonitor for observability
 
 ---
 
@@ -50,11 +53,26 @@ All micro-audits:
 
 ```bash
 git clone https://github.com/ShaliniAnandaPhD/Neuron
-cd Neuron/micro_audits
-python run_audit.py --module sarcasm_auditor --input examples/sentiment_issue.json
+cd Neuron/Microservices/ambiguity  # or switch to any other audit module
 ```
 
-You can also compose custom audit pipelines:
+Run a microservice:
+
+```bash
+# CLI mode
+python cli_resolver.py --query "Just wondering if someone could help me with my account issue."
+
+# API mode
+uvicorn api:app --reload
+```
+
+Evaluate against edge-case datasets:
+
+```bash
+python evaluate.py
+```
+
+You can also compose audit pipelines:
 
 ```python
 from micro_audits import SarcasmAuditor, MultilingualContradictionChecker
@@ -72,60 +90,57 @@ for agent in pipeline:
 
 ## 📊 Logging + Metrics
 
-Each audit agent emits:
-- Detection logs (`logs/agent_name.timestamp.json`)
-- Confidence scores per stage
-- Breakdown of system response pre/post remediation
-- Optional red team tagging for future dataset feedback
+Each micro-audit agent emits:
+- JSON logs to `logs/{agent_name}.{timestamp}.json`
+- Per-stage confidence scores
+- Before/after system behavior traces
+- Optional red-team tags for future feedback loops
 
 ---
 
 ## 🌐 Why Microservices?
 
-Because **AI repair isn't monolithic** — it’s patterned.
+Because AI repair isn't monolithic — it's **patterned**.
 
-And each pattern needs:
-- A dedicated listener  
-- A precise fixer  
-- A system that can detect not just what *was* broken — but what *will* break next if left unpatched.
+Each failure needs:
+- A dedicated listener
+- A precise fixer
+- A system that not only detects what broke — but also anticipates what might break next
 
-Neuron Micro-Audit Services is a step toward **context-aware, repairable intelligence**.
+**Neuron Micro-Audit Services** is our step toward context-aware, repairable AI.
 
 ---
 
 ## 🤝 Collaboration
 
-If you're:
-- Building agents that need **edge-case resilience**
-- Working on **LLM orchestration or observability**
-- Designing **safety or compliance-critical pipelines**
+We’re looking for:
+- Engineers building agent pipelines and LLM orchestration
+- Researchers exploring cognitive repair, tone analysis, and regulatory conflicts
+- Contributors who love debugging the edge cases static systems ignore
 
-We’d love to collaborate.
-
-→ [GitHub Discussions](https://github.com/ShaliniAnandaPhD/Neuron/discussions)  
-→ [DM @ShaliniAnandaPhD on LinkedIn](https://www.linkedin.com/in/shalinianandaphd)
+Start a [GitHub Discussion](https://github.com/ShaliniAnandaPhD/Neuron/discussions), open an issue, or DM [@ShaliniAnandaPhD](https://www.linkedin.com/in/shaliniananda/) on LinkedIn.
 
 ---
 
-## 🪐 Bonus: Try It Yourself — What Breaks First?
+## 🪐 Bonus: What Breaks First?
 
-Let’s make this fun — here are two playful-but-real examples that challenge even the most advanced AI pipelines:
+Run these through any micro-audit module and see what happens:
 
-> 💬 *“Would I recommend this? Absolutely 🔥 … to people I hate.”*  
-> *(Tone twist + emoji contradiction)*
+💬 “Would I recommend this? Absolutely 🔥 … to people I hate.”  
+(Tone twist + emoji contradiction)
 
-> 💬 *“Diez de diez, pero el soporte es una vergüenza.”*  
-> *(“Ten out of ten, but the support is a disgrace.” — multilingual sentiment trap)*
+💬 “Diez de diez, pero el soporte es una vergüenza.”  
+("Ten out of ten, but the support is a disgrace." — multilingual sentiment trap)
 
-### 🎯 What to Watch For:
-- Does your system catch the **sarcasm**?
-- Does it understand **tone masking** or **regional expressions**?
-- Does it adjust for **language drift**, **mixed formats**, or **emotional undertones**?
+### 🎯 What to Watch For
+- Does your system catch sarcasm?
+- Does it handle tone masking or regional nuance?
+- Does it adapt for language drift or formatting inconsistencies?
 
-Run these through different architectures and watch how they interpret, fumble, or recover. It’s a great way to explore:
-
-🧠 How modular agents reason differently  
-📊 Where static systems fall short  
-🔁 And what true **contextual repair** looks like in action
+Each test is a mirror — of how robust your system really is.
 
 ---
+
+## 🧠 Build Systems That Don’t Just Work —  
+Build Systems That Recover.
+
