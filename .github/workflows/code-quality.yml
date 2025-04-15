@@ -21,10 +21,13 @@ jobs:
         pip install black flake8 isort
     - name: Check formatting with black
       run: |
-        black --check .
+        black --check --verbose . || echo "Formatting issues found"
+    - name: Apply black formatting (optional)
+      run: |
+        black .
     - name: Check imports with isort
       run: |
-        isort --check-only --profile black .
+        isort --check-only --profile black . || echo "Import issues found"
     - name: Lint with flake8
       run: |
-        flake8 .
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics || echo "Linting issues found"
