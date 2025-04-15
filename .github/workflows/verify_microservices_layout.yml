@@ -1,0 +1,25 @@
+name: 📦 Verify Microservices Layout
+
+on:
+  push:
+    paths:
+      - 'microservices/**'
+  workflow_dispatch:
+
+jobs:
+  layout-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check for Key Folders
+        run: |
+          echo "📂 Verifying microservice folders:"
+          for folder in ambiguity multilingual healthcare customer emotion; do
+            if [ -d "microservices/$folder" ]; then
+              echo "✅ microservices/$folder exists"
+            else
+              echo "⚠️  microservices/$folder missing (optional)"
+            fi
+          done
