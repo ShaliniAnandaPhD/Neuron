@@ -1,20 +1,17 @@
 """
 Neuron - A Composable Agent Framework Toolkit
-
 Neuron is a comprehensive framework for building composable AI agent systems
 inspired by neuroscience principles. It provides tools for creating, deploying,
 and orchestrating networks of specialized AI agents that can communicate and
 collaborate to solve complex problems.
-
 The framework draws inspiration from how the human brain works, with different
 specialized regions cooperating through neural pathways. It enables AI systems
 that exhibit emergent intelligence through the cooperation of simpler components.
 """
-
 # Version information
-__version__ = "1.0.0"
-__author__ = "Neuron Framework Team"
-__license__ = "MIT"
+__version__ = "1.0.0"  # Fixed: use double underscores
+__author__ = "Neuron Framework Team"  # Fixed: use double underscores
+__license__ = "MIT"  # Fixed: use double underscores
 
 # Import core components for convenience
 from .neuron_core import NeuronCore, initialize, start, shutdown, run_context
@@ -87,4 +84,3 @@ def create_agent(agent_type, name=None, description=None, **kwargs):
                 .build())
     
     return agent_id
-"""
