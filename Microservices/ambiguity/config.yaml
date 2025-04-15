@@ -1,0 +1,40 @@
+tone_agent:
+  politeness_thresholds:
+    high: 0.6
+    medium: 0.3
+    low: 0.0
+  urgency_thresholds:
+    high: 0.6
+    medium: 0.3
+    low: 0.0
+  tone_masking_detection:
+    politeness_threshold: 0.6
+    urgency_threshold: 0.3
+
+intent_resolver:
+  confidence_thresholds:
+    high: 0.8
+    medium: 0.5
+    low: 0.2
+  ambiguity_thresholds:
+    high: 0.7
+    medium: 0.4
+    low: 0.0
+
+urgency_scorer:
+  urgency_factors:
+    tone_multiplier: 1.5
+    intent_multiplier: 1.2
+    ambiguity_penalty: 0.8
+  base_intent_urgency:
+    report_problem: 0.7
+    account_issue: 0.6
+    billing_issue: 0.8
+    request_help: 0.5
+    request_feature: 0.3
+    general_inquiry: 0.2
+  urgency_thresholds:
+    high: 0.7
+    medium: 0.4
+    low: 0.0
+  urgency_mismatch_threshold: 0.3
