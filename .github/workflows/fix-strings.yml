@@ -1,0 +1,47 @@
+name: Fix Unterminated Strings
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix-strings:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Fix unterminated multi-line strings
+      run: |
+        # List of files from the error log
+        FILES_TO_FIX=(
+          "behavior_controller.py"
+          "agent.py"
+          "circuit_designer.py"
+          "config.py"
+          "cli.py"
+          "exceptions.py"
+          "examples/simple_agent.py"
+          "examples/examples/circuit_creation.py"
+          "extensions.py"
+          "neuron_core.py"
+          "memory.py"
+          "neuro_monitor.py"
+          "neuron_types.py"
+          "synaptic_bus.py"
+          "utils.py"
+        )
+        
+        # Loop through files and fix them
+        for file in "${FILES_TO_FIX[@]}"; do
+          if [ -f "$file" ]; then
+            echo "Fixing $file"
+            echo -e '\n"""' >> "$file"
+          fi
+        done
+    
+    - name: Commit changes
+      run: |
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git commit -m "Fix unterminated multi-line strings in Python files"
+        git push
