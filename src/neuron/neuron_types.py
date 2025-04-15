@@ -330,4 +330,4 @@ class CircuitDefinition:
     def from_dict(cls, data: Dict[str, Any]) -> 'CircuitDefinition':
         """Create a circuit definition from a dictionary representation."""
         return cls(**data)
-"""
+
