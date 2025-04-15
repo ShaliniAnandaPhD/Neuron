@@ -1,0 +1,24 @@
+name: 📖 README Integrity Check
+
+on:
+  push:
+    paths:
+      - 'README.md'
+  workflow_dispatch:
+
+jobs:
+  check-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Check README Content
+        run: |
+          echo "📘 Checking README.md"
+          if grep -q "Neuron Micro-Audit Services" README.md; then
+            echo "✅ README contains title"
+          else
+            echo "❌ README is missing expected heading"
+            exit 1
+          fi
