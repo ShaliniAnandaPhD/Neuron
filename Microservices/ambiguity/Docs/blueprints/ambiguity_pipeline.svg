@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="400" viewBox="0 0 800 400" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f8f9fa" rx="10" ry="10"/>
+  
+  <!-- Title -->
+  <text x="400" y="30" font-family="Arial, sans-serif" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">Ambiguity Resolver Pipeline</text>
+  
+  <!-- ToneAgent -->
+  <rect x="100" y="80" width="160" height="80" rx="5" ry="5" fill="#6c5ce7" opacity="0.8"/>
+  <text x="180" y="120" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Tone Agent</text>
+  <text x="180" y="145" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Politeness + Urgency Analysis</text>
+  
+  <!-- IntentResolver -->
+  <rect x="320" y="80" width="160" height="80" rx="5" ry="5" fill="#00b894" opacity="0.8"/>
+  <text x="400" y="120" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Intent Resolver</text>
+  <text x="400" y="145" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Detect True Intent</text>
+  
+  <!-- UrgencyScorer -->
+  <rect x="540" y="80" width="160" height="80" rx="5" ry="5" fill="#e17055" opacity="0.8"/>
+  <text x="620" y="120" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Urgency Scorer</text>
+  <text x="620" y="145" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Calculate True Urgency</text>
+  
+  <!-- OutputAgent -->
+  <rect x="320" y="220" width="160" height="80" rx="5" ry="5" fill="#0984e3" opacity="0.8"/>
+  <text x="400" y="260" font-family="Arial, sans-serif" font-size="16" font-weight="bold" text-anchor="middle" fill="white">Output Agent</text>
+  <text x="400" y="285" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="white">Format + Log Results</text>
+  
+  <!-- Arrows -->
+  <!-- ToneAgent to IntentResolver -->
+  <path d="M 260 120 L 320 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- IntentResolver to UrgencyScorer -->
+  <path d="M 480 120 L 540 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- UrgencyScorer to OutputAgent -->
+  <path d="M 620 160 L 620 190 L 400 190 L 400 220" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  
+  <!-- Input Arrow -->
+  <path d="M 50 120 L 100 120" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="75" y="110" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Input</text>
+  
+  <!-- Output Arrow -->
+  <path d="M 400 300 L 400 330" stroke="#333" stroke-width="2" fill="none" marker-end="url(#arrowhead)"/>
+  <text x="400" y="350" font-family="Arial, sans-serif" font-size="12" text-anchor="middle" fill="#333">Output</text>
+  
+  <!-- Arrow Definitions -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+  </defs>
+  
+  <!-- Legend -->
+  <rect x="50" y="330" width="180" height="50" rx="5" ry="5" fill="white" stroke="#ccc"/>
+  <text x="60" y="350" font-family="Arial, sans-serif" font-size="12" font-weight="bold" fill="#333">Resolves:</text>
+  <text x="60" y="370" font-family="Arial, sans-serif" font-size="12" fill="#333">• Polite language masking urgency</text>
+</svg>
