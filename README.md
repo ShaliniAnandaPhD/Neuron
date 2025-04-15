@@ -44,6 +44,8 @@ Neuron Micro-Audit Services is a growing library of self-contained diagnostic ag
 [![🧠 Run Ambiguity Audit](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml)
 [![📦 Verify Microservices Layout](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml)
 [![🔬 Basic Neuron Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/basic_neuron_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/basic_neuron_check.yml)
+[![📝 Neuron Log Writer](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml)
+
 
 
 
