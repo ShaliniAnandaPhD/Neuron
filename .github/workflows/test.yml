@@ -1,0 +1,27 @@
+name: AmbiguityResolver CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      - name: Install dependencies
+        run: |
+          pip install -r Neuron/Microservices/ambiguity/requirements.txt
+
+      - name: Run Unit Tests
+        run: |
+          python -m unittest discover -s Neuron/Microservices/ambiguity/tests
+
+      - name: Run Evaluation
+        run: |
+          python Neuron/Microservices/ambiguity/evaluate.py
