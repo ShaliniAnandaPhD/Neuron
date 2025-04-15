@@ -1,0 +1,12 @@
+include LICENSE.md
+include README.md
+include pyproject.toml
+include setup.py
+include setup.cfg
+include requirements.txt
+recursive-include examples *.py
+recursive-include docs *.rst *.py *.txt *.md
+recursive-include src/neuron *.json *.yaml *.yml
+prune tests
+prune .github
+prune docs/_build
