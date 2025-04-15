@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
-    
+
     - name: Fix unterminated multi-line strings
       run: |
         # List of files from the error log
@@ -37,7 +37,7 @@ jobs:
             echo -e '\n"""' >> "$file"
           fi
         done
-    
+
     - name: Commit changes
       run: |
         git config --global user.name "GitHub Actions"
@@ -45,3 +45,4 @@ jobs:
         git add .
         git commit -m "Fix unterminated multi-line strings in Python files"
         git push
+
