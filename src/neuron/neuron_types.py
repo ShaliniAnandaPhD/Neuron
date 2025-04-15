@@ -1,5 +1,5 @@
 """
-types.py - Core Type Definitions for Neuron Framework
+neuron_types.py - Core Type Definitions for Neuron Framework
 
 This module contains all the fundamental type definitions, enums, and data classes 
 that are used throughout the Neuron framework. These types provide the foundation
