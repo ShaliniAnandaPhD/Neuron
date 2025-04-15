@@ -38,6 +38,8 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 
 ## **Microservices**
 
+Neuron Micro-Audit Services is a growing library of self-contained diagnostic agents, each designed to detect and repair a specific fragility pattern in LLM-based systems. These modules are plug-and-play, composable, and explainable.
+
 [![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
 [![🧠 Run Ambiguity Audit](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml)
 [![📦 Verify Microservices Layout](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml)
