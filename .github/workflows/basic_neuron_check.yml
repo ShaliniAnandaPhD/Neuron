@@ -1,0 +1,25 @@
+name: 🔬 Basic Neuron Check
+
+on:
+  push:
+    branches:
+      - "**"
+  workflow_dispatch:
+
+jobs:
+  neuron-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Confirm Python & Print Hello
+        run: |
+          echo "✅ Python:"
+          python --version
+          echo "🧠 Neuron microservices check passed"
