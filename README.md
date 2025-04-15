@@ -38,7 +38,7 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 
 ## **Microservices**
 
-[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main&event=workflow_run)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
+[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
 
 
 ## Installation
