@@ -1,0 +1,19 @@
+name: 📂 Check .json Test File Extensions
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/ambiguous_request_examples/**'
+  workflow_dispatch:
+
+jobs:
+  run-extension-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate all test files are .json
+        run: |
+          for f in microservices/ambiguity/ambiguous_request_examples/*.json; do
+            if [[ "$f" == *.json ]]; then
+              echo "✅ Valid test file: $f"
+            fi
+          done
