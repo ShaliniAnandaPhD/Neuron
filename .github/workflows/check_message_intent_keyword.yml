@@ -1,0 +1,16 @@
+name: 🧠 Detect Intent Keyword in Ambiguous Message
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/ambiguous_request_examples/**'
+  workflow_dispatch:
+
+jobs:
+  keyword-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Search for 'follow up' keyword in input message
+        run: |
+          grep -i "follow up" microservices/ambiguity/ambiguous_request_examples/test2.json && \
+          echo "✅ Found intent-like phrase: follow up"
