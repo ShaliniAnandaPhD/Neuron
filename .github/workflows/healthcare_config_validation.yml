@@ -10,11 +10,20 @@ jobs:
   check-healthcare-config:
     runs-on: ubuntu-latest
     steps:
-      - name: Verify YAML config structure
+      - name: Check for multilingual_nlp section
         run: |
-          if grep -q "multilingual_nlp" config.yaml && grep -q "health_data_synthesizer" config.yaml; then
-            echo "✅ Required configuration sections found"
+          if grep -q "multilingual_nlp" config.yaml; then
+            echo "✅ Found multilingual_nlp"
           else
-            echo "❌ Missing expected keys in config.yaml"
+            echo "❌ multilingual_nlp section missing"
+            exit 1
+          fi
+
+      - name: Check for health_data_synthesizer section
+        run: |
+          if grep -q "health_data_synthesizer" config.yaml; then
+            echo "✅ Found health_data_synthesizer"
+          else
+            echo "❌ health_data_synthesizer section missing"
             exit 1
           fi
