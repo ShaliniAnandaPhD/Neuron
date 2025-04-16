@@ -11,6 +11,10 @@ The `AmbiguityResolver` is a microservice in the Neuron framework that detects a
 [![📘 Ambiguity Documentation Presence](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_documentation_presence.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_documentation_presence.yml)
 [![📁 Ambiguity Output Directory Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_output_directory_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_output_directory_check.yml)
 [![🎨 Ambiguity Visual Blueprint Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml)
+[![📸 Ambiguity Data Snapshot Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_data_snapshot_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_data_snapshot_check.yml)
+[![📂 Check .json Test File Extensions](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_file_extension_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_file_extension_check.yml)
+[![🧪 Count Ambiguity Test Cases](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_test_count_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_test_count_check.yml)
+
 
 
 ## 🔍 Problem Statement
