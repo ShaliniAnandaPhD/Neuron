@@ -4,6 +4,10 @@
 
 The `AmbiguityResolver` is a microservice in the Neuron framework that detects and resolves ambiguity in user queries, with a focus on detecting hidden urgency behind polite language.
 
+[![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
+[![🎭 Politeness Phrase Detection](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml)
+
+
 ## 🔍 Problem Statement
 
 AI systems commonly misunderstand the true intent and urgency of polite user requests. Phrases like:
