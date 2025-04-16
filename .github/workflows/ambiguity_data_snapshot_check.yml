@@ -1,0 +1,17 @@
+name: 📸 Ambiguity Data Snapshot Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/**'
+  workflow_dispatch:
+
+jobs:
+  run-data-snapshot-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a timestamped data snapshot
+        run: |
+          mkdir -p microservices/ambiguity/snapshots
+          echo "Snapshot created on $(date)" > microservices/ambiguity/snapshots/snapshot_$(date +%Y%m%d_%H%M%S).txt
+          echo "✅ Snapshot file created"
