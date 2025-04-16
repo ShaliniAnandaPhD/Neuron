@@ -1,0 +1,20 @@
+name: 📥 Validate Input Test Files
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/**'
+  workflow_dispatch:
+
+jobs:
+  run-input-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check or create input folder
+        run: |
+          if [ -d "microservices/ambiguity/ambiguous_request_examples" ]; then
+            echo "✅ Input folder exists"
+          else
+            mkdir -p microservices/ambiguity/ambiguous_request_examples
+            echo "📁 Created missing input folder"
+          fi
