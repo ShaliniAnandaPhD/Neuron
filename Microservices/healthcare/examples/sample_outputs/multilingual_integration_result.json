@@ -1,0 +1,88 @@
+{
+  "patient_id": "P3B4C7D9E",
+  "integration_id": "7a9b8c6d-5e4f-3a2b-1c0d-9e8f7a6b5c4d",
+  "timestamp": "2025-04-15T14:42:18.123456",
+  "summary": {
+    "records_processed": 4,
+    "providers_integrated": 3,
+    "conditions_identified": 1,
+    "treatments_identified": 2,
+    "care_gaps_found": 1,
+    "recommendations_generated": 2
+  },
+  "health_data": {
+    "conditions": [
+      {
+        "name": "Type 2 diabetes mellitus",
+        "icd_code": "E11.9",
+        "category": "endocrine",
+        "date_diagnosed": "2024-11-03",
+        "provider": "Centro Médico Internacional",
+        "source_record_id": "diag-456"
+      }
+    ],
+    "treatments": [
+      {
+        "type": "medication",
+        "name": "Lisinopril",
+        "generic_name": "lisinopril",
+        "medication_class": "ACE inhibitor",
+        "dosage": "10 mg",
+        "frequency": "Once daily",
+        "provider": "Family Practice Clinic",
+        "date_prescribed": "2025-01-15",
+        "source_record_id": "med-123"
+      },
+      {
+        "type": "medication",
+        "name": "Metformina",
+        "generic_name": "metformin",
+        "medication_class": "biguanide",
+        "dosage": "500 mg",
+        "frequency": "Twice daily",
+        "provider": "Farmacia Central",
+        "date_prescribed": "2025-02-10",
+        "source_record_id": "med-345"
+      }
+    ],
+    "care_gaps": [
+      {
+        "type": "missing_test",
+        "description": "No recent HbA1c test (last 6 months) for diabetic patient",
+        "severity": "high",
+        "related_condition": "diabetes"
+      }
+    ],
+    "recommendations": [
+      {
+        "priority": "high",
+        "recommendation": "Schedule HbA1c test",
+        "reason": "No recent HbA1c test (last 6 months) for diabetic patient",
+        "type": "diagnostic"
+      },
+      {
+        "priority": "medium",
+        "recommendation": "Schedule diabetic eye examination",
+        "reason": "No record of eye examination for diabetic patient",
+        "type": "preventive"
+      }
+    ]
+  },
+  "integration_metadata": {
+    "language_breakdown": {
+      "en": 2,
+      "es": 2
+    },
+    "provider_breakdown": {
+      "Family Practice Clinic": 1,
+      "Farmacia Central": 1,
+      "Regional Medical Laboratory": 1,
+      "Centro Médico Internacional": 1
+    },
+    "record_type_breakdown": {
+      "medication": 2,
+      "diagnosis": 1,
+      "lab_result": 1
+    }
+  }
+}
