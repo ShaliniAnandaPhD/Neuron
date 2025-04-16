@@ -1,0 +1,17 @@
+name: 🧪 Count Ambiguity Test Cases
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/ambiguous_request_examples/**'
+  workflow_dispatch:
+
+jobs:
+  run-test-count-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Count test case files
+        run: |
+          count=$(ls microservices/ambiguity/ambiguous_request_examples/*.json 2>/dev/null | wc -l)
+          echo "🧾 Found $count test file(s)"
+          echo "✅ Test case count check completed"
