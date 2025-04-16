@@ -1,0 +1,19 @@
+name: 📘 Ambiguity Documentation Presence
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/README.md'
+  workflow_dispatch:
+
+jobs:
+  run-readme-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check if README exists
+        run: |
+          if [ -f "microservices/ambiguity/README.md" ]; then
+            echo "✅ README found"
+          else
+            echo "⚠️ README is missing — add soon"
+          fi
