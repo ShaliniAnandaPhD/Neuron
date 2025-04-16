@@ -119,34 +119,11 @@ Each failure needs:
 
 ## 🤝 Collaboration
 
-We’re looking for:
+for:
 - Engineers building agent pipelines and LLM orchestration
 - Researchers exploring cognitive repair, tone analysis, and regulatory conflicts
 - Contributors who love debugging the edge cases static systems ignore
 
-Start a [GitHub Discussion](https://github.com/ShaliniAnandaPhD/Neuron/discussions), open an issue, or DM [@ShaliniAnandaPhD](https://www.linkedin.com/in/shaliniananda/) on LinkedIn.
+Start a [GitHub Discussion](https://github.com/ShaliniAnandaPhD/Neuron/discussions)or open an issue 
 
----
-
-## 🪐 Bonus: What Breaks First?
-
-Run these through any micro-audit module and see what happens:
-
-💬 “Would I recommend this? Absolutely 🔥 … to people I hate.”  
-(Tone twist + emoji contradiction)
-
-💬 “Diez de diez, pero el soporte es una vergüenza.”  
-("Ten out of ten, but the support is a disgrace." — multilingual sentiment trap)
-
-### 🎯 What to Watch For
-- Does your system catch sarcasm?
-- Does it handle tone masking or regional nuance?
-- Does it adapt for language drift or formatting inconsistencies?
-
-Each test is a mirror — of how robust your system really is.
-
----
-
-## 🧠 Build Systems That Don’t Just Work —  
-Build Systems That Recover.
 
