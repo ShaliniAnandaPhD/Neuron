@@ -1,0 +1,17 @@
+name: 🛠️ Ambiguity CI Setup Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/**'
+  workflow_dispatch:
+
+jobs:
+  run-ci-setup-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm Python is installed
+        run: |
+          echo "🔧 Checking Python version"
+          python --version
+          echo "✅ CI environment initialized"
