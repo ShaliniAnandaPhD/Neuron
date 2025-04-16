@@ -1,0 +1,30 @@
+[
+  {
+    "id": "med-123",
+    "provider": "Family Practice Clinic",
+    "date": "2025-01-15",
+    "type": "medication",
+    "content": "Medication: Lisinopril\nDosage: 10 mg\nFrequency: Once daily\nPrescribed for hypertension management."
+  },
+  {
+    "id": "med-345",
+    "provider": "Farmacia Central",
+    "date": "2025-02-10",
+    "type": "medication",
+    "content": "Medicamento: Metformina\nDosis: 500 mg\nFrecuencia: Dos veces al día\nPrescrito para control de diabetes tipo 2."
+  },
+  {
+    "id": "lab-789",
+    "provider": "Regional Medical Laboratory",
+    "date": "2025-02-02",
+    "type": "lab_result",
+    "content": "Test: Glucose\nResult: 168 mg/dL\nReference Range: 70 - 99\nNotes: Elevated glucose levels indicating poor glycemic control."
+  },
+  {
+    "id": "diag-456",
+    "provider": "Centro Médico Internacional",
+    "date": "2024-11-03",
+    "type": "diagnosis",
+    "content": "Diagnóstico: Diabetes Mellitus Tipo 2\nFecha: 2024-11-03\nICD-10: E11.9\nNotas: Paciente presenta niveles elevados de glucosa en sangre. Se recomienda cambios en el estilo de vida y medicación."
+  }
+]
