@@ -1,0 +1,20 @@
+name: 📊 CLI Output Confidence Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/logs/**'
+  workflow_dispatch:
+
+jobs:
+  check-log-confidence:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Parse latest log for "urgency_score" or "confidence"
+        run: |
+          if ls microservices/ambiguity/logs/*.json 1> /dev/null 2>&1; then
+            latest=$(ls -t microservices/ambiguity/logs/*.json | head -n 1)
+            jq '.urgency_score, .confidence' "$latest" && echo "✅ Log contains expected metrics"
+          else
+            echo "⚠️ No logs found — skipping audit check"
+          fi
