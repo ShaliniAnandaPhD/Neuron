@@ -1,0 +1,20 @@
+name: 🧠 Agent Reference Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/ambiguity_resolver.py'
+  workflow_dispatch:
+
+jobs:
+  check-agent-mentions:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm expected agents are defined
+        run: |
+          if [ -f "microservices/ambiguity/ambiguity_resolver.py" ]; then
+            grep -E "ToneAgent|IntentResolver|UrgencyScorer" microservices/ambiguity/ambiguity_resolver.py && \
+            echo "✅ Agent class names found"
+          else
+            echo "⚠️ ambiguity_resolver.py not found — skipping check"
+          fi
