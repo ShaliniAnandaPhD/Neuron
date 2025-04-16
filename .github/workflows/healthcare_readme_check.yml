@@ -1,0 +1,19 @@
+name: 📘 Healthcare README Keyword Check
+
+on:
+  push:
+    paths:
+      - 'Readme.md'
+  workflow_dispatch:
+
+jobs:
+  check-healthcare-readme:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure README describes integration pipeline
+        run: |
+          if grep -iq "Measurement Standardization" Readme.md && grep -iq "Health Data Synthesizer" Readme.md; then
+            echo "✅ README contains core pipeline descriptions"
+          else
+            echo "⚠️ Important sections may be missing from README"
+          fi
