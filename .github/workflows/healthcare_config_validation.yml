@@ -1,0 +1,20 @@
+name: ⚙️ Healthcare Config Validation
+
+on:
+  push:
+    paths:
+      - 'config.yaml'
+  workflow_dispatch:
+
+jobs:
+  check-healthcare-config:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Verify YAML config structure
+        run: |
+          if grep -q "multilingual_nlp" config.yaml && grep -q "health_data_synthesizer" config.yaml; then
+            echo "✅ Required configuration sections found"
+          else
+            echo "❌ Missing expected keys in config.yaml"
+            exit 1
+          fi
