@@ -10,6 +10,13 @@ jobs:
   check-healthcare-config:
     runs-on: ubuntu-latest
     steps:
+      - name: Check if config.yaml exists
+        run: |
+          if [ ! -f config.yaml ]; then
+            echo "⚠️ config.yaml not found — skipping check"
+            exit 0
+          fi
+
       - name: Check for multilingual_nlp section
         run: |
           if grep -q "multilingual_nlp" config.yaml; then
