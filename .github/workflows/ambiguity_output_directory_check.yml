@@ -1,0 +1,16 @@
+name: 📁 Ambiguity Output Directory Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/**'
+  workflow_dispatch:
+
+jobs:
+  run-output-dir-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ensure logs folder exists
+        run: |
+          mkdir -p microservices/ambiguity/logs
+          echo "✅ Output directory is present"
