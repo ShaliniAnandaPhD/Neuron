@@ -12,6 +12,8 @@ They break because they lose **context**, misread **intent**, collapse under **a
 
 **Neuron Micro-Audit Services** is a growing library of **self-contained diagnostic agents**, each designed to detect and repair a specific fragility pattern in LLM-based systems. These modules are plug-and-play, composable, and explainable.
 
+[![🧠 Intent Phrase Scan (Safe)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml)
+
 ---
 
 ## 🔍 Use Case Examples
