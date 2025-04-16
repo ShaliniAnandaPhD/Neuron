@@ -1,0 +1,20 @@
+name: 🎭 Politeness Phrase Detection
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/**'
+  workflow_dispatch:
+
+jobs:
+  detect-tone-phrases:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Search for common masking phrases
+        run: |
+          if [ -d "microservices/ambiguity/ambiguous_request_examples" ]; then
+            grep -Ei "no rush|just checking in" microservices/ambiguity/ambiguous_request_examples/*.json && \
+            echo "✅ Politeness masking phrase detected"
+          else
+            echo "⚠️ Folder not found — skipping tone phrase check"
+          fi
