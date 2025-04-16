@@ -14,7 +14,8 @@ They break because they lose **context**, misread **intent**, collapse under **a
 
 [![🧠 Intent Phrase Scan (Safe)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml)
 [![🔬 Basic Neuron Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/basic_neuron_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/basic_neuron_check.yml)
-[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
+[![📊 CLI Output Confidence Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/inspect-cli-output-log.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/inspect-cli-output-log.yml)
+
 
 
 ---
