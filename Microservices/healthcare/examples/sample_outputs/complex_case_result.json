@@ -1,0 +1,151 @@
+{
+  "patient_id": "P8F5E3D2C",
+  "integration_id": "3c4d5e6f-7a8b-9c0d-1e2f-3a4b5c6d7e8f",
+  "timestamp": "2025-04-15T16:38:24.123456",
+  "summary": {
+    "records_processed": 10,
+    "providers_integrated": 4,
+    "conditions_identified": 4,
+    "treatments_identified": 3,
+    "care_gaps_found": 3,
+    "recommendations_generated": 4
+  },
+  "health_data": {
+    "conditions": [
+      {
+        "name": "Essential Hypertension",
+        "icd_code": "I10",
+        "category": "cardiovascular",
+        "date_diagnosed": "2024-09-15",
+        "provider": "Cardiology Associates",
+        "source_record_id": "diag-101"
+      },
+      {
+        "name": "Type 2 diabetes mellitus",
+        "icd_code": "E11.9",
+        "category": "endocrine",
+        "date_diagnosed": "2024-11-03",
+        "provider": "Endocrinology Center",
+        "source_record_id": "diag-102"
+      },
+      {
+        "name": "Chronic kidney disease, stage 3",
+        "icd_code": "N18.3",
+        "category": "renal",
+        "date_diagnosed": "2025-01-20",
+        "provider": "Nephrology Specialists",
+        "source_record_id": "diag-103"
+      },
+      {
+        "name": "Hyperlipidemia",
+        "inferred": true,
+        "inference_source": "lab_result",
+        "source_test": "Total Cholesterol",
+        "test_value": "240 mg/dL",
+        "date": "2024-12-15",
+        "provider": "Regional Medical Laboratory",
+        "source_record_id": "lab-303"
+      }
+    ],
+    "treatments": [
+      {
+        "type": "medication",
+        "name": "Lisinopril",
+        "generic_name": "lisinopril",
+        "medication_class": "ACE inhibitor",
+        "dosage": "10 mg",
+        "frequency": "Once daily",
+        "provider": "Primary Care Center",
+        "date_prescribed": "2024-09-20",
+        "source_record_id": "med-201"
+      },
+      {
+        "type": "medication",
+        "name": "Metformin",
+        "generic_name": "metformin",
+        "medication_class": "biguanide",
+        "dosage": "500 mg",
+        "frequency": "Twice daily",
+        "provider": "Endocrinology Center",
+        "date_prescribed": "2024-11-10",
+        "source_record_id": "med-202"
+      },
+      {
+        "type": "medication",
+        "name": "Atorvastatin",
+        "generic_name": "atorvastatin",
+        "medication_class": "statin",
+        "dosage": "20 mg",
+        "frequency": "Once daily at bedtime",
+        "provider": "Cardiology Associates",
+        "date_prescribed": "2025-01-05",
+        "source_record_id": "med-203"
+      }
+    ],
+    "care_gaps": [
+      {
+        "type": "missing_test",
+        "description": "No recent kidney function test for diabetic patient on ACE inhibitor",
+        "severity": "high",
+        "related_condition": "diabetes with hypertension"
+      },
+      {
+        "type": "missing_medication",
+        "description": "Inadequate blood pressure control despite medication",
+        "severity": "medium",
+        "related_condition": "hypertension"
+      },
+      {
+        "type": "missing_test",
+        "description": "No recent HbA1c test (within last 3 months) for patient with poor glycemic control",
+        "severity": "high",
+        "related_condition": "diabetes"
+      }
+    ],
+    "recommendations": [
+      {
+        "priority": "high",
+        "recommendation": "Schedule follow-up kidney function test",
+        "reason": "Recent CKD diagnosis with diminished eGFR (45 mL/min/1.73m²) and on ACE inhibitor therapy",
+        "type": "diagnostic"
+      },
+      {
+        "priority": "high",
+        "recommendation": "Schedule HbA1c recheck within 4 weeks",
+        "reason": "Last HbA1c of 8.2% indicates poor glycemic control",
+        "type": "diagnostic"
+      },
+      {
+        "priority": "medium",
+        "recommendation": "Consider adjusting antihypertensive medication",
+        "reason": "Blood pressure remains elevated (148/92) despite current therapy",
+        "type": "medication"
+      },
+      {
+        "priority": "medium",
+        "recommendation": "Nephrology referral for CKD management",
+        "reason": "Patient has CKD stage 3 with complicating factors (diabetes, hypertension)",
+        "type": "referral"
+      }
+    ]
+  },
+  "integration_metadata": {
+    "language_breakdown": {
+      "en": 10
+    },
+    "provider_breakdown": {
+      "Cardiology Associates": 2,
+      "Endocrinology Center": 2,
+      "Nephrology Specialists": 1,
+      "Primary Care Center": 1,
+      "Regional Medical Laboratory": 3,
+      "Community Health Clinic": 1
+    },
+    "record_type_breakdown": {
+      "diagnosis": 3,
+      "medication": 3,
+      "lab_result": 3,
+      "vital_signs": 1
+    }
+  }
+}
