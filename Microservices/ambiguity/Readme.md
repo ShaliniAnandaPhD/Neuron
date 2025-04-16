@@ -6,6 +6,11 @@ The `AmbiguityResolver` is a microservice in the Neuron framework that detects a
 
 [![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
 [![🎭 Politeness Phrase Detection](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml)
+[![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
+[![🔌 Ambiguity Core Components Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_core_components.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_core_components.yml)
+[![📘 Ambiguity Documentation Presence](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_documentation_presence.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_documentation_presence.yml)
+[![📁 Ambiguity Output Directory Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_output_directory_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_output_directory_check.yml)
+[![🎨 Ambiguity Visual Blueprint Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml)
 
 
 ## 🔍 Problem Statement
