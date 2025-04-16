@@ -1,0 +1,19 @@
+name: 🎨 Ambiguity Visual Blueprint Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/docs/blueprints/**'
+  workflow_dispatch:
+
+jobs:
+  run-visual-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Look for ambiguity_pipeline.svg
+        run: |
+          if [ -f "microservices/ambiguity/docs/blueprints/ambiguity_pipeline.svg" ]; then
+            echo "✅ Visual blueprint exists"
+          else
+            echo "⚠️ Diagram missing — optional but recommended"
+          fi
