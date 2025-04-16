@@ -1,0 +1,72 @@
+[
+  {
+    "id": "diag-101",
+    "provider": "Cardiology Associates",
+    "date": "2024-09-15",
+    "type": "diagnosis",
+    "content": "Diagnosis: Essential Hypertension\nDate: 2024-09-15\nICD-10: I10\nNotes: Patient with consistent elevated blood pressure readings over past 3 months."
+  },
+  {
+    "id": "diag-102",
+    "provider": "Endocrinology Center",
+    "date": "2024-11-03",
+    "type": "diagnosis",
+    "content": "Diagnosis: Type 2 Diabetes Mellitus\nDate: 2024-11-03\nICD-10: E11.9\nNotes: Patient presents with elevated blood glucose. Recommend lifestyle changes and medication."
+  },
+  {
+    "id": "diag-103",
+    "provider": "Nephrology Specialists",
+    "date": "2025-01-20",
+    "type": "diagnosis",
+    "content": "Diagnosis: Chronic kidney disease, stage 3\nDate: 2025-01-20\nICD-10: N18.3\nNotes: Decreased eGFR, likely due to diabetes and hypertension. Monitor closely."
+  },
+  {
+    "id": "med-201",
+    "provider": "Primary Care Center",
+    "date": "2024-09-20",
+    "type": "medication",
+    "content": "Medication: Lisinopril\nDosage: 10 mg\nFrequency: Once daily\nPrescribed for hypertension management."
+  },
+  {
+    "id": "med-202",
+    "provider": "Endocrinology Center",
+    "date": "2024-11-10",
+    "type": "medication",
+    "content": "Medication: Metformin\nDosage: 500 mg\nFrequency: Twice daily\nPrescribed for type 2 diabetes management."
+  },
+  {
+    "id": "med-203",
+    "provider": "Cardiology Associates",
+    "date": "2025-01-05",
+    "type": "medication",
+    "content": "Medication: Atorvastatin\nDosage: 20 mg\nFrequency: Once daily at bedtime\nPrescribed for hyperlipidemia management."
+  },
+  {
+    "id": "lab-301",
+    "provider": "Regional Medical Laboratory",
+    "date": "2024-12-15",
+    "type": "lab_result",
+    "content": "Test: HbA1c\nResult: 8.2 %\nReference Range: 4.0 - 5.6\nNotes: Indicates poor glycemic control over past 3 months."
+  },
+  {
+    "id": "lab-302",
+    "provider": "Regional Medical Laboratory",
+    "date": "2024-12-15",
+    "type": "lab_result",
+    "content": "Test: eGFR\nResult: 45 mL/min/1.73m²\nReference Range: >60\nNotes: Reduced kidney function, consistent with stage 3 CKD."
+  },
+  {
+    "id": "lab-303",
+    "provider": "Regional Medical Laboratory",
+    "date": "2024-12-15",
+    "type": "lab_result",
+    "content": "Test: Total Cholesterol\nResult: 240 mg/dL\nReference Range: <200\nNotes: Elevated, indicating hyperlipidemia."
+  },
+  {
+    "id": "vital-401",
+    "provider": "Community Health Clinic",
+    "date": "2025-03-01",
+    "type": "vital_signs",
+    "content": "Blood Pressure: 148/92\nHeart Rate: 84\nTemperature: 98.4 F\nWeight: 205 lb\nNotes: Blood pressure remains elevated despite medication."
+  }
+]
