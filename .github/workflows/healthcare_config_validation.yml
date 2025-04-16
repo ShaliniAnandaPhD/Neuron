@@ -27,3 +27,4 @@ jobs:
             echo "❌ health_data_synthesizer section missing"
             exit 1
           fi
+
