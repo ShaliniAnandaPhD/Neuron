@@ -1,0 +1,41 @@
+multilingual_nlp:
+  supported_languages:
+    - en
+    - es
+    - fr
+    - de
+  language_detection:
+    min_score_threshold: 0.6
+    use_medical_terms_weight: 2.0
+
+measurement_standardization:
+  temperature:
+    default_unit: C
+    convert_f_to_c: true
+  weight:
+    default_unit: kg
+    convert_lb_to_kg: true
+  lab_results:
+    glucose:
+      convert_mg_dl_to_mmol_l: true
+      conversion_factor: 0.0555
+    cholesterol:
+      convert_mg_dl_to_mmol_l: true
+      conversion_factor: 0.0259
+
+medical_terminology_resolver:
+  medication_database: data/medications.json
+  diagnosis_database: data/diagnoses.json
+  resolution_thresholds:
+    high: 0.8
+    medium: 0.5
+    low: 0.2
+
+health_data_synthesizer:
+  care_gap_thresholds:
+    missing_test_days: 180
+    missing_eye_exam_days: 365
+  recommendation_priorities:
+    missing_medication: high
+    missing_monitoring: medium
+    potential_interaction: high
