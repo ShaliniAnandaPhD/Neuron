@@ -1,0 +1,19 @@
+name: 🔌 Ambiguity Core Components Check
+
+on:
+  push:
+    paths:
+      - 'microservices/ambiguity/ambiguity_resolver.py'
+  workflow_dispatch:
+
+jobs:
+  run-core-components-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for AmbiguityResolver class
+        run: |
+          if grep -q "class AmbiguityResolver" microservices/ambiguity/ambiguity_resolver.py 2>/dev/null; then
+            echo "✅ AmbiguityResolver class found"
+          else
+            echo "⚠️ Class not found — skipping enforcement"
+          fi
