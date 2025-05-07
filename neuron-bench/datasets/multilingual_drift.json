@@ -1,1 +1,68 @@
+[
+  {
+    "id": "ml_001_fr",
+    "input_text": "Je me demande juste s'il y a quelqu’un qui peut m’aider un peu…",
+    "expected_output": {
+      "intent": "support_request",
+      "tone": "deferential",
+      "urgency": "high",
+      "confidence": {
+        "tone": 0.85,
+        "intent": 0.90
+      }
+    }
+  },
+  {
+    "id": "ml_002_es",
+    "input_text": "Tal vez ustedes puedan ayudarme con algo, si no es mucha molestia.",
+    "expected_output": {
+      "intent": "support_request",
+      "tone": "polite",
+      "urgency": "medium",
+      "confidence": {
+        "tone": 0.80,
+        "intent": 0.88
+      }
+    }
+  },
+  {
+    "id": "ml_003_de",
+    "input_text": "Ich bin mir nicht sicher, ob das hier der richtige Ort ist, aber ich brauche Hilfe.",
+    "expected_output": {
+      "intent": "support_request",
+      "tone": "uncertain",
+      "urgency": "high",
+      "confidence": {
+        "tone": 0.83,
+        "intent": 0.91
+      }
+    }
+  },
+  {
+    "id": "ml_004_zh",
+    "input_text": "不好意思打扰一下，我可以请教一个问题吗？",
+    "expected_output": {
+      "intent": "question_request",
+      "tone": "apologetic",
+      "urgency": "low",
+      "confidence": {
+        "tone": 0.87,
+        "intent": 0.85
+      }
+    }
+  },
+  {
+    "id": "ml_005_ar",
+    "input_text": "هل يمكنك مساعدتي؟ أنا لا أعرف من أين أبدأ.",
+    "expected_output": {
+      "intent": "support_request",
+      "tone": "distressed",
+      "urgency": "high",
+      "confidence": {
+        "tone": 0.88,
+        "intent": 0.92
+      }
+    }
+  }
+]
 
