@@ -7,7 +7,7 @@ It’s not just about accuracy — it’s about **resilience**, **adaptability**
 
 ---
 
-## ✅ What NeuronBench Tests
+## What NeuronBench Tests
 
 NeuronBench focuses on benchmarking AI systems across complex, high-friction scenarios that typically break brittle systems:
 
@@ -22,7 +22,7 @@ Each test case is designed to challenge the system’s contextual awareness, dec
 
 ---
 
-## 🧱 Folder Structure
+##  Folder Structure
 
 ```bash
 neuron-bench/
@@ -42,7 +42,7 @@ neuron-bench/
 
 ---
 
-## 🧪 Benchmark Format
+##  Benchmark Format
 
 Each case contains:
 ```json
@@ -63,18 +63,18 @@ Each case contains:
 
 ---
 
-## 📊 Output Metrics
+##  Output Metrics
 
 After execution, NeuronBench will generate:
-- ✅ Pass/Fail score by system and scenario
+-  Pass/Fail score by system and scenario
 - 🧠 Detailed analysis of misclassifications
-- 📈 Confidence score tracking and reporting
-- 🛠️ Fallback paths used (if applicable)
-- 📉 Optional visualizations: side-by-side charts, confusion matrices, error types
+-  Confidence score tracking and reporting
+-  Fallback paths used (if applicable)
+-  Optional visualizations: side-by-side charts, confusion matrices, error types
 
 ---
 
-## 🚀 Quick Start
+##  Quick Start
 
 Run all benchmarks:
 ```bash
@@ -88,7 +88,7 @@ python scripts/compare_results.py
 
 ---
 
-## 🔁 GitHub Actions Integration
+##  GitHub Actions Integration
 
 To integrate NeuronBench into your CI pipeline:
 
@@ -120,14 +120,14 @@ This is a benchmark suite for:
 
 ---
 
-## 👤 Maintainers
+##  Maintainers
 
 Built by [Shalini Ananda, PhD](https://github.com/ShaliniAnandaPhD)  
 Founder of the Neuron Framework | AI researcher | Builder of systems that don’t break when the world does
 
 ---
 
-## 🤝 How to Contribute
+##  How to Contribute
 
 - Submit a test case: `datasets/your_case.json`
 - Add outputs for your system: `expected_outputs/your_architecture/`
@@ -136,13 +136,13 @@ Founder of the Neuron Framework | AI researcher | Builder of systems that don’
 
 ---
 
-## 🧬 License
+##  License
 
 NeuronBench is released under the MIT License with an additional Attribution requirement for benchmark content reuse. See `LICENSE` for more.
 
 ---
 
-## 🌍 Let’s Build Systems That Don’t Break First
+##  Let’s Build Systems That Don’t Break First
 
 This isn’t just testing models.  
 It’s testing the **integrity** of how systems hold up under pressure.  
