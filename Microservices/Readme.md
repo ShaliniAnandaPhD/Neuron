@@ -5,7 +5,7 @@ Modular agents for failure detection and repair in complex, real-world AI pipeli
 
 ---
 
-## ✨ Overview
+##  Overview
 
 AI systems don’t break because they lack logic —  
 They break because they lose **context**, misread **intent**, collapse under **ambiguity**, or fail to track emotional dynamics over time.
@@ -20,7 +20,7 @@ They break because they lose **context**, misread **intent**, collapse under **a
 
 ---
 
-## 🔍 Use Case Examples
+##  Use Case Examples
 
 | Micro-Audit | What It Detects | What It Fixes |
 |-------------|------------------|----------------|
@@ -35,7 +35,7 @@ Each module is independently runnable and follows a consistent agent circuit flo
 
 ---
 
-## 🧬 Architecture
+##  Architecture
 
 Each audit module is powered by the Neuron Framework’s circuit-based pipeline:
 
@@ -55,7 +55,7 @@ All micro-audits:
 
 ---
 
-## 💻 Getting Started
+##  Getting Started
 
 ```bash
 git clone https://github.com/ShaliniAnandaPhD/Neuron
@@ -94,7 +94,7 @@ for agent in pipeline:
 
 ---
 
-## 📊 Logging + Metrics
+##  Logging + Metrics
 
 Each micro-audit agent emits:
 - JSON logs to `logs/{agent_name}.{timestamp}.json`
@@ -104,7 +104,7 @@ Each micro-audit agent emits:
 
 ---
 
-## 🌐 Why Microservices?
+##  Why Microservices?
 
 Because AI repair isn't monolithic — it's **patterned**.
 
@@ -117,7 +117,7 @@ Each failure needs:
 
 ---
 
-## 🤝 Collaboration
+##  Collaboration
 
 for:
 - Engineers building agent pipelines and LLM orchestration
