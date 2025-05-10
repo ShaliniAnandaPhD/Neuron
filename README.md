@@ -270,6 +270,52 @@ To determine if Neuron is right for your use case, consider these metrics:
 - **Development and Maintenance Metrics**: How much customization will you need?
 - **Explainability and Control**: How important is understanding the system's decisions?
 
+# How It Works
+
+## Contextual Memory Architecture
+
+Neuron implements a multi-layered contextual memory system that goes beyond simple token accumulation. Instead of relying on ever-larger context windows, we've designed a memory architecture that intelligently persists, evolves, and selectively recalls information.
+
+### Core Memory Components
+
+#### Layered Memory Structure
+* **Working Memory** - Handles immediate context and current interaction state
+* **Episodic Memory** - Stores sequential events and interaction history
+* **Semantic Memory** - Maintains conceptual relationships and knowledge connections
+* **Procedural Memory** - Retains action patterns and response strategies
+
+#### Importance-Weighted Memory Decay
+* Implements selective forgetting through importance scoring
+* Weighs factors including recency, usage frequency, and explicit importance markers
+* Preserves critical information while allowing trivial details to fade
+* Adapts memory persistence based on contextual relevance
+
+#### Semantic Compression
+* Reduces raw conversations to conceptual summaries without losing essence
+* Extracts core intents and key information points
+* Preserves relationship patterns and preference structures
+* Minimizes memory footprint while maintaining contextual integrity
+
+#### Associative Retrieval
+* Makes memory searchable rather than using all-or-nothing context windows
+* Retrieves specific memories based on semantic relevance
+* Implements context-aware search that understands references to past interactions
+* Balances recency and relevance in memory retrieval
+
+### Memory Persistence
+
+* **Cross-Session Continuity** - Maintains relevant context between separate interactions
+* **Memory Lifecycle Management** - Rules for creation, updating, and deprecation
+* **Context Evolution** - Adapts memory representation as new information arrives
+
+## Implementation Design Principles
+
+* **Modular Architecture** - Memory components are separable and independently testable
+* **Configurability** - Memory behavior is adjustable through configuration
+* **Observability** - Comprehensive logging of memory operations for debugging
+* **Efficiency** - Optimized for minimal computational overhead during retrieval
+
+
 ## Examples
 
 Check the `examples/` directory for detailed demonstrations of Neuron's capabilities:
@@ -280,6 +326,7 @@ Check the `examples/` directory for detailed demonstrations of Neuron's capabili
 - `circuit_creation.py`: Building and deploying circuits
 - `behavior_control.py`: Adjusting agent behavior dynamically
 - `plugin_development.py`: Creating a custom plugin
+
 
 ## Contributing
 
