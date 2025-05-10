@@ -270,8 +270,6 @@ To determine if Neuron is right for your use case, consider these metrics:
 - **Development and Maintenance Metrics**: How much customization will you need?
 - **Explainability and Control**: How important is understanding the system's decisions?
 
-# How It Works
-
 ## Contextual Memory Architecture
 
 Neuron implements a multi-layered contextual memory system that goes beyond simple token accumulation. Instead of relying on ever-larger context windows, we've designed a memory architecture that intelligently persists, evolves, and selectively recalls information.
