@@ -1,4 +1,4 @@
-Open Source Attribution Notice
+# Open Source Attribution Notice
 
 Using open source software without proper attribution or in violation of license terms is not only ethically problematic but may also constitute a legal violation. I believe in supporting the open source community that makes projects like this possible.
 
