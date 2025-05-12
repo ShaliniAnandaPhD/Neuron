@@ -15,7 +15,18 @@ Neuron is a comprehensive framework for building composable AI agent systems ins
 
 ## What Neuron Is For
 
-Neuron is designed for creating, deploying, and orchestrating networks of specialized AI agents that can communicate and collaborate to solve complex problems. It draws inspiration from how the human brain works, with different specialized regions cooperating through neural pathways.
+Neuron is a framework for building AI systems that think in circuits—not chains.
+
+It’s designed to create, deploy, and orchestrate networks of specialized agents that can reason over time, adapt to uncertainty, and collaborate through shared memory. Inspired by the modular structure of the brain, Neuron enables agents to specialize, coordinate, and evolve—handling ambiguity, planning across multiple steps, and making decisions with context.
+
+Neuron is ideal for:
+- Complex, multi-turn tasks that require memory and adaptation
+- Reasoning under ambiguity or conflicting constraints
+- Systems where interpretability, modularity, and fallback behavior are critical
+- Integrating language models, planning tools, and domain-specific agents into a unified, auditable system
+
+Whether you're building research agents, automated reasoning pipelines, or full microservice-driven applications, Neuron provides the architecture to make them resilient, traceable, and intelligent by design.
+
 
 ## Key Features
 
