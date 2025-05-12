@@ -27,6 +27,21 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 - **Comprehensive Monitoring**: Track metrics, visualize system behavior, and detect issues.
 - **Extensible Design**: Enhance functionality through plugins and custom components.
 
+## 🧠 Neuron: Building in Public
+
+Neuron is being developed in public with regular technical posts, architectural updates, and use case demos.
+
+📍 Follow the series on LinkedIn:  
+[🔗 Building in Public Series – Neuron Framework](https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-agentreasoning-activity-7327820225213620228-fS8D?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+
+This includes:
+
+- Modular agent architecture insights  
+- Memory system breakdowns  
+- Real-world experiments (claim verification, ambiguity resolution, planning)  
+- System diagrams and performance benchmarks  
+
+
 ## Use Cases:
 
 1) [The demo tackles a travel planning scenario with overlapping requirements - a family needs hotels with pools that are also accessible for mobility issues, while staying within budget and accommodating dietary restrictions](https://www.linkedin.com/posts/shalinianandaphd_ai-neuroscienceintech-innovation-activity-7310052197210226688-Gq2s?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
