@@ -19,13 +19,19 @@ Neuron is designed for creating, deploying, and orchestrating networks of specia
 
 ## Key Features
 
-- **Agent-Based Architecture**: Create specialized agents with different capabilities and behaviors.
-- **Dynamic Composition**: Build complex agent networks using circuit templates and connection patterns.
-- **Flexible Communication**: Enable sophisticated agent interactions through the SynapticBus messaging system.
-- **Multi-Level Memory**: Implement working, episodic, semantic, and procedural memory systems.
-- **Advanced Behavior Control**: Adjust agent behavior dynamically based on context and goals.
-- **Comprehensive Monitoring**: Track metrics, visualize system behavior, and detect issues.
-- **Extensible Design**: Enhance functionality through plugins and custom components.
+- **Agent-Based Architecture**: Compose modular agents with specialized roles (retrieval, planning, synthesis, classification).
+- **Dynamic Circuit Composition**: Construct adaptive circuits that re-route tasks based on confidence, ambiguity, or failure.
+- **Memory-Driven Reasoning**: Leverage working, episodic, semantic, and procedural memory to guide decisions over time.
+- **SynapticBus Communication**: Enable asynchronous, scoped message passing and shared agent context across tasks.
+- **Simulation Planning**: Support lookahead reasoning via simulated agent rollouts before committing to a path.
+- **Multimodal Token Fusion**: Integrate structured text, vision, and metadata into unified token streams for reasoning.
+- **Behavior Arbitration**: Resolve conflicting agent outputs using confidence-weighted voting and fallback logic.
+- **Scoped Memory Access**: Query memory selectively based on context relevance and decay thresholds.
+- **Reliability-Aware Routing**: Prioritize agent pathways using performance history and trust scores.
+- **Comprehensive Monitoring**: Trace execution paths, memory usage, confidence levels, and circuit timing via NeuroMonitor.
+- **Extensible Microservices**: Deploy agents and subsystems (e.g. ambiguity resolution, constraint planning) as reusable services.
+- **Developer-Friendly Config**: Define and modify circuits, thresholds, and agent policies with YAML templates.
+
 
 ## 🧠 Neuron: Building in Public
 
