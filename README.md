@@ -281,26 +281,49 @@ neuron agent list
 neuron circuit create sequential_pipeline --params '{"processor1_type": "DeliberativeAgent"}'
 ```
 
-## Neuroscience Foundations
+## 🧠 Neuroscience Foundations
 
-Neuron incorporates several principles from neuroscience:
+Neuron is inspired by how the brain handles complexity, ambiguity, and adaptation. Each architectural feature reflects a core cognitive function:
 
-- **Specialized Processing Regions**: Agents with specific capabilities, like brain regions.
-- **Hierarchical Information Processing**: Circuit composition for progressive refinement.
-- **Neuroplasticity**: Learning and adaptation from experience.
-- **Working Memory and Attention**: Prioritization of information for processing.
-- **Predictive Processing**: Anticipation of inputs and outcomes.
+- **Specialized Processing Regions → Agent-Based Architecture**  
+  Each Neuron agent performs a distinct function (e.g. retrieval, planning, classification), mirroring how brain regions specialize in perception, memory, or action.
 
-## Evaluation Metrics
+- **Hierarchical Information Processing → CircuitDesigner + SynapticBus**  
+  Agent circuits are composed hierarchically, allowing progressive refinement from raw input to abstract reasoning through layered agent interaction.
 
-To determine if Neuron is right for your use case, consider these metrics:
+- **Neuroplasticity → ProceduralMemory + BehaviorController**  
+  The system adapts over time by updating strategy templates and altering agent routing based on past outcomes and confidence signals.
 
-- **Task Complexity Analysis**: How complex are the problems you need to solve?
-- **Emergent Intelligence Metrics**: Do you need system-level capabilities beyond individual agents?
-- **Resource Efficiency**: How important are memory and CPU requirements?
-- **Robustness and Reliability**: What level of fault tolerance do you need?
-- **Development and Maintenance Metrics**: How much customization will you need?
-- **Explainability and Control**: How important is understanding the system's decisions?
+- **Working Memory and Attention → WorkingMemory + ReliabilityRouter**  
+  Agents dynamically prioritize active context and reliable collaborators, simulating attentional focus and transient recall.
+
+- **Predictive Processing → SimulationPlanner + Circuit Re-Routing**  
+  Agents simulate potential task outcomes before execution, allowing Neuron to anticipate consequences and adjust plans proactively.
+
+---
+
+##  Evaluation Metrics
+
+To evaluate whether Neuron is suited to your project or research goals, consider the following:
+
+- **Task Complexity Analysis**  
+  Are your tasks multi-step, ambiguous, or requiring flexible agent coordination?
+
+- **Emergent Intelligence Metrics**  
+  Do you need system-wide reasoning that goes beyond the capabilities of individual models?
+
+- **Resource Efficiency**  
+  Is performance a concern—especially with respect to memory usage, latency, or API cost?
+
+- **Robustness and Reliability**  
+  Will your system benefit from fallback agents, arbitration of disagreement, and graceful degradation?
+
+- **Development and Maintenance Metrics**  
+  How important is modularity, reuse, and the ability to swap agents or reconfigure pipelines without breaking the whole system?
+
+- **Explainability and Control**  
+  Do you need clear visibility into decision paths, memory usage, and routing logic to build trust or meet compliance needs?
+
 
 ## Contextual Memory Architecture
 
