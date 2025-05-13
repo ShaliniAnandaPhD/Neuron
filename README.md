@@ -58,13 +58,16 @@ This includes:
 - Real-world experiments (claim verification, ambiguity resolution, planning)  
 - System diagrams and performance benchmarks  
 
-# Neurons Flagship Product
+# Neuron's Flagship Product
 
-NeuronFlow - Using Steven Kotler's tools to improve productivity 
+## NeuronFlow – Using Steven Kotler's Tools to Improve Productivity
 
-(https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuron-llmorchestration-activity-7328159531266441217-jGDa?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+Explore how we're integrating neuroscience-based flow state principles into AI orchestration:
 
-## Use Cases:
+🔗 [LinkedIn Post](https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuron-llmorchestration-activity-7328159531266441217-jGDa?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+
+
+## Other Use Cases:
 
 1) [The demo tackles a travel planning scenario with overlapping requirements - a family needs hotels with pools that are also accessible for mobility issues, while staying within budget and accommodating dietary restrictions](https://www.linkedin.com/posts/shalinianandaphd_ai-neuroscienceintech-innovation-activity-7310052197210226688-Gq2s?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
 
