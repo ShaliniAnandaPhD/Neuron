@@ -1,0 +1,284 @@
+# Memory Configuration for Neuron Architecture
+# This file defines parameters for memory retention, retrieval, and decay mechanisms
+# Used by memory_scoring.py and memory subsystem components
+
+# Global memory settings
+memory:
+  # Maximum total memory items to retain across all systems
+  max_items: 10000
+  
+  # Default decay parameters
+  default_decay:
+    # Base decay rate (per day)
+    rate: 0.05
+    # Minimum confidence before memory is archived
+    min_confidence: 0.3
+    # Maximum age before forced review (days)
+    max_age: 30
+  
+  # Memory embedding settings
+  embeddings:
+    # Default embedding dimension
+    dimension: 768
+    # Pooling method for multi-token items
+    pooling: "mean"
+    # Similarity threshold for considering items as matching
+    similarity_threshold: 0.75
+  
+  # Memory pruning settings
+  pruning:
+    # Enable automatic pruning of old memories
+    enabled: true
+    # Run pruning every N operations
+    schedule: 1000
+    # Strategy for selecting memories to prune
+    # Options: "age", "confidence", "usage", "combined"
+    strategy: "combined"
+    # Preserve ratio of memory types during pruning
+    preserve_ratio: true
+
+# Episodic memory specific settings
+episodic:
+  # Maximum number of episodic memory items
+  max_items: 5000
+  # Weight for temporal ordering in retrieval
+  temporal_weight: 0.7
+  # Decay rate multiplier (relative to default)
+  decay_multiplier: 1.2
+  # Context matching parameters
+  context_matching:
+    # Minimum similarity for context match
+    min_similarity: 0.6
+    # Number of similar contexts to retrieve
+    max_similar_contexts: 5
+  # Episode boundaries
+  boundaries:
+    # Whether to automatically detect episode boundaries
+    auto_detect: true
+    # Maximum episode duration in seconds
+    max_duration: 3600
+    # Context shift threshold for boundary detection
+    context_shift_threshold: 0.4
+  # Tagging and annotation
+  tagging:
+    # Automatically tag episodes with themes and key entities
+    auto_tag: true
+    # Maximum number of tags per episode
+    max_tags: 10
+
+# Semantic memory specific settings
+semantic:
+  # Maximum number of semantic memory items
+  max_items: 3000
+  # Network connectivity parameters
+  network:
+    # Maximum connections per concept
+    max_connections: 20
+    # Minimum relationship strength to maintain
+    min_strength: 0.4
+    # Decay rate for relationship strength
+    relationship_decay: 0.01
+  # Concept parameters
+  concepts:
+    # Minimum confidence for concept formation
+    min_confidence: 0.6
+    # Minimum observations before creating a concept
+    min_observations: 3
+    # Maximum hierarchy depth
+    max_hierarchy_depth: 5
+  # Integration parameters
+  integration:
+    # Automatically merge similar concepts
+    auto_merge: true
+    # Similarity threshold for merging
+    merge_threshold: 0.85
+  # Decay rate multiplier (relative to default)
+  decay_multiplier: 0.8
+
+# Procedural memory specific settings
+procedural:
+  # Maximum number of procedural memory items
+  max_items: 1000
+  # Reinforcement parameters
+  reinforcement:
+    # Success reinforcement factor
+    success_factor: 1.2
+    # Failure penalty factor
+    failure_factor: 0.8
+    # Minimum attempts before stability assessment
+    min_attempts: 5
+  # Procedure complexity
+  complexity:
+    # Maximum steps per procedure
+    max_steps: 50
+    # Maximum nesting depth
+    max_nesting: 3
+    # Step success threshold
+    step_success_threshold: 0.7
+  # Optimization parameters
+  optimization:
+    # Automatically optimize procedures based on execution history
+    auto_optimize: true
+    # Minimum executions before optimization
+    min_executions: 10
+    # Performance improvement threshold to keep optimization
+    improvement_threshold: 0.1
+  # Decay rate multiplier (relative to default)
+  decay_multiplier: 0.6
+
+# Working memory specific settings
+working:
+  # Maximum number of working memory items
+  max_items: 50
+  # Time-to-live in seconds
+  ttl: 3600
+  # Priority levels
+  priority_levels: 5
+  # Default priority
+  default_priority: 3
+  # Capacity settings
+  capacity:
+    # Strategy when at capacity ("replace_oldest", "replace_lowest_priority", "merge_similar")
+    at_capacity_strategy: "replace_lowest_priority"
+    # Reserve capacity for high-priority items
+    high_priority_reserved: 5
+  # Interference parameters
+  interference:
+    # Whether similar items interfere with each other
+    enable_interference: true
+    # Similarity threshold for interference
+    interference_threshold: 0.8
+    # Interference factor (0-1)
+    interference_factor: 0.2
+
+# Memory scoring parameters
+scoring:
+  # Weight factors for different scoring components
+  weights:
+    # Weight of confidence in overall score
+    confidence: 0.3
+    # Weight of relevance in overall score
+    relevance: 0.4
+    # Weight of recency in overall score
+    recency: 0.2
+    # Weight of usage frequency in overall score
+    frequency: 0.1
+  
+  # Scoring thresholds
+  thresholds:
+    # Minimum score for retrieval
+    min_retrieval: 0.4
+    # Score for promoted retrieval
+    promoted: 0.8
+    # Minimum score difference to prefer one memory over another
+    discrimination: 0.1
+  
+  # Recency scoring parameters
+  recency:
+    # Half-life for recency factor (days)
+    half_life: 7
+    # Recency curve shape ("linear", "logarithmic", "exponential")
+    curve: "exponential"
+    # Minimum retention factor for very old memories
+    min_retention: 0.1
+  
+  # Relevance scoring parameters
+  relevance:
+    # Contextual factors to consider for relevance
+    context_factors:
+      # Location context weight
+      location: 0.3
+      # Temporal context weight
+      time: 0.2
+      # Task context weight
+      task: 0.4
+      # Entity context weight
+      entities: 0.5
+    # Methods for context matching
+    # Options: "exact", "embedding", "hierarchical", "fuzzy"
+    match_method: "embedding"
+
+# Cross-memory integration settings
+integration:
+  # Integration between memory types
+  cross_memory:
+    # Enable semantic enrichment of episodic memories
+    semantic_to_episodic: true
+    # Enable procedural enhancement with semantic concepts
+    semantic_to_procedural: true
+    # Enable episodic context for procedural execution
+    episodic_to_procedural: true
+  
+  # Working memory integration
+  working_memory:
+    # Automatically populate working memory from other stores
+    auto_populate: true
+    # Maximum items to auto-populate
+    auto_populate_limit: 10
+    # Score threshold for auto-population
+    auto_populate_threshold: 0.7
+  
+  # Emergent knowledge formation
+  emergent:
+    # Enable pattern detection across memory types
+    enable_pattern_detection: true
+    # Minimum confidence for emergent knowledge
+    min_confidence: 0.7
+    # Schedule for background pattern detection (operations)
+    detection_schedule: 500
+
+# Performance and resource settings
+performance:
+  # Caching settings
+  caching:
+    # Enable result caching
+    enable: true
+    # Cache time-to-live (seconds)
+    ttl: 300
+    # Maximum cache size
+    max_size: 1000
+  
+  # Parallel processing
+  parallel:
+    # Enable parallel memory operations
+    enable: true
+    # Maximum worker threads
+    max_workers: 4
+  
+  # Optimization
+  optimization:
+    # Enable pre-emptive memory loading
+    preemptive_loading: true
+    # Enable memory compression
+    compression: true
+    # Compression threshold (memory size)
+    compression_threshold: 10000
+
+# Memory monitoring and analytics
+monitoring:
+  # Usage statistics
+  stats:
+    # Track memory access patterns
+    track_access: true
+    # Track memory hit/miss ratios
+    track_hit_rate: true
+    # Track query performance
+    track_performance: true
+  
+  # Health checks
+  health:
+    # Run periodic health checks
+    enable: true
+    # Health check interval (seconds)
+    interval: 3600
+    # Report thresholds for warnings
+    thresholds:
+      # Usage percentage warning threshold
+      usage: 0.8
+      # Performance degradation warning threshold
+      performance: 0.3
+
+# Version information
+version: "1.0.0"
+last_updated: "2025-05-12"
+compatibility: "neuron-0.8.0+"
