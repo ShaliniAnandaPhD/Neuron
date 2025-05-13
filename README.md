@@ -58,6 +58,11 @@ This includes:
 - Real-world experiments (claim verification, ambiguity resolution, planning)  
 - System diagrams and performance benchmarks  
 
+# Neurons Flagship Product
+
+NeuronFlow - Using Steven Kotler's tools to improve productivity 
+
+(https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuron-llmorchestration-activity-7328159531266441217-jGDa?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
 
 ## Use Cases:
 
