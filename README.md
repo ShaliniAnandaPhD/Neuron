@@ -56,7 +56,17 @@ This includes:
 - Modular agent architecture insights  
 - Memory system breakdowns  
 - Real-world experiments (claim verification, ambiguity resolution, planning)  
-- System diagrams and performance benchmarks  
+- System diagrams and performance benchmarks
+
+## 🧠 Neuron Evaluation Notebook
+
+Over the first four months of development, Neuron was benchmarked across 12 real-world evaluation scenarios—from sarcasm detection and memory persistence to infrastructure degradation and contradiction handling.
+
+The full evaluation results, design notes, and failure mode breakdowns are documented here:  
+📘 [Neuron Evaluation Notebook (Notion)](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)
+
+These tests explore how Neuron adapts when things break — and what makes modular, brain-inspired AI architectures different from linear pipelines or single-shot tools.
+
 
 # Neuron's Flagship Product
 
