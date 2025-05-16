@@ -1,0 +1,41 @@
+dimension,component,sub_metric,score,target,gap
+Transparency,Observability,Overall Score,88,90,-2
+Transparency,Observability,Trace Completeness,97,95,2
+Transparency,Observability,Decision Point Coverage,93,95,-2
+Transparency,Observability,Input/Output Capture,99,95,4
+Transparency,Observability,Internal State Visibility,88,90,-2
+Transparency,Observability,Explanation Quality,91,90,1
+Transparency,Observability,Debugging Efficiency,84,90,-6
+Adaptability,Dynamic Routing,Overall Score,92,90,2
+Adaptability,Dynamic Routing,Context-Sensitive Routing,94,90,4
+Adaptability,Dynamic Routing,Circuit Rewiring,89,90,-1
+Adaptability,Dynamic Routing,Adaptation Speed,91,90,1
+Adaptability,SynapticBus,Recovery Under Loss,92,90,2
+Adaptability,SynapticBus,Conflict Resolution,89,90,-1
+Reasoning,Temporal Reasoning,Overall Score,94,90,4
+Reasoning,Temporal Reasoning,Timeline Reconstruction,97,95,2
+Reasoning,Temporal Reasoning,Temporal Reference Resolution,96,95,1
+Reasoning,Temporal Reasoning,Future Projection,78,85,-7
+Reasoning,Parallel Reasoning,Overall Score,91,90,1
+Reasoning,Parallel Reasoning,Multi-Intent Processing,93,90,3
+Reasoning,Parallel Reasoning,Coordination Efficiency,89,90,-1
+Communication,Multilingual,Overall Score,91,90,1
+Communication,Multilingual,Language Detection,100,100,0
+Communication,Multilingual,Latin Script Languages,96,95,1
+Communication,Multilingual,Non-Latin Script Languages,88,95,-7
+Communication,Code-Switching,Overall Score,90,90,0
+Communication,Code-Switching,Two-Language Code-Switching,92,90,2
+Communication,Code-Switching,Three+ Language Code-Switching,88,90,-2
+Robustness,Modularity,Overall Score,94,90,4
+Robustness,Modularity,Component Independence,96,90,6
+Robustness,Modularity,Hot-Reloading,93,90,3
+Robustness,Modularity,Graceful Degradation,91,90,1
+Robustness,Recovery,Error Handling,88,90,-2
+Robustness,Recovery,Failure Cascade Mitigation,87,90,-3
+Comprehension,Memory System,Overall Score,92,90,2
+Comprehension,Memory System,Near-term Context Retention,99,95,4
+Comprehension,Memory System,Long-term Context (14+ days),73,85,-12
+Comprehension,Sarcasm Detection,Overall Score,83,90,-7
+Comprehension,Sarcasm Detection,Obvious Patterns,93,90,3
+Comprehension,Sarcasm Detection,Subtle Patterns,78,85,-7
+Comprehension,Sarcasm Detection,Cultural Variations,71,80,-9
