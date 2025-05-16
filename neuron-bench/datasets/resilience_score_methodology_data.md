@@ -1,0 +1,51 @@
+component,resilience_score,recovery_score,adaptability_score,observability_score,overall_score,weight_factor,normalized_score,relative_rank,improvement_priority
+Memory System Behavior,87.5,92.3,90.1,88.7,89.7,1.1,98.6,3,LOW
+Long-term Memory Retention,74.3,78.9,75.6,87.2,79.0,1.2,94.8,12,HIGH
+Near-term Context Retention,96.8,97.2,95.3,94.7,96.0,0.9,86.4,1,LOW
+Router Agent,89.2,91.5,93.8,85.6,90.0,1.0,90.0,5,LOW
+SynapticBus Communication,91.7,89.8,88.3,94.2,91.0,1.0,91.0,4,LOW
+IntentClassifier Agent,88.5,90.2,87.6,89.3,88.9,1.0,88.9,7,LOW
+PolicyAgent,93.4,92.1,90.3,87.5,90.8,0.9,81.7,2,LOW
+ResponseAgent,89.7,88.3,91.2,90.1,89.8,1.0,89.8,6,LOW
+Sarcasm Detection (Overall),81.5,84.2,82.7,85.6,83.5,1.2,100.2,15,HIGH
+Cultural Sarcasm Variations,72.4,77.8,74.2,83.1,76.9,1.3,99.9,17,HIGH
+Subtle Sarcasm Patterns,78.3,81.5,79.3,84.8,81.0,1.2,97.2,16,HIGH
+Obvious Sarcasm Patterns,93.7,92.9,94.5,88.9,92.5,0.8,74.0,9,LOW
+Contradiction Handling (Overall),86.7,89.3,88.5,87.4,88.0,1.1,96.8,11,HIGH
+Implied Contradictions,82.5,85.1,81.7,84.3,83.4,1.2,100.1,14,HIGH
+Direct Contradictions,94.7,93.5,95.2,90.6,93.5,0.8,74.8,8,LOW
+Temporal Reasoning,93.1,91.7,92.5,88.9,91.6,0.9,82.4,10,LOW
+Future Projection,78.6,80.2,76.9,86.5,80.6,1.2,96.7,13,MEDIUM
+Timeline Reconstruction,97.3,95.8,94.2,91.4,94.7,0.8,75.8,7,LOW
+Error Handling,87.8,85.3,91.2,89.4,88.4,1.0,88.4,9,LOW
+Failure Cascade Mitigation,86.7,84.5,89.6,87.1,87.0,1.1,95.7,10,MEDIUM
+Observability (Overall),87.5,90.2,86.3,88.1,88.0,1.1,96.8,11,MEDIUM
+Trace Completeness,96.9,94.7,92.3,97.5,95.4,0.8,76.3,6,LOW
+Decision Point Coverage,92.8,90.5,88.7,93.1,91.3,0.9,82.2,9,LOW
+Neural Component Visibility,76.2,79.5,74.8,84.3,78.7,1.2,94.4,16,HIGH
+Debugging Efficiency,84.3,87.5,82.1,86.7,85.2,1.1,93.7,11,MEDIUM
+Multilingual Capabilities,90.3,92.7,91.5,89.8,91.1,0.9,82.0,8,LOW
+Non-Latin Script Processing,88.1,90.2,87.3,86.5,88.0,1.0,88.0,10,MEDIUM
+Language Detection,100.0,99.5,99.2,98.7,99.4,0.7,69.6,1,LOW
+Code-Switching Capability,89.7,91.2,88.5,90.3,89.9,0.9,80.9,8,LOW
+Dense Code-Switching (3+ languages),82.3,84.5,80.1,85.9,83.2,1.1,91.5,14,MEDIUM
+Two-Language Code-Switching,91.5,93.2,90.7,91.8,91.8,0.9,82.6,7,LOW
+Modularity (Overall),93.5,94.7,92.1,88.5,92.2,0.9,83.0,7,LOW
+Component Independence,95.7,96.3,94.5,92.2,94.7,0.8,75.8,3,LOW
+Hot-Reloading,92.8,93.5,91.7,89.1,91.8,0.9,82.6,6,LOW
+Graceful Degradation,90.7,92.9,89.3,86.2,89.8,1.0,89.8,8,LOW
+Adaptive Routing,90.6,88.3,93.7,87.9,90.1,1.0,90.1,9,LOW
+Circuit Rewiring,88.5,86.2,92.8,86.3,88.5,1.0,88.5,8,LOW
+Novel Pattern Adaptation,85.2,83.7,90.3,84.5,85.9,1.1,94.5,13,MEDIUM
+Context-Sensitive Routing,93.8,91.5,95.7,90.6,92.9,0.9,83.6,5,LOW
+Ambiguity Detection,84.7,86.9,83.5,85.1,85.1,1.1,93.6,12,MEDIUM
+Cultural Register Adaptation,81.9,84.2,80.5,83.1,82.4,1.2,98.9,15,MEDIUM
+Clarification Strategy Quality,85.3,87.8,84.1,86.2,85.9,1.1,94.5,13,MEDIUM
+Parallel Reasoning,90.3,88.5,91.7,87.2,89.4,1.0,89.4,8,LOW
+Multi-Intent Processing,92.5,90.7,93.8,89.5,91.6,0.9,82.4,7,LOW
+Resource Allocation Optimization,86.2,84.5,87.9,83.2,85.5,1.1,94.0,12,MEDIUM
+Coordination Efficiency,88.7,87.2,90.5,85.8,88.1,1.0,88.1,9,LOW
+What-Breaks-First Testing,92.6,91.8,93.4,90.2,92.0,0.9,82.8,5,LOW
+Resilience Score Methodology,90.4,88.7,91.2,89.5,90.0,1.0,90.0,7,LOW
+Observability Evaluation,88.3,90.5,86.7,92.1,89.4,1.0,89.4,8,LOW
+Comparative Breaking Points,89.7,87.9,90.6,88.3,89.1,1.0,89.1,9,LOW

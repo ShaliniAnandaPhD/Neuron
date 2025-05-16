@@ -1,0 +1,62 @@
+dimension,week1,week4,week8,week12,week16,target,gap,percent_to_target,status
+Observability,69,76,82,85,88,90,-2,-2.22,APPROACHING TARGET
+Decision Point Coverage,78,84,89,91,93,95,-2,-2.11,APPROACHING TARGET
+Trace Completeness,83,88,93,95,97,95,2,2.11,EXCEEDS TARGET
+Neural Component Visibility,56,64,70,73,76,85,-9,-10.59,NEEDS IMPROVEMENT
+Debugging Efficiency,62,71,77,81,84,90,-6,-6.67,APPROACHING TARGET
+Explanation Quality,74,81,86,89,91,90,1,1.11,EXCEEDS TARGET
+Modularity,76,84,89,91,94,90,4,4.44,EXCEEDS TARGET
+Component Independence,82,88,92,94,96,90,6,6.67,EXCEEDS TARGET
+Hot-Reloading,77,84,89,91,93,90,3,3.33,EXCEEDS TARGET
+Graceful Degradation,74,81,86,88,91,90,1,1.11,EXCEEDS TARGET
+Cross-Component Failure Recovery,61,70,75,77,78,85,-7,-8.24,NEEDS IMPROVEMENT
+Memory System,71,80,86,89,92,90,2,2.22,EXCEEDS TARGET
+Near-term Context Retention,88,93,96,98,99,95,4,4.21,EXCEEDS TARGET
+Long-term Context (14+ days),53,62,68,71,73,85,-12,-14.12,NEEDS IMPROVEMENT
+Very Long Context (21+ days),45,54,60,62,64,75,-11,-14.67,NEEDS IMPROVEMENT
+Information Prioritization,74,81,85,87,88,92,-4,-4.35,APPROACHING TARGET
+Temporal Reasoning,74,82,87,91,94,90,4,4.44,EXCEEDS TARGET
+Timeline Reconstruction,84,89,93,95,97,95,2,2.11,EXCEEDS TARGET
+Temporal Reference Resolution,81,87,91,93,96,95,1,1.05,EXCEEDS TARGET
+Future Projection,57,66,73,76,78,85,-7,-8.24,NEEDS IMPROVEMENT
+Contradiction Handling,68,76,82,85,88,90,-2,-2.22,APPROACHING TARGET
+Direct Contradictions,83,88,92,95,97,95,2,2.11,EXCEEDS TARGET
+Implied Contradictions,62,70,77,80,83,90,-7,-7.78,NEEDS IMPROVEMENT
+Hypothetical Contradiction Handling,55,64,69,71,73,82,-9,-10.98,NEEDS IMPROVEMENT
+Contextual Implication Detection,58,67,72,74,76,85,-9,-10.59,NEEDS IMPROVEMENT
+Sarcasm Detection,65,72,78,80,83,90,-7,-7.78,NEEDS IMPROVEMENT
+Obvious Patterns,81,87,90,92,93,90,3,3.33,EXCEEDS TARGET
+Subtle Patterns,60,69,74,76,78,85,-7,-8.24,NEEDS IMPROVEMENT
+Cultural Variations,53,62,67,69,71,80,-9,-11.25,NEEDS IMPROVEMENT
+Minimally Marked Inversions,57,66,72,74,76,82,-6,-7.32,NEEDS IMPROVEMENT
+Multilingual,71,80,86,89,91,90,1,1.11,EXCEEDS TARGET
+Language Detection,95,97,99,100,100,100,0,0.00,MEETS TARGET
+Latin Script Languages,83,89,93,95,96,95,1,1.05,EXCEEDS TARGET
+Non-Latin Script Languages,66,75,82,85,88,95,-7,-7.37,APPROACHING TARGET
+Regional Variant Recognition,64,73,79,82,84,90,-6,-6.67,APPROACHING TARGET
+Code-Switching,71,80,86,89,90,90,0,0.00,MEETS TARGET
+Two-Language Code-Switching,78,84,89,91,92,90,2,2.22,EXCEEDS TARGET
+Three+ Language Code-Switching,63,72,78,80,82,88,-6,-6.82,APPROACHING TARGET
+Dense Code-Switching,57,67,73,76,78,85,-7,-8.24,NEEDS IMPROVEMENT
+Parallel Reasoning,70,79,84,88,91,90,1,1.11,EXCEEDS TARGET
+Multi-Intent Processing,75,83,88,91,93,90,3,3.33,EXCEEDS TARGET
+Coordination Efficiency,72,80,85,87,89,90,-1,-1.11,APPROACHING TARGET
+Cross-Intent Coordination,66,75,80,83,85,90,-5,-5.56,APPROACHING TARGET
+Resource Allocation Optimization,66,75,81,84,86,90,-4,-4.44,APPROACHING TARGET
+Dynamic Routing,72,81,85,89,92,90,2,2.22,EXCEEDS TARGET
+Context-Sensitive Routing,76,84,89,92,94,90,4,4.44,EXCEEDS TARGET
+Circuit Rewiring,71,79,84,87,89,90,-1,-1.11,APPROACHING TARGET
+Adaptation Speed,74,82,87,89,91,90,1,1.11,EXCEEDS TARGET
+Novel Pattern Adaptation,66,75,80,83,85,90,-5,-5.56,APPROACHING TARGET
+Complex Dependency Handling,62,72,78,81,83,88,-5,-5.68,APPROACHING TARGET
+SynapticBus,74,82,87,90,93,90,3,3.33,EXCEEDS TARGET
+Recovery Under Loss,76,83,88,90,92,90,2,2.22,EXCEEDS TARGET
+Conflict Resolution,73,81,85,87,89,90,-1,-1.11,APPROACHING TARGET
+Multi-hop Communication Efficiency,65,74,79,81,83,88,-5,-5.68,APPROACHING TARGET
+Ambiguity Detection,67,75,81,83,85,90,-5,-5.56,APPROACHING TARGET
+Clarification Strategy Quality,68,76,81,83,85,90,-5,-5.56,APPROACHING TARGET
+Cultural Register Adaptation,63,72,78,80,82,90,-8,-8.89,NEEDS IMPROVEMENT
+What-Breaks-First Testing,71,80,86,90,93,90,3,3.33,EXCEEDS TARGET
+Resilience Score,74,82,87,90,93,90,3,3.33,EXCEEDS TARGET
+Failure Cascade Prediction,64,73,78,81,83,88,-5,-5.68,APPROACHING TARGET
+Overall System,71,78,84,87,90,92,-2,-2.17,APPROACHING TARGET
