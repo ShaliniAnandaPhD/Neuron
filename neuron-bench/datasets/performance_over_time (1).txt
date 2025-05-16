@@ -1,0 +1,13 @@
+component,week1,week2,week4,week8,week12,week16,production_target
+Modularity Under Stress,76,79,84,89,91,94,90
+Memory System Behavior,71,75,80,86,89,92,90
+SynapticBus Communication,74,78,82,87,90,93,90
+Parallel Reasoning,70,73,79,84,88,91,90
+Dynamic Routing & Adaptability,72,76,81,85,89,92,90
+Temporal & Sequential Reasoning,74,78,82,87,91,94,90
+Contradiction Handling,68,72,76,82,85,88,90
+Sarcasm and Emotional Conflict,65,68,72,78,80,83,90
+Multilingual & Code-Switching,71,75,80,86,89,91,90
+Ambiguity & Politeness Detection,67,71,75,81,83,85,90
+Observability Evaluation,69,73,76,82,85,88,90
+Overall System,71,75,78,84,87,90,92

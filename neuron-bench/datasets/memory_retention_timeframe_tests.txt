@@ -1,0 +1,51 @@
+test_id,test_date,retention_timeframe,fact_type,entities_recalled_pct,relations_recalled_pct,context_preserved_pct,retrieval_accuracy,test_result
+MEM-RT-001,2025-04-21,10 minutes,personal_details,99.8,99.5,99.7,99.8,PASS
+MEM-RT-002,2025-04-21,30 minutes,personal_details,99.5,99.3,99.1,99.4,PASS
+MEM-RT-003,2025-04-21,1 hour,personal_details,99.2,98.9,98.7,99.0,PASS
+MEM-RT-004,2025-04-21,3 hours,personal_details,98.7,98.2,97.9,98.5,PASS
+MEM-RT-005,2025-04-21,6 hours,personal_details,98.1,97.5,97.2,97.8,PASS
+MEM-RT-006,2025-04-22,12 hours,personal_details,97.4,96.8,96.3,97.0,PASS
+MEM-RT-007,2025-04-22,24 hours,personal_details,96.5,95.7,95.1,95.9,PASS
+MEM-RT-008,2025-04-23,3 days,personal_details,94.2,93.1,92.4,93.6,PASS
+MEM-RT-009,2025-04-25,5 days,personal_details,91.8,90.3,89.5,90.7,PASS
+MEM-RT-010,2025-04-28,7 days,personal_details,88.5,86.7,85.9,87.2,PASS
+MEM-RT-011,2025-05-02,14 days,personal_details,74.3,72.1,71.5,73.1,CONDITIONAL PASS
+MEM-RT-012,2025-05-09,21 days,personal_details,65.7,63.2,62.5,64.3,FAIL
+MEM-RT-013,2025-05-16,28 days,personal_details,58.4,55.9,54.7,56.8,FAIL
+MEM-RT-014,2025-04-21,10 minutes,conversation_context,99.7,99.4,99.6,99.7,PASS
+MEM-RT-015,2025-04-21,30 minutes,conversation_context,99.3,99.1,99.0,99.2,PASS
+MEM-RT-016,2025-04-21,1 hour,conversation_context,98.9,98.6,98.4,98.7,PASS
+MEM-RT-017,2025-04-21,3 hours,conversation_context,98.3,97.8,97.5,98.0,PASS
+MEM-RT-018,2025-04-21,6 hours,conversation_context,97.6,97.0,96.7,97.2,PASS
+MEM-RT-019,2025-04-22,12 hours,conversation_context,96.8,96.0,95.7,96.3,PASS
+MEM-RT-020,2025-04-22,24 hours,conversation_context,95.7,94.8,94.3,95.1,PASS
+MEM-RT-021,2025-04-23,3 days,conversation_context,93.1,91.9,91.2,92.4,PASS
+MEM-RT-022,2025-04-25,5 days,conversation_context,90.4,88.9,88.1,89.3,PASS
+MEM-RT-023,2025-04-28,7 days,conversation_context,86.9,85.0,84.3,85.7,PASS
+MEM-RT-024,2025-05-02,14 days,conversation_context,71.8,69.6,68.9,70.5,CONDITIONAL PASS
+MEM-RT-025,2025-05-09,21 days,conversation_context,62.5,60.1,59.4,61.2,FAIL
+MEM-RT-026,2025-04-21,10 minutes,factual_information,99.9,99.7,99.8,99.9,PASS
+MEM-RT-027,2025-04-21,30 minutes,factual_information,99.7,99.6,99.5,99.7,PASS
+MEM-RT-028,2025-04-21,1 hour,factual_information,99.5,99.3,99.2,99.4,PASS
+MEM-RT-029,2025-04-21,3 hours,factual_information,99.2,99.0,98.9,99.1,PASS
+MEM-RT-030,2025-04-21,6 hours,factual_information,98.9,98.6,98.5,98.8,PASS
+MEM-RT-031,2025-04-22,12 hours,factual_information,98.4,98.1,97.9,98.3,PASS
+MEM-RT-032,2025-04-22,24 hours,factual_information,97.9,97.5,97.2,97.7,PASS
+MEM-RT-033,2025-04-23,3 days,factual_information,96.8,96.2,95.8,96.5,PASS
+MEM-RT-034,2025-04-25,5 days,factual_information,95.6,94.9,94.5,95.3,PASS
+MEM-RT-035,2025-04-28,7 days,factual_information,94.2,93.4,92.9,93.8,PASS
+MEM-RT-036,2025-05-02,14 days,factual_information,87.3,86.1,85.5,86.7,PASS
+MEM-RT-037,2025-05-09,21 days,factual_information,78.5,77.1,76.5,77.8,CONDITIONAL PASS
+MEM-RT-038,2025-05-16,28 days,factual_information,72.3,70.8,70.1,71.5,CONDITIONAL PASS
+MEM-RT-039,2025-04-21,10 minutes,preferences,99.8,99.6,99.7,99.8,PASS
+MEM-RT-040,2025-04-21,30 minutes,preferences,99.6,99.4,99.3,99.5,PASS
+MEM-RT-041,2025-04-21,1 hour,preferences,99.3,99.1,99.0,99.2,PASS
+MEM-RT-042,2025-04-21,3 hours,preferences,98.9,98.6,98.5,98.8,PASS
+MEM-RT-043,2025-04-21,6 hours,preferences,98.5,98.1,97.9,98.3,PASS
+MEM-RT-044,2025-04-22,12 hours,preferences,97.9,97.4,97.2,97.6,PASS
+MEM-RT-045,2025-04-22,24 hours,preferences,97.2,96.6,96.3,96.9,PASS
+MEM-RT-046,2025-04-23,3 days,preferences,95.8,95.0,94.6,95.3,PASS
+MEM-RT-047,2025-04-25,5 days,preferences,94.1,93.2,92.7,93.5,PASS
+MEM-RT-048,2025-04-28,7 days,preferences,92.3,91.2,90.7,91.6,PASS
+MEM-RT-049,2025-05-02,14 days,preferences,85.1,83.7,83.1,84.3,PASS
+MEM-RT-050,2025-05-09,21 days,preferences,76.4,74.8,74.2,75.6,CONDITIONAL PASS

@@ -1,0 +1,61 @@
+test_id,test_date,language_combination,switch_type,switch_points,matrix_language,detection_accuracy,language_boundary_precision,intent_extraction,entity_recognition,response_matching,test_result
+MUL-CS-001,2025-05-01,English-Spanish,intersentential,1,English,100.0,98.7,97.2,95.8,96.3,PASS
+MUL-CS-002,2025-05-01,English-Spanish,intersentential,2,English,100.0,98.5,96.9,95.4,95.8,PASS
+MUL-CS-003,2025-05-01,English-Spanish,intersentential,3,English,100.0,98.1,96.4,94.7,95.1,PASS
+MUL-CS-004,2025-05-01,English-Spanish,intrasentential,2,English,100.0,97.3,95.6,93.9,94.2,PASS
+MUL-CS-005,2025-05-01,English-Spanish,intrasentential,4,English,100.0,96.7,94.8,92.7,93.4,PASS
+MUL-CS-006,2025-05-01,English-Spanish,intrasentential,6,English,100.0,95.9,93.5,91.2,92.1,PASS
+MUL-CS-007,2025-05-02,English-French,intersentential,1,English,100.0,98.5,96.8,95.2,95.7,PASS
+MUL-CS-008,2025-05-02,English-French,intersentential,2,English,100.0,98.2,96.3,94.6,95.1,PASS
+MUL-CS-009,2025-05-02,English-French,intrasentential,3,English,100.0,97.1,95.2,93.5,93.8,PASS
+MUL-CS-010,2025-05-02,English-French,intrasentential,5,English,100.0,96.3,94.1,92.2,92.7,PASS
+MUL-CS-011,2025-05-02,Spanish-Portuguese,intersentential,2,Spanish,100.0,97.8,95.7,94.1,94.6,PASS
+MUL-CS-012,2025-05-02,Spanish-Portuguese,intrasentential,4,Spanish,100.0,95.6,93.2,91.8,92.3,PASS
+MUL-CS-013,2025-05-03,English-Hindi,intersentential,2,English,100.0,97.1,94.5,92.8,93.5,PASS
+MUL-CS-014,2025-05-03,English-Hindi,intrasentential,3,English,100.0,95.9,92.7,90.5,91.2,PASS
+MUL-CS-015,2025-05-03,English-Mandarin,intersentential,2,English,100.0,96.4,91.8,89.3,90.1,PASS
+MUL-CS-016,2025-05-03,English-Mandarin,intrasentential,3,English,100.0,94.8,89.5,86.7,87.4,CONDITIONAL PASS
+MUL-CS-017,2025-05-04,English-Spanish-French,intersentential,3,English,100.0,93.6,89.4,87.2,88.1,CONDITIONAL PASS
+MUL-CS-018,2025-05-04,English-Spanish-French,intrasentential,4,English,100.0,91.8,87.2,84.6,85.3,CONDITIONAL PASS
+MUL-CS-019,2025-05-04,English-Spanish-French,mixed,6,English,100.0,89.5,84.7,81.2,82.5,CONDITIONAL PASS
+MUL-CS-020,2025-05-04,Spanish-English-Portuguese,mixed,5,Spanish,100.0,90.3,85.9,82.7,83.8,CONDITIONAL PASS
+MUL-CS-021,2025-05-05,English-Arabic,intersentential,2,English,100.0,95.7,91.2,88.4,89.6,PASS
+MUL-CS-022,2025-05-05,English-Arabic,intrasentential,3,English,100.0,93.2,88.3,85.1,86.5,CONDITIONAL PASS
+MUL-CS-023,2025-05-05,French-Arabic,intersentential,2,French,100.0,94.8,90.2,87.1,88.4,PASS
+MUL-CS-024,2025-05-05,French-Arabic,intrasentential,3,French,100.0,92.5,87.1,83.6,85.2,CONDITIONAL PASS
+MUL-CS-025,2025-05-06,English-Japanese,intersentential,2,English,100.0,95.1,90.3,87.8,88.7,PASS
+MUL-CS-026,2025-05-06,English-Japanese,intrasentential,3,English,100.0,92.4,87.2,84.5,85.6,CONDITIONAL PASS
+MUL-CS-027,2025-05-06,English-Korean,intersentential,2,English,100.0,94.2,89.5,86.9,87.8,PASS
+MUL-CS-028,2025-05-06,English-Korean,intrasentential,3,English,100.0,91.7,86.3,83.4,84.5,CONDITIONAL PASS
+MUL-CS-029,2025-05-07,English-German,intersentential,2,English,100.0,98.3,96.5,94.7,95.3,PASS
+MUL-CS-030,2025-05-07,English-German,intrasentential,3,English,100.0,97.1,94.6,92.5,93.2,PASS
+MUL-CS-031,2025-05-07,English-Russian,intersentential,2,English,100.0,96.9,93.7,91.2,92.1,PASS
+MUL-CS-032,2025-05-07,English-Russian,intrasentential,3,English,100.0,94.5,90.8,88.2,89.3,PASS
+MUL-CS-033,2025-05-08,Hindi-English,intersentential,2,Hindi,100.0,96.8,93.4,91.6,92.3,PASS
+MUL-CS-034,2025-05-08,Hindi-English,intrasentential,3,Hindi,100.0,95.2,91.1,89.0,89.8,PASS
+MUL-CS-035,2025-05-08,English-Thai,intersentential,2,English,100.0,93.6,88.4,85.7,86.9,CONDITIONAL PASS
+MUL-CS-036,2025-05-08,English-Thai,intrasentential,3,English,100.0,90.9,85.2,82.1,83.4,CONDITIONAL PASS
+MUL-CS-037,2025-05-09,Mandarin-English,intersentential,2,Mandarin,100.0,95.7,91.4,88.3,89.6,PASS
+MUL-CS-038,2025-05-09,Mandarin-English,intrasentential,3,Mandarin,100.0,93.3,88.5,85.1,86.5,CONDITIONAL PASS
+MUL-CS-039,2025-05-09,Japanese-English,intersentential,2,Japanese,100.0,94.8,90.2,87.4,88.5,PASS
+MUL-CS-040,2025-05-09,Japanese-English,intrasentential,3,Japanese,100.0,92.1,87.3,84.2,85.4,CONDITIONAL PASS
+MUL-CS-041,2025-05-10,English-Portuguese-Italian,intersentential,3,English,100.0,94.1,90.2,87.4,88.6,PASS
+MUL-CS-042,2025-05-10,English-Portuguese-Italian,intrasentential,4,English,100.0,92.5,87.9,84.7,86.1,CONDITIONAL PASS
+MUL-CS-043,2025-05-10,English-Portuguese-Italian,mixed,6,English,100.0,90.2,85.2,81.6,83.1,CONDITIONAL PASS
+MUL-CS-044,2025-05-10,English-Hindi-Arabic,mixed,5,English,100.0,88.1,83.5,79.8,81.2,CONDITIONAL PASS
+MUL-CS-045,2025-05-11,English-Spanish-Mandarin,mixed,5,English,100.0,87.5,82.8,78.9,80.5,CONDITIONAL PASS
+MUL-CS-046,2025-05-11,English-German-French,intersentential,3,English,100.0,95.3,91.8,89.2,90.3,PASS
+MUL-CS-047,2025-05-11,English-German-French,intrasentential,4,English,100.0,93.4,89.6,86.8,88.0,PASS
+MUL-CS-048,2025-05-11,English-German-French,mixed,6,English,100.0,91.6,87.4,84.2,85.5,CONDITIONAL PASS
+MUL-CS-049,2025-05-12,Spanish-French-Italian,intersentential,3,Spanish,100.0,96.2,92.4,89.8,91.0,PASS
+MUL-CS-050,2025-05-12,Spanish-French-Italian,intrasentential,4,Spanish,100.0,94.3,90.1,87.3,88.6,PASS
+MUL-CS-051,2025-05-12,Spanish-French-Italian,mixed,6,Spanish,100.0,92.5,87.9,84.7,86.1,CONDITIONAL PASS
+MUL-CS-052,2025-05-12,English-Spanish-French-Portuguese,mixed,6,English,100.0,86.3,81.5,78.2,79.7,CONDITIONAL PASS
+MUL-CS-053,2025-05-13,English-Spanish-French-Portuguese,intersentential,4,English,100.0,90.8,87.4,84.6,85.8,CONDITIONAL PASS
+MUL-CS-054,2025-05-13,English-Hindi-Malayalam,intersentential,3,English,100.0,92.4,88.7,86.1,87.2,CONDITIONAL PASS
+MUL-CS-055,2025-05-13,English-Hindi-Malayalam,mixed,5,English,100.0,88.6,84.5,81.4,82.8,CONDITIONAL PASS
+MUL-CS-056,2025-05-13,English-German-Dutch,intersentential,3,English,100.0,95.7,92.4,90.1,91.0,PASS
+MUL-CS-057,2025-05-14,English-German-Dutch,mixed,5,English,100.0,92.8,89.2,86.5,87.6,PASS
+MUL-CS-058,2025-05-14,Arabic-English-French,intersentential,3,Arabic,100.0,91.5,87.6,84.9,86.1,CONDITIONAL PASS
+MUL-CS-059,2025-05-14,Arabic-English-French,mixed,5,Arabic,100.0,87.9,83.5,80.4,81.8,CONDITIONAL PASS
+MUL-CS-060,2025-05-14,Japanese-English-Mandarin,intersentential,3,Japanese,100.0,90.7,86.3,83.8,84.9,CONDITIONAL PASS

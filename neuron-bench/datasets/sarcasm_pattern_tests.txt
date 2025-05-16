@@ -1,0 +1,78 @@
+test_id,test_date,sarcasm_pattern,sarcasm_intensity,contextual_dependency,cultural_specificity,detection_rate,intent_alignment,response_appropriateness,test_result
+SAR-PT-001,2025-04-28,positive_for_negative,high,low,low,96.3,94.8,93.7,PASS
+SAR-PT-002,2025-04-28,positive_for_negative,high,medium,low,92.7,90.9,91.4,PASS
+SAR-PT-003,2025-04-28,positive_for_negative,high,high,low,89.3,87.5,88.2,PASS
+SAR-PT-004,2025-04-28,positive_for_negative,medium,low,low,91.6,89.8,90.5,PASS
+SAR-PT-005,2025-04-28,positive_for_negative,medium,medium,low,87.5,85.7,86.3,PASS
+SAR-PT-006,2025-04-28,positive_for_negative,medium,high,low,83.2,81.4,82.1,CONDITIONAL PASS
+SAR-PT-007,2025-04-28,positive_for_negative,low,low,low,85.7,83.9,84.6,PASS
+SAR-PT-008,2025-04-28,positive_for_negative,low,medium,low,80.4,78.6,79.2,CONDITIONAL PASS
+SAR-PT-009,2025-04-28,positive_for_negative,low,high,low,75.1,73.2,74.5,CONDITIONAL PASS
+SAR-PT-010,2025-04-29,hyperbole,high,low,low,94.8,92.7,91.9,PASS
+SAR-PT-011,2025-04-29,hyperbole,high,medium,low,90.5,88.3,89.1,PASS
+SAR-PT-012,2025-04-29,hyperbole,high,high,low,86.2,84.1,85.3,PASS
+SAR-PT-013,2025-04-29,hyperbole,medium,low,low,89.7,87.5,88.2,PASS
+SAR-PT-014,2025-04-29,hyperbole,medium,medium,low,85.3,83.2,84.1,PASS
+SAR-PT-015,2025-04-29,hyperbole,medium,high,low,81.1,79.4,80.2,CONDITIONAL PASS
+SAR-PT-016,2025-04-29,deadpan,medium,low,low,73.5,71.8,75.6,CONDITIONAL PASS
+SAR-PT-017,2025-04-29,deadpan,medium,medium,low,67.2,65.3,69.1,FAIL
+SAR-PT-018,2025-04-29,deadpan,medium,high,low,61.8,59.7,63.4,FAIL
+SAR-PT-019,2025-04-30,cultural_specific,medium,medium,high,69.8,67.5,72.3,FAIL
+SAR-PT-020,2025-04-30,cultural_specific,high,medium,high,74.2,72.1,75.9,CONDITIONAL PASS
+SAR-PT-021,2025-04-30,mock_enthusiasm,high,low,low,93.7,91.9,90.6,PASS
+SAR-PT-022,2025-04-30,mock_enthusiasm,high,medium,low,89.5,87.8,88.2,PASS
+SAR-PT-023,2025-04-30,mock_enthusiasm,high,high,low,85.1,83.4,83.9,PASS
+SAR-PT-024,2025-04-30,mock_enthusiasm,medium,low,low,88.4,86.6,87.2,PASS
+SAR-PT-025,2025-04-30,mock_enthusiasm,medium,medium,low,84.2,82.5,83.1,CONDITIONAL PASS
+SAR-PT-026,2025-04-30,mock_enthusiasm,medium,high,low,79.9,78.1,78.7,CONDITIONAL PASS
+SAR-PT-027,2025-05-01,understated_reaction,high,low,low,84.6,82.9,83.8,CONDITIONAL PASS
+SAR-PT-028,2025-05-01,understated_reaction,high,medium,low,79.8,78.1,78.9,CONDITIONAL PASS
+SAR-PT-029,2025-05-01,understated_reaction,high,high,low,75.2,73.5,74.3,CONDITIONAL PASS
+SAR-PT-030,2025-05-01,understated_reaction,medium,low,low,77.3,75.6,76.5,CONDITIONAL PASS
+SAR-PT-031,2025-05-01,understated_reaction,medium,medium,low,72.1,70.4,71.2,CONDITIONAL PASS
+SAR-PT-032,2025-05-01,understated_reaction,medium,high,low,67.4,65.7,66.5,FAIL
+SAR-PT-033,2025-05-02,thanks_for_negative,high,low,low,95.1,93.4,92.8,PASS
+SAR-PT-034,2025-05-02,thanks_for_negative,high,medium,low,91.7,90.0,89.4,PASS
+SAR-PT-035,2025-05-02,thanks_for_negative,high,high,low,87.5,85.8,85.2,PASS
+SAR-PT-036,2025-05-02,thanks_for_negative,medium,low,low,90.8,89.1,88.5,PASS
+SAR-PT-037,2025-05-02,thanks_for_negative,medium,medium,low,86.2,84.5,83.9,PASS
+SAR-PT-038,2025-05-02,thanks_for_negative,medium,high,low,81.9,80.2,79.6,CONDITIONAL PASS
+SAR-PT-039,2025-05-03,rhetorical_question,high,low,low,89.4,87.5,88.1,PASS
+SAR-PT-040,2025-05-03,rhetorical_question,high,medium,low,85.1,83.2,83.8,PASS
+SAR-PT-041,2025-05-03,rhetorical_question,high,high,low,80.7,78.8,79.4,CONDITIONAL PASS
+SAR-PT-042,2025-05-03,rhetorical_question,medium,low,low,84.6,82.7,83.3,CONDITIONAL PASS
+SAR-PT-043,2025-05-03,rhetorical_question,medium,medium,low,79.8,77.9,78.5,CONDITIONAL PASS
+SAR-PT-044,2025-05-03,rhetorical_question,medium,high,low,75.3,73.4,74.0,CONDITIONAL PASS
+SAR-PT-045,2025-05-04,british_understatement,medium,medium,high,72.5,70.8,73.9,CONDITIONAL PASS
+SAR-PT-046,2025-05-04,british_understatement,high,medium,high,76.8,75.1,78.2,CONDITIONAL PASS
+SAR-PT-047,2025-05-04,australian_irony,medium,medium,high,71.3,69.6,72.7,CONDITIONAL PASS
+SAR-PT-048,2025-05-04,australian_irony,high,medium,high,75.6,73.9,77.0,CONDITIONAL PASS
+SAR-PT-049,2025-05-04,american_sarcasm,medium,medium,medium,81.4,79.7,80.5,CONDITIONAL PASS
+SAR-PT-050,2025-05-04,american_sarcasm,high,medium,medium,86.2,84.5,85.3,PASS
+SAR-PT-051,2025-05-05,positivity_in_negativity,high,low,low,92.8,91.1,90.5,PASS
+SAR-PT-052,2025-05-05,positivity_in_negativity,high,medium,low,88.5,86.8,86.2,PASS
+SAR-PT-053,2025-05-05,positivity_in_negativity,high,high,low,84.1,82.4,81.8,CONDITIONAL PASS
+SAR-PT-054,2025-05-05,positivity_in_negativity,medium,low,low,87.6,85.9,85.3,PASS
+SAR-PT-055,2025-05-05,positivity_in_negativity,medium,medium,low,83.2,81.5,80.9,CONDITIONAL PASS
+SAR-PT-056,2025-05-05,positivity_in_negativity,medium,high,low,78.9,77.2,76.6,CONDITIONAL PASS
+SAR-PT-057,2025-05-06,exaggerated_formality,high,low,low,87.3,85.6,86.2,PASS
+SAR-PT-058,2025-05-06,exaggerated_formality,high,medium,low,82.9,81.2,81.8,CONDITIONAL PASS
+SAR-PT-059,2025-05-06,exaggerated_formality,high,high,low,78.4,76.7,77.3,CONDITIONAL PASS
+SAR-PT-060,2025-05-06,exaggerated_formality,medium,low,low,82.7,81.0,81.6,CONDITIONAL PASS
+SAR-PT-061,2025-05-06,exaggerated_formality,medium,medium,low,77.8,76.1,76.7,CONDITIONAL PASS
+SAR-PT-062,2025-05-06,exaggerated_formality,medium,high,low,73.5,71.8,72.4,CONDITIONAL PASS
+SAR-PT-063,2025-05-07,mixed_sarcasm_types,high,medium,low,85.4,83.7,84.3,PASS
+SAR-PT-064,2025-05-07,mixed_sarcasm_types,medium,medium,low,80.1,78.4,79.0,CONDITIONAL PASS
+SAR-PT-065,2025-05-07,mixed_sarcasm_types,low,medium,low,74.9,73.2,73.8,CONDITIONAL PASS
+SAR-PT-066,2025-05-07,mixed_with_sincerity,medium,medium,low,76.5,74.8,75.4,CONDITIONAL PASS
+SAR-PT-067,2025-05-07,mixed_with_sincerity,high,medium,low,81.7,80.0,80.6,CONDITIONAL PASS
+SAR-PT-068,2025-05-07,mixed_with_sincerity,low,medium,low,71.2,69.5,70.1,CONDITIONAL PASS
+SAR-PT-069,2025-05-08,emoji_enhanced,high,low,low,94.5,92.8,93.4,PASS
+SAR-PT-070,2025-05-08,emoji_enhanced,medium,low,low,89.8,88.1,88.7,PASS
+SAR-PT-071,2025-05-08,emoji_enhanced,low,low,low,84.3,82.6,83.2,CONDITIONAL PASS
+SAR-PT-072,2025-05-08,punctuation_heavy,high,low,low,93.2,91.5,92.1,PASS
+SAR-PT-073,2025-05-08,punctuation_heavy,medium,low,low,88.5,86.8,87.4,PASS
+SAR-PT-074,2025-05-08,punctuation_heavy,low,low,low,83.1,81.4,82.0,CONDITIONAL PASS
+SAR-PT-075,2025-05-09,capitalization_emphasis,high,low,low,95.6,93.9,94.5,PASS
+SAR-PT-076,2025-05-09,capitalization_emphasis,medium,low,low,91.2,89.5,90.1,PASS
+SAR-PT-077,2025-05-09,capitalization_emphasis,low,low,low,86.7,85.0,85.6,PASS

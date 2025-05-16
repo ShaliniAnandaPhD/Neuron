@@ -1,0 +1,73 @@
+test_id,test_date,contradiction_type,implicit_level,context_dependency,detection_rate,correct_resolution_rate,response_appropriateness,test_result
+CON-IC-001,2025-04-25,logical inconsistency,low,low,92.5,90.8,91.3,PASS
+CON-IC-002,2025-04-25,logical inconsistency,low,medium,89.7,87.6,88.2,PASS
+CON-IC-003,2025-04-25,logical inconsistency,low,high,84.3,82.1,83.4,CONDITIONAL PASS
+CON-IC-004,2025-04-25,logical inconsistency,medium,low,87.2,85.4,86.1,PASS
+CON-IC-005,2025-04-25,logical inconsistency,medium,medium,83.8,81.5,82.4,CONDITIONAL PASS
+CON-IC-006,2025-04-25,logical inconsistency,medium,high,78.5,76.2,77.1,CONDITIONAL PASS
+CON-IC-007,2025-04-25,logical inconsistency,high,low,81.3,79.4,80.1,CONDITIONAL PASS
+CON-IC-008,2025-04-25,logical inconsistency,high,medium,75.8,73.6,74.2,CONDITIONAL PASS
+CON-IC-009,2025-04-25,logical inconsistency,high,high,69.4,67.1,68.3,FAIL
+CON-IC-010,2025-04-26,factual contradiction,low,low,94.8,92.5,93.1,PASS
+CON-IC-011,2025-04-26,factual contradiction,low,medium,91.3,89.1,90.2,PASS
+CON-IC-012,2025-04-26,factual contradiction,low,high,86.5,84.3,85.1,PASS
+CON-IC-013,2025-04-26,factual contradiction,medium,low,89.4,87.2,88.1,PASS
+CON-IC-014,2025-04-26,factual contradiction,medium,medium,85.6,83.4,84.2,PASS
+CON-IC-015,2025-04-26,factual contradiction,medium,high,80.1,78.3,79.2,CONDITIONAL PASS
+CON-IC-016,2025-04-26,factual contradiction,high,low,83.5,81.8,82.4,CONDITIONAL PASS
+CON-IC-017,2025-04-26,factual contradiction,high,medium,77.2,75.5,76.3,CONDITIONAL PASS
+CON-IC-018,2025-04-26,factual contradiction,high,high,71.9,70.2,70.8,FAIL
+CON-IC-019,2025-04-27,preference change,low,low,90.7,88.4,91.5,PASS
+CON-IC-020,2025-04-27,preference change,low,medium,87.5,85.2,88.3,PASS
+CON-IC-021,2025-04-27,preference change,low,high,83.2,81.0,84.1,CONDITIONAL PASS
+CON-IC-022,2025-04-27,preference change,medium,low,85.9,83.6,86.8,PASS
+CON-IC-023,2025-04-27,preference change,medium,medium,82.7,80.4,83.6,CONDITIONAL PASS
+CON-IC-024,2025-04-27,preference change,medium,high,78.5,76.3,79.2,CONDITIONAL PASS
+CON-IC-025,2025-04-27,preference change,high,low,81.2,78.9,82.1,CONDITIONAL PASS
+CON-IC-026,2025-04-27,preference change,high,medium,77.4,75.1,78.3,CONDITIONAL PASS
+CON-IC-027,2025-04-27,preference change,high,high,72.8,70.5,73.6,CONDITIONAL PASS
+CON-IC-028,2025-04-28,status update,low,low,95.2,93.4,92.7,PASS
+CON-IC-029,2025-04-28,status update,low,medium,92.7,90.9,90.3,PASS
+CON-IC-030,2025-04-28,status update,low,high,88.4,86.6,86.1,PASS
+CON-IC-031,2025-04-28,status update,medium,low,91.3,89.5,88.9,PASS
+CON-IC-032,2025-04-28,status update,medium,medium,87.9,86.1,85.5,PASS
+CON-IC-033,2025-04-28,status update,medium,high,83.6,81.8,81.3,CONDITIONAL PASS
+CON-IC-034,2025-04-28,status update,high,low,86.2,84.4,83.8,PASS
+CON-IC-035,2025-04-28,status update,high,medium,82.5,80.7,80.1,CONDITIONAL PASS
+CON-IC-036,2025-04-28,status update,high,high,77.1,75.3,74.8,CONDITIONAL PASS
+CON-IC-037,2025-04-29,numerical facts,low,low,98.7,97.5,96.8,PASS
+CON-IC-038,2025-04-29,numerical facts,low,medium,97.2,96.0,95.3,PASS
+CON-IC-039,2025-04-29,numerical facts,low,high,94.8,93.6,92.9,PASS
+CON-IC-040,2025-04-29,numerical facts,medium,low,96.3,95.1,94.4,PASS
+CON-IC-041,2025-04-29,numerical facts,medium,medium,94.1,92.9,92.2,PASS
+CON-IC-042,2025-04-29,numerical facts,medium,high,91.6,90.4,89.7,PASS
+CON-IC-043,2025-04-29,numerical facts,high,low,92.5,91.3,90.6,PASS
+CON-IC-044,2025-04-29,numerical facts,high,medium,89.7,88.5,87.8,PASS
+CON-IC-045,2025-04-29,numerical facts,high,high,85.4,84.2,83.5,PASS
+CON-IC-046,2025-04-30,temporal contradiction,low,low,93.6,91.8,92.4,PASS
+CON-IC-047,2025-04-30,temporal contradiction,low,medium,90.2,88.4,89.0,PASS
+CON-IC-048,2025-04-30,temporal contradiction,low,high,85.7,83.9,84.5,PASS
+CON-IC-049,2025-04-30,temporal contradiction,medium,low,88.4,86.6,87.2,PASS
+CON-IC-050,2025-04-30,temporal contradiction,medium,medium,84.9,83.1,83.7,PASS
+CON-IC-051,2025-04-30,temporal contradiction,medium,high,80.3,78.5,79.1,CONDITIONAL PASS
+CON-IC-052,2025-04-30,temporal contradiction,high,low,83.1,81.3,81.9,CONDITIONAL PASS
+CON-IC-053,2025-04-30,temporal contradiction,high,medium,78.7,76.9,77.5,CONDITIONAL PASS
+CON-IC-054,2025-04-30,temporal contradiction,high,high,73.4,71.6,72.2,CONDITIONAL PASS
+CON-IC-055,2025-05-01,hypothetical contradiction,low,low,87.2,85.4,85.9,PASS
+CON-IC-056,2025-05-01,hypothetical contradiction,low,medium,83.8,82.0,82.5,CONDITIONAL PASS
+CON-IC-057,2025-05-01,hypothetical contradiction,low,high,79.5,77.7,78.2,CONDITIONAL PASS
+CON-IC-058,2025-05-01,hypothetical contradiction,medium,low,82.1,80.3,80.8,CONDITIONAL PASS
+CON-IC-059,2025-05-01,hypothetical contradiction,medium,medium,78.7,76.9,77.4,CONDITIONAL PASS
+CON-IC-060,2025-05-01,hypothetical contradiction,medium,high,74.2,72.4,72.9,CONDITIONAL PASS
+CON-IC-061,2025-05-01,hypothetical contradiction,high,low,76.8,75.0,75.5,CONDITIONAL PASS
+CON-IC-062,2025-05-01,hypothetical contradiction,high,medium,72.3,70.5,71.0,CONDITIONAL PASS
+CON-IC-063,2025-05-01,hypothetical contradiction,high,high,67.9,66.1,66.6,FAIL
+CON-IC-064,2025-05-02,contextual implication,low,low,89.1,86.5,87.8,PASS
+CON-IC-065,2025-05-02,contextual implication,low,medium,85.6,83.0,84.3,PASS
+CON-IC-066,2025-05-02,contextual implication,low,high,81.2,78.6,79.9,CONDITIONAL PASS
+CON-IC-067,2025-05-02,contextual implication,medium,low,84.3,81.7,83.0,PASS
+CON-IC-068,2025-05-02,contextual implication,medium,medium,80.9,78.3,79.6,CONDITIONAL PASS
+CON-IC-069,2025-05-02,contextual implication,medium,high,76.5,73.9,75.2,CONDITIONAL PASS
+CON-IC-070,2025-05-02,contextual implication,high,low,78.7,76.1,77.4,CONDITIONAL PASS
+CON-IC-071,2025-05-02,contextual implication,high,medium,74.2,71.6,72.9,CONDITIONAL PASS
+CON-IC-072,2025-05-02,contextual implication,high,high,69.8,67.2,68.5,FAIL
