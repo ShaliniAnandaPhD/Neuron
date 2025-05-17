@@ -79,11 +79,60 @@ Explore how we're integrating neuroscience-based flow state principles into AI o
 
 ## Other Use Cases:
 
-1) [The demo tackles a travel planning scenario with overlapping requirements - a family needs hotels with pools that are also accessible for mobility issues, while staying within budget and accommodating dietary restrictions](https://www.linkedin.com/posts/shalinianandaphd_ai-neuroscienceintech-innovation-activity-7310052197210226688-Gq2s?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+## 📽️ Neuron in Action — Demo Links & Use Case Walkthroughs
 
-2) [Neuron handling Customer Support: The scenario: A customer has two problems - wrong-sized sweater and missing pants from the same order](https://www.linkedin.com/posts/shalinianandaphd_ai-customerexperience-neuroscienceintech-activity-7310046900240470016-8vs_?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+This section collects real-world demonstrations of the Neuron Framework in action. Each post showcases how Neuron orchestrates specialized modules, integrates with Hugging Face models, and adapts across modalities and domains.
 
-3) [Modular Reasoning Systems: Exploring how modular architectures can enhance the reliability and performance of legal AI systems](https://www.linkedin.com/posts/shalinianandaphd_technical-integration-of-prism-activity-7310016308371144704-yGZM?utm_source=share&utm_medium=member_desktop&rcm=ACoAAATH3cgBLB3ZhNKdiK83PyAA1KPddyaaY2I)
+### 🔁 Core Demos & Integrations
+
+- **🧠 Hugging Face Integration**  
+  Dynamic model selection per module using Hugging Face's task-specific models  
+  https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-huggingface-activity-7329640595067428864-lWWl
+
+- **🎛️ Cross-Modal Reasoning**  
+  Coordinated image, audio, and text pipelines in one composable framework  
+  https://www.linkedin.com/posts/shalinianandaphd_building-in-public-neuron-doing-cross-activity-7329366442720612352-1Wm5
+
+- **🧩 How Neuron Works (Architecture Overview)**  
+  Explains modular agents, circuit orchestration, memory layers, and SynapticBus  
+  https://www.linkedin.com/posts/shalinianandaphd_building-in-public-how-does-neuron-work-activity-7329348734524252160-X611
+
+- **📊 Neuron Evaluation Notebook**  
+  Full performance benchmarks, architecture metrics, and breakdown recovery analysis  
+  https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea
+
+---
+
+### 🧠 Real-World Scenarios
+
+- **📞 Customer Support: Multi-Issue Resolution**  
+  A customer needs to exchange a sweater and report missing pants — Neuron coordinates agents in parallel  
+  https://www.linkedin.com/posts/shalinianandaphd_ai-customerexperience-neuroscienceintech-activity-7310046900240470016-8vs_
+
+- **🌍 Travel Planning with Constraints**  
+  Hotels with pools, accessibility features, and dietary restrictions — all handled in parallel  
+  https://www.linkedin.com/posts/shalinianandaphd_ai-neuroscienceintech-innovation-activity-7310052197210226688-Gq2s
+
+- **📜 Legal Reasoning with Modular AI**  
+  How Neuron enhanced PRISM by managing retrieval, reasoning, and regulation across jurisdictions  
+  https://www.linkedin.com/posts/shalinianandaphd_technical-integration-of-prism-activity-7310016308371144704-yGZM
+
+- **📞 Multilingual Customer Service Escalation**  
+  Whisper + NLLB + BLOOM used for transcribing, translating, and responding in native language  
+  https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-aiobservability-neuronframework-activity-7329305474086920192-SaUJ
+
+- **📉 Crisis Response System (Disaster Scenario)**  
+  Resource prioritization during Hurricane Elena with real-time incident escalation  
+  https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-modularai-neuronframework-activity-7329308373269598208-u-16
+
+- **📁 Content Analysis & Classification**  
+  Cross-language policy document triage using modular perception and reasoning  
+  https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-aiobservability-activity-7329312616416235521-SoRw
+
+- **⚖️ Regulatory Compliance (Cross-Border)**  
+  Handling jurisdictional conflicts with modular rule logic and memory  
+  https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-modularai-activity-7329303216678936577-KSAZ
+
 
 
 ## **Microservices**
