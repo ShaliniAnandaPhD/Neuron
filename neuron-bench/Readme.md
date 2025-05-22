@@ -5,7 +5,6 @@
 
 It’s not just about accuracy — it’s about **resilience**, **adaptability**, and the ability to recover when things get messy. Based on the “What Breaks First?” experiment series, this project turns diagnostic insight into reproducible benchmarks.
 
----
 
 ## What NeuronBench Tests
 
