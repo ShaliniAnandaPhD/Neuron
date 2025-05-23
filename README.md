@@ -509,7 +509,7 @@ Relevance: Seminal work on episodic memory systems that directly influenced Neur
 5. Gal, Y., & Ghahramani, Z. (2016). Dropout as a Bayesian approximation: Representing model uncertainty in deep learning. International Conference on Machine Learning, 1050-1059.
 Relevance: Theoretical foundation for uncertainty quantification methods used in Neuron's confidence-based routing and self-monitoring systems.
 
-6.Cox, M. T. (2005). Metacognition in computation: A selected research review. Artificial Intelligence, 169(2), 104-141.
+6. Cox, M. T. (2005). Metacognition in computation: A selected research review. Artificial Intelligence, 169(2), 104-141.
 Relevance: Provides the conceptual framework for self-monitoring and introspective capabilities that enable Neuron's error detection and adaptive behavior mechanisms.
 
 
