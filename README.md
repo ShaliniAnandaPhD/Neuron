@@ -492,4 +492,27 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 MIT License - see [LICENSE](LICENSE) for details.
 
+References
+
+1. Anderson, J. R., & Lebiere, C. (2003). The Newell Test for a theory of cognition. Behavioral and Brain Sciences, 26(5), 587-640.
+Relevance: Foundational work on cognitive architectures that inspired Neuron's modular agent design and memory integration patterns.
+
+2. Hassabis, D., Kumaran, D., Summerfield, C., & Botvinick, M. (2017). Neuroscience-inspired artificial intelligence. Neuron, 95(2), 245-258.
+Relevance: Provides the theoretical framework for translating neuroscience principles into AI architectures, particularly memory systems and hierarchical processing.
+  
+3.  Stone, P., & Veloso, M. (2000). Multiagent systems: A survey from a machine learning perspective. Autonomous Robots, 8(3), 345-383.
+Relevance: Establishes foundational principles for multi-agent coordination and communication protocols that inform Neuron's SynapticBus architecture.
+
+4. Tulving, E. (2002). Episodic memory: From mind to brain. Annual Review of Psychology, 53(1), 1-25.
+Relevance: Seminal work on episodic memory systems that directly influenced Neuron's multi-layered memory architecture and temporal reasoning capabilities.
+
+5. Gal, Y., & Ghahramani, Z. (2016). Dropout as a Bayesian approximation: Representing model uncertainty in deep learning. International Conference on Machine Learning, 1050-1059.
+Relevance: Theoretical foundation for uncertainty quantification methods used in Neuron's confidence-based routing and self-monitoring systems.
+ 
+6.Cox, M. T. (2005). Metacognition in computation: A selected research review. Artificial Intelligence, 169(2), 104-141.
+Relevance: Provides the conceptual framework for self-monitoring and introspective capabilities that enable Neuron's error detection and adaptive behavior mechanisms.
+
+
+
+
 ---
