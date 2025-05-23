@@ -9,10 +9,17 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 
 -----------------------------------
 
+# Neuron: A Brain-Inspired AI Framework for Complex Reasoning
 
-Neuron is a composable AI framework that thinks in circuits, not chains.
+[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
+[![🧠 Run Ambiguity Audit](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml)
+[![📦 Verify Microservices Layout](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml)
 
-Traditional AI orchestration tools collapse under real-world complexity—contradictions, sarcasm, conflicting goals, or mixed data formats. Neuron addresses these breakdown zones through modular reasoning circuits inspired by how the brain actually processes information.
+> **Neuron is a composable AI framework that thinks in circuits, not chains.**
+
+Traditional AI orchestration tools collapse under real-world complexity—contradictions, sarcasm, conflicting goals, or mixed data formats. Neuron addresses these breakdown zones through **modular reasoning circuits** inspired by how the brain actually processes information.
+
+```
 ┌─────────────────────────────────────────┐
 │            NEURON ARCHITECTURE          │
 └─────────────────────────────────────────┘
@@ -38,25 +45,43 @@ Traditional AI orchestration tools collapse under real-world complexity—contra
     │• Uncertainty     │      │• Context Shift   │
     │• Explanation     │      │• Resource Alloc  │
     └──────────────────┘      └──────────────────┘
-🧠 Why Neuron?
-For Complex, Real-World AI Systems Where Failure Isn't an Option
+```
+
+## 🧠 Why Neuron?
+
+**For Complex, Real-World AI Systems Where Failure Isn't an Option**
+
 Neuron excels in scenarios traditional AI struggles with:
 
-🔄 Resilient Processing: Handles ambiguous inputs, contradictory information, and incomplete data without system failure
-🧠 Persistent Memory: Maintains context across extended interactions for longitudinal reasoning
-⚡ Selective Activation: Dynamically combines only needed capabilities rather than running every component
-🔀 Parallel Coordination: Processes multiple tasks simultaneously while maintaining consistency
-👁️ Complete Observability: Every decision is traceable with full reasoning paths and evidence trails
+- **🔄 Resilient Processing**: Handles ambiguous inputs, contradictory information, and incomplete data without system failure
+- **🧠 Persistent Memory**: Maintains context across extended interactions for longitudinal reasoning
+- **⚡ Selective Activation**: Dynamically combines only needed capabilities rather than running every component
+- **🔀 Parallel Coordination**: Processes multiple tasks simultaneously while maintaining consistency
+- **👁️ Complete Observability**: Every decision is traceable with full reasoning paths and evidence trails
 
-Where Neuron Shines
-Use CaseTraditional AINeuron ApproachContradictory Customer RequestsFails or picks one instructionDetects contradiction, requests clarificationMulti-Session Medical HistoryLoses context between visitsMaintains episodic memory with temporal reasoningEmergency Response TriageStatic rule-based priorityDynamic multi-modal assessment with uncertainty scoringRegulatory ComplianceRigid rule checkingContextual interpretation with jurisdiction conflict resolution
-🚀 Quick Start
-Installation
-bashgit clone https://github.com/ShaliniAnandaPhD/Neuron.git
+### Where Neuron Shines
+
+| Use Case | Traditional AI | Neuron Approach |
+|----------|---------------|-----------------|
+| **Contradictory Customer Requests** | Fails or picks one instruction | Detects contradiction, requests clarification |
+| **Multi-Session Medical History** | Loses context between visits | Maintains episodic memory with temporal reasoning |
+| **Emergency Response Triage** | Static rule-based priority | Dynamic multi-modal assessment with uncertainty scoring |
+| **Regulatory Compliance** | Rigid rule checking | Contextual interpretation with jurisdiction conflict resolution |
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+git clone https://github.com/ShaliniAnandaPhD/Neuron.git
 cd Neuron
 pip install -e .
-Your First Neural Circuit
-pythonfrom neuron import initialize, create_agent, CircuitDefinition
+```
+
+### Your First Neural Circuit
+
+```python
+from neuron import initialize, create_agent, CircuitDefinition
 from neuron.agents import ReflexAgent, DeliberativeAgent
 
 # Initialize the framework
@@ -101,10 +126,16 @@ response = core.circuit_designer.send_input(circuit_id, {
 })
 
 print(response)  # Neuron detects contradiction and requests clarification
-🏗️ Core Architecture
-Agent Types
+```
+
+## 🏗️ Core Architecture
+
+### Agent Types
+
 Neuron provides specialized agents for different cognitive functions:
-python# Quick response agents
+
+```python
+# Quick response agents
 reflex_agent = create_agent(ReflexAgent, 
     name="IntakeAgent",
     capabilities=["sentiment_analysis", "classification"])
@@ -123,9 +154,14 @@ learning_agent = create_agent(LearningAgent,
 coordinator_agent = create_agent(CoordinatorAgent,
     name="OrchestratorAgent",
     capabilities=["resource_allocation", "priority_management"])
-Memory Systems
+```
+
+### Memory Systems
+
 Neuron implements a sophisticated multi-layered memory architecture:
-python# Access different memory types
+
+```python
+# Access different memory types
 memory_manager = core.memory_manager
 
 # Immediate context and active processing
@@ -153,9 +189,14 @@ relevant_history = episodic_memory.query(
     context={"customer_id": "12345"},
     timeframe="last_30_days"
 )
-SynapticBus Communication
+```
+
+### SynapticBus Communication
+
 Agents communicate through a brain-inspired message passing system:
-pythonfrom neuron import Message
+
+```python
+from neuron import Message
 
 # Create and send messages between agents
 message = Message.create(
@@ -175,9 +216,14 @@ message = Message.create(
 )
 
 await core.synaptic_bus.send(message)
-Dynamic Circuit Composition
+```
+
+### Dynamic Circuit Composition
+
 Build adaptive processing pipelines that reconfigure based on context:
-python# Create circuits that adapt to complexity
+
+```python
+# Create circuits that adapt to complexity
 adaptive_circuit = CircuitDefinition.create(
     name="AdaptiveReasoningCircuit",
     routing_strategy="confidence_based",
@@ -214,9 +260,14 @@ adaptive_circuit = CircuitDefinition.create(
         }
     ]
 )
-🎯 Real-World Applications
-Healthcare: Modular Compliance & Clinical Decision Support
-python# HIPAA-aware healthcare circuit
+```
+
+## 🎯 Real-World Applications
+
+### Healthcare: Modular Compliance & Clinical Decision Support
+
+```python
+# HIPAA-aware healthcare circuit
 healthcare_circuit = CircuitDefinition.create(
     name="ClinicalDecisionSupport",
     compliance_modules=["hipaa_monitor", "clinical_guidelines"],
@@ -226,8 +277,12 @@ healthcare_circuit = CircuitDefinition.create(
         "compliance_checker": {"type": "ValidatorAgent", "capabilities": ["hipaa_validation"]}
     }
 )
-Emergency Response: Multi-Modal Crisis Processing
-python# Crisis response with multi-format input handling
+```
+
+### Emergency Response: Multi-Modal Crisis Processing
+
+```python
+# Crisis response with multi-format input handling
 crisis_circuit = CircuitDefinition.create(
     name="EmergencyResponseSystem", 
     input_types=["text", "voice", "social_media", "sensor_data"],
@@ -237,8 +292,12 @@ crisis_circuit = CircuitDefinition.create(
         "response_coordinator": {"capabilities": ["dispatch_optimization", "status_tracking"]}
     }
 )
-Customer Support: Multi-Session Relationship Management
-python# Customer retention with cross-session memory
+```
+
+### Customer Support: Multi-Session Relationship Management
+
+```python
+# Customer retention with cross-session memory
 support_circuit = CircuitDefinition.create(
     name="CustomerRetentionIntelligence",
     memory_integration=True,
@@ -248,10 +307,16 @@ support_circuit = CircuitDefinition.create(
         "retention_strategist": {"capabilities": ["intervention_planning", "satisfaction_optimization"]}
     }
 )
-🔧 Advanced Features
-Self-Monitoring and Error Detection
+```
+
+## 🔧 Advanced Features
+
+### Self-Monitoring and Error Detection
+
 Neuron includes built-in reliability mechanisms:
-python# Configure monitoring and fallback behavior
+
+```python
+# Configure monitoring and fallback behavior
 monitoring_config = {
     "hallucination_detection": True,
     "uncertainty_quantification": True,
@@ -263,8 +328,12 @@ monitoring_config = {
 # Monitor system health in real-time
 health_status = core.neuro_monitor.get_health_status()
 performance_metrics = core.neuro_monitor.get_metrics("circuit.*")
-Temporal Reasoning and Causal Analysis
-python# Enable temporal reasoning capabilities
+```
+
+### Temporal Reasoning and Causal Analysis
+
+```python
+# Enable temporal reasoning capabilities
 temporal_agent = create_agent(DeliberativeAgent,
     capabilities=[
         "timeline_reconstruction",
@@ -280,9 +349,14 @@ timeline_analysis = temporal_agent.process({
     "analysis_type": "causal_dependencies",
     "projection_horizon": "30_days"
 })
-Explainability Dashboard
+```
+
+### Explainability Dashboard
+
 Every decision in Neuron is fully traceable:
-python# Access detailed reasoning paths
+
+```python
+# Access detailed reasoning paths
 explanation = core.explainability.get_decision_trace(
     circuit_id="customer_support_001",
     request_id="req_12345"
@@ -292,18 +366,24 @@ print(explanation.reasoning_tree)      # Step-by-step logic
 print(explanation.confidence_scores)   # Certainty at each step  
 print(explanation.alternative_paths)   # Other options considered
 print(explanation.evidence_sources)    # Supporting information
-🔌 Microservices & Extensions
+```
+
+## 🔌 Microservices & Extensions
+
 Neuron's modular architecture supports plug-and-play microservices:
-Available Microservices
 
-🔍 Ambiguity Resolution Service: Detects and handles unclear inputs
-⚖️ Contradiction Detection Service: Identifies logical conflicts
-🧠 Memory Optimization Service: Manages contextual memory efficiently
-📊 Performance Analytics Service: Tracks system-wide metrics
-🔧 Dynamic Reconfiguration Service: Adapts circuits in real-time
+### Available Microservices
 
-Custom Microservice Development
-pythonfrom neuron.microservices import BaseService
+- **🔍 Ambiguity Resolution Service**: Detects and handles unclear inputs
+- **⚖️ Contradiction Detection Service**: Identifies logical conflicts  
+- **🧠 Memory Optimization Service**: Manages contextual memory efficiently
+- **📊 Performance Analytics Service**: Tracks system-wide metrics
+- **🔧 Dynamic Reconfiguration Service**: Adapts circuits in real-time
+
+### Custom Microservice Development
+
+```python
+from neuron.microservices import BaseService
 
 class CustomAnalysisService(BaseService):
     """Custom domain-specific analysis service"""
@@ -322,9 +402,14 @@ class CustomAnalysisService(BaseService):
 
 # Register and deploy your service
 core.microservice_manager.register(CustomAnalysisService())
-🧪 Testing and Evaluation
-Built-in Testing Framework
-python# Test circuit resilience
+```
+
+## 🧪 Testing and Evaluation
+
+### Built-in Testing Framework
+
+```python
+# Test circuit resilience
 test_results = core.testing.run_stress_tests(
     circuit_id="customer_support_001",
     test_scenarios=[
@@ -340,62 +425,71 @@ memory_tests = core.testing.evaluate_memory_systems(
     retention_periods=["1_hour", "1_day", "1_week"],
     decay_patterns=["importance_weighted", "recency_based"]
 )
-Performance Benchmarking
-python# Compare against other frameworks
+```
+
+### Performance Benchmarking
+
+```python
+# Compare against other frameworks
 benchmark_results = core.benchmarking.compare_against([
     "langchain_equivalent",
     "direct_api_calls", 
     "custom_pipeline"
 ], test_cases="real_world_scenarios")
-📚 Examples and Documentation
-Complete Examples
+```
 
-Healthcare Decision Support: HIPAA-compliant medical reasoning
-Emergency Response System: Multi-modal disaster response
-Legal Document Analysis: Cross-jurisdictional compliance
-Customer Retention AI: Multi-session relationship management
-Financial Risk Assessment: Real-time market analysis with uncertainty
+## 📚 Examples and Documentation
 
-Documentation Links
+### Complete Examples
 
-📘 Full Evaluation Notebook: Comprehensive benchmarks and analysis
-🎬 Video Demonstrations: Real-world use case walkthroughs
-🧠 Building in Public Series: Development insights and updates
+- **[Healthcare Decision Support](examples/healthcare_circuit.py)**: HIPAA-compliant medical reasoning
+- **[Emergency Response System](examples/crisis_management.py)**: Multi-modal disaster response
+- **[Legal Document Analysis](examples/legal_reasoning.py)**: Cross-jurisdictional compliance
+- **[Customer Retention AI](examples/customer_intelligence.py)**: Multi-session relationship management
+- **[Financial Risk Assessment](examples/risk_analysis.py)**: Real-time market analysis with uncertainty
 
-🌟 Why Choose Neuron?
-vs. LangChain
+### Documentation Links
 
-Memory: Persistent multi-layered vs. token-level context
-Reasoning: Parallel multi-agent vs. sequential chains
-Observability: Full decision traces vs. execution logs only
-Adaptability: Dynamic reconfiguration vs. manual flow updates
+- 📘 **[Full Evaluation Notebook](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)**: Comprehensive benchmarks and analysis
+- 🎬 **[Video Demonstrations](https://github.com/ShaliniAnandaPhD/Neuron#-neuron-in-action--demo-links--use-case-walkthroughs)**: Real-world use case walkthroughs
+- 🧠 **[Building in Public Series](https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-agentreasoning-activity-7327820225213620228-fS8D)**: Development insights and updates
 
-vs. Direct API Calls
+## 🌟 Why Choose Neuron?
 
-State Management: Rich memory systems vs. stateless calls
-Error Handling: Graceful degradation vs. hard failures
-Coordination: Multi-agent orchestration vs. single-shot responses
-Explainability: Complete reasoning traces vs. black box outputs
+### vs. LangChain
+- **Memory**: Persistent multi-layered vs. token-level context
+- **Reasoning**: Parallel multi-agent vs. sequential chains  
+- **Observability**: Full decision traces vs. execution logs only
+- **Adaptability**: Dynamic reconfiguration vs. manual flow updates
 
-vs. AutoGen/CrewAI
+### vs. Direct API Calls
+- **State Management**: Rich memory systems vs. stateless calls
+- **Error Handling**: Graceful degradation vs. hard failures
+- **Coordination**: Multi-agent orchestration vs. single-shot responses
+- **Explainability**: Complete reasoning traces vs. black box outputs
 
-Brain-Inspired Design: Neuroscience principles vs. generic multi-agent
-Memory Architecture: Sophisticated persistence vs. simple conversation history
-Fault Tolerance: Component-level resilience vs. system-wide failures
-Observability: Deep introspection vs. basic logging
+### vs. AutoGen/CrewAI
+- **Brain-Inspired Design**: Neuroscience principles vs. generic multi-agent
+- **Memory Architecture**: Sophisticated persistence vs. simple conversation history
+- **Fault Tolerance**: Component-level resilience vs. system-wide failures
+- **Observability**: Deep introspection vs. basic logging
 
-🚀 Getting Started
+## 🚀 Getting Started
 
-Install Neuron and run the quick start example
-Explore Examples relevant to your use case
-Read the Evaluation Notebook to understand capabilities
-Join the Community for support and contributions
+1. **[Install Neuron](#installation)** and run the quick start example
+2. **[Explore Examples](examples/)** relevant to your use case
+3. **[Read the Evaluation Notebook](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)** to understand capabilities
+4. **[Join the Community](https://github.com/ShaliniAnandaPhD/Neuron/discussions)** for support and contributions
 
-🤝 Contributing
-We welcome contributions! See CONTRIBUTING.md for guidelines.
-📄 License
-MIT License - see LICENSE for details.
+## 🤝 Contributing
 
+We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-"Traditional AI often fails under real-world complexity—contradictions, sarcasm, conflicting goals, or mixed data formats. Neuron handles these breakdown zones through modular reasoning and memory."
-— Dr. Shalini Ananda, Creator of Neuron
+## 📄 License
+
+MIT License - see [LICENSE](LICENSE) for details.
+
+---
+
+> **"Traditional AI often fails under real-world complexity—contradictions, sarcasm, conflicting goals, or mixed data formats. Neuron handles these breakdown zones through modular reasoning and memory."**  
+> *— Dr. Shalini Ananda, Creator of Neuron*
