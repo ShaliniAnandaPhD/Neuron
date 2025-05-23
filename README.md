@@ -17,6 +17,7 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 [![🎨 Ambiguity Visual Blueprint Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml)
 [![🧠 Agent Reference Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml)
 [![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
+[![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
 
