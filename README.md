@@ -490,6 +490,3 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 MIT License - see [LICENSE](LICENSE) for details.
 
 ---
-
-> **"Traditional AI often fails under real-world complexity—contradictions, sarcasm, conflicting goals, or mixed data formats. Neuron handles these breakdown zones through modular reasoning and memory."**  
-> *— Dr. Shalini Ananda, Creator of Neuron*
