@@ -515,5 +515,9 @@ Relevance: Provides the conceptual framework for self-monitoring and introspecti
 
 
 
+This software was created and is maintained by Shalini Ananda (GitHub: @ShaliniAnandaPhD).
+Any use of this framework without attribution, or any commercial repackaging, is a violation of the license terms and may constitute copyright infringement.
 
----
+Please review the LICENSE.md for conditions. Reach out via GitHub Sponsors for partnership or licensing discussions.
+
+
