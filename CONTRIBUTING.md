@@ -34,6 +34,15 @@ We welcome:
 - Write tests for new features
 - Update documentation as needed
 
+### Use Case Contributions
+
+Have a real-world edge case Neuron should support?  
+Submit it to the `neuron-bench/` dataset, open a feature request, or start a [GitHub Discussion](https://github.com/ShaliniAnandaPhD/Neuron/discussions).  
+
+We love building against real-world failure modes — your contribution could become part of the official benchmark suite.
+
+
+
 ### Repository Structure
 
 ```
@@ -65,6 +74,9 @@ When reporting bugs or requesting features:
 - **Provide clear reproduction steps** for bugs
 - **Include your environment details** (Python version, OS, etc.)
 - **Search existing issues** before creating new ones
+
+👉 Please review the [NOTICE.md](NOTICE.md) file before contributing. It contains important legal and attribution guidelines.
+
 
 ## Legal and Licensing
 
