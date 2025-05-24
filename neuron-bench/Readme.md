@@ -1,3 +1,13 @@
+> ⚠️ **Please Read Before Proceeding**
+>
+> This project is released under a **modified MIT License** with strict **attribution and usage terms**.
+>
+> Before using, forking, or integrating any part of this repository — especially in commercial or research contexts —  
+> please review the [NOTICE.md](./NOTICE.md) file carefully.
+>
+> Unauthorized use without proper attribution may result in license violations or academic misuse.
+
+
 
 # 🧠 NeuronBench: Benchmarking What Breaks First in AI Systems
 
