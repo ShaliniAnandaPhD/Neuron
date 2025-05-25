@@ -11,6 +11,7 @@ Each tutorial in this series teaches a different aspect of the Neuron framework:
 > ⚠️ Some visual diagrams and outputs do **not render correctly on GitHub**.\
 > Please use the **Google Colab links** below for the full experience with visuals, interactivity, and logs.
 
+⚠️ Please read NOTICE AND LICENSING CAREFULLY, PRIOR TO FORKING OR SHARING THIS.
 ---
 
 ## 📚 Tutorial Overview & Dependency Map
