@@ -1,12 +1,15 @@
-# 🧠 Neuron Tutorial Series: Building Modular Intelligence
+🧠 Neuron Tutorial Series: Building Modular Intelligence
 
-Welcome to the **Neuron Tutorial Series**, a step-by-step guide to building composable, modular agents inspired by cognitive neuroscience. This series teaches the fundamentals of Neuron’s architecture — memory systems, communication, reflexes, reasoning, and orchestration.
+Welcome to the Neuron Tutorial Series — a practical, neuroscience-inspired guide to building composable, modular agents for cognitive AI.
 
----
+Each tutorial in this series teaches a different aspect of the Neuron framework: memory systems, reflex rules, inter-agent communication, orchestration, CLI usage, runtime monitoring, and recovery strategies — all grounded in biological intelligence patterns.
 
-## 📚 Tutorial Overview
+⚠️ IMPORTANT NOTE
 
-```plaintext
+⚠️ Some visual diagrams and outputs do not render correctly on GitHub.Please use the Google Colab links below for the full experience with visuals, interactivity, and logs.
+
+📚 Tutorial Overview & Dependency Map
+
           ┌──────────────────────┐
           │  Tutorial 2: Memory  │
           │  Basics              │◄────────────┐
@@ -65,29 +68,95 @@ Welcome to the **Neuron Tutorial Series**, a step-by-step guide to building comp
                                   │ Integrated Agent   │
                                   │ Circuit: Neuron    │
                                   └────────────────────┘
-```
 
----
+🔗 Tutorials 2–14 (Colab Links)
 
-## 🔍 What You’ll Learn
+#
 
-| Tutorial | Focus | Summary |
-|----------|-------|---------|
-| **2**    | Memory Basics | Working memory, retention, cleanup |
-| **3**    | Communication | Message protocol and structured passing |
-| **4**    | Reflex Rules | If-Then triggering logic |
-| **5**    | Monitoring | Logs, states, visual diagnostics |
-| **6**    | Config Management | YAML-based behavior tuning |
-| **7**    | CLI Basics | Shell-level interaction with agents |
-| **9**    | Circuit Design | Composing agents into blueprints |
-| **10**   | Memory Systems | Multi-layer information retention |
-| **11**   | Deliberative Reasoning | Complex decision-making |
+Tutorial Title
 
----
+Google Colab Link
 
-## 🧠 Key System Diagram (Tutorial 10)
+2
 
-```plaintext
+Memory Basics
+
+▶ Open
+
+3
+
+Agent Communication
+
+▶ Open
+
+4
+
+Simple Reflex Rules
+
+▶ Open
+
+5
+
+Basic Monitoring
+
+▶ Open
+
+6
+
+Configuration Management
+
+▶ Open
+
+7
+
+CLI Basics
+
+▶ Open
+
+8
+
+[Coming Soon]
+
+—
+
+9
+
+Circuit Design
+
+▶ Open
+
+10
+
+Memory Systems
+
+▶ Open
+
+11
+
+Deliberative Reasoning
+
+▶ Open
+
+12
+
+Evaluation & Metrics
+
+▶ Open
+
+13
+
+Runtime Failures & Recovery
+
+▶ Open
+
+14
+
+Custom Agent Type
+
+▶ Open
+
+🧠 Memory System Diagram (Tutorial 10)
+
          +---------------------+
          |   Working Memory    |
          +----------+----------+
@@ -103,33 +172,110 @@ Welcome to the **Neuron Tutorial Series**, a step-by-step guide to building comp
          +----------▼----------+
          | Procedural Memory   |
          +---------------------+
-```
 
-## 🔐 Copyright & Licensing
+🛠 Key Learnings Across Tutorials
 
-```
+Tutorial
+
+Focus Area
+
+Summary
+
+2
+
+Memory Basics
+
+Working memory, cleanup routines, and recall
+
+3
+
+Agent Communication
+
+Messaging protocols and structured routing
+
+4
+
+Reflex Rules
+
+If-then logic, reactive triggers
+
+5
+
+Monitoring
+
+Internal logging, visualization, health tracking
+
+6
+
+Config Management
+
+YAML-based agent and threshold tuning
+
+7
+
+CLI Tools
+
+Shell-level orchestration commands
+
+9
+
+Circuit Design
+
+Blueprint assembly for task-specific agent chains
+
+10
+
+Layered Memory
+
+Modeling cognitive memory types
+
+11
+
+Deliberative Reasoning
+
+Multi-step decision-making with internal state
+
+12
+
+Metrics & Evaluation
+
+Scoring agent performance and alignment
+
+13
+
+Runtime Recovery
+
+Failover logic and error tracking
+
+14
+
+Custom Agent Types
+
+Creating specialized, domain-specific agents
+
+🔐 Licensing & Protection
+
 © 2025 Shalini Ananda. ALL RIGHTS RESERVED.
 
-This tutorial series and all associated materials are the intellectual property of Shalini Ananda. Redistribution, reproduction, or commercial use in any form is strictly prohibited without express written permission.
+License Type: Custom Restrictive License
 
-License: Custom License — No derivatives, no commercial use, full attribution required.
-Any unauthorized use will be subject to legal enforcement.
-```
+🚫 No derivatives
 
-### 🔒 License Strategy: Maximum Protection
+🚫 No commercial use
 
-This repository uses:
-- A **custom restrictive license** prohibiting commercial redistribution or modification
-- **No Creative Commons** license to prevent dilution of authorship
-- **Attribution with Non-White-Labeling** required in any permitted use
-- **Tracking clause** for visible credit in forks, mirrors, or API wrappers
+✅ Attribution required
 
-To formalize legal standing, consider pairing this with:
-- `Polyform Noncommercial` for any code
-- `Creative Commons Attribution-NoDerivatives` for tutorials *if* public sharing is eventually desired with control
+❌ No white-labeling or silent forks
 
-For now, this README enforces the most aggressive IP lock available.
+✅ Tracking clauses for visible forks/wrappers
 
+If you'd like to request extended permissions or discuss partnership, please use:👉 https://github.com/sponsors/ShaliniAnandaPhD
+
+📎 Project Links
+
+GitHub: https://github.com/ShaliniAnandaPhD/Neuron
+
+“This is not just modular AI — this is cognitive architecture you can read, run, and reason about.”
 ---
 
 **Curious about how cognition can become code?** Explore the Neuron GitHub: [github.com/ShaliniAnandaPhD/Neuron](https://github.com/ShaliniAnandaPhD/Neuron)
