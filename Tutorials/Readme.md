@@ -2,21 +2,12 @@
 
 Welcome to the **Neuron Tutorial Series** — a practical, neuroscience-inspired guide to building composable, modular agents for cognitive AI.
 
-Each tutorial in this series teaches a different aspect of the Neuron framework:
+### 📚 Access the Tutorials
 
-- Memory systems  
-- Reflex rules  
-- Inter-agent communication  
-- Agent orchestration  
-- CLI usage  
-- Runtime monitoring  
-- Failure recovery strategies  
+- **[Tutorials 1–11 (local uploads)](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials)**  
+- **[Tutorials 12–27 (Google Colab Notebooks)](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links)**  
+- **[Descriptions of Key Learnings Across Tutorials](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-key-learnings-across-tutorials)**
 
-All grounded in **biological intelligence patterns** and modular design principles.
-
-**📥 Tutorials 1–12 (Colab Notebooks) are uploaded here.**  
-**🔗 Tutorials 13–27 (Colab Notebooks)** are available at:  
-[https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links)
 
 
 ---
