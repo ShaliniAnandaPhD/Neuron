@@ -78,10 +78,11 @@ Each tutorial in this series teaches a different aspect of the Neuron framework:
 
 ---
 
-## 🔗 Tutorials 2–14 (Colab Links)
+## 🔗 Tutorials 1–14 (Colab Links)
 
 | #  | Tutorial Title              | Google Colab Link                                                                               |
 | -- | --------------------------- | ----------------------------------------------------------------------------------------------- |
+| 1  | Hello Neuron: First Agent   | [▶ Open](https://colab.research.google.com/drive/1EEJA0thtIFeP0aaVdswh9R6VkWOC1Dp9?usp=sharing) |
 | 2  | Memory Basics               | [▶ Open](https://colab.research.google.com/drive/12XMuh06tWdoHGzAtSBKt1sfG-4TjiyCK?usp=sharing) |
 | 3  | Agent Communication         | [▶ Open](https://colab.research.google.com/drive/1zGMkTmHs8JGm8Wa4DuC67reKNKp6suhl?usp=sharing) |
 | 4  | Simple Reflex Rules         | [▶ Open](https://colab.research.google.com/drive/16ssfuoRKP1rzagIziWuXc4Cf1PqhEdFP?usp=sharing) |
@@ -124,6 +125,7 @@ Each tutorial in this series teaches a different aspect of the Neuron framework:
 
 | Tutorial | Focus Area             | Summary                                           |
 | -------- | ---------------------- | ------------------------------------------------- |
+| 1        | First Agent Basics     | Create the first agent that can receive and respond to messages |
 | 2        | Memory Basics          | Working memory, cleanup routines, and recall      |
 | 3        | Agent Communication    | Messaging protocols and structured routing        |
 | 4        | Reflex Rules           | If-then logic, reactive triggers                  |
