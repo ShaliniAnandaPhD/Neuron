@@ -8,16 +8,14 @@ Welcome to the **Neuron Tutorial Series** — a practical, neuroscience-inspired
 - **[Tutorials 12–27 (Google Colab Notebooks)](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links)**  
 - **[Descriptions of Key Learnings Across Tutorials](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-key-learnings-across-tutorials)**
 
-
-
 ---
+### ⚠️ IMPORTANT NOTE
 
-## ⚠️ IMPORTANT NOTE
+⚠️ Some visual diagrams and outputs do **not render correctly on GitHub**.  
+Please use the **Google Colab links** above for the full experience with **visuals, interactivity, and logs**.
 
-> ⚠️ Some visual diagrams and outputs do **not render correctly on GitHub**.\
-> Please use the **Google Colab links** below for the full experience with visuals, interactivity, and logs.
+⚠️ Please read **[NOTICE AND LICENSING CAREFULLY, PRIOR TO FORKING OR SHARING THIS](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-licensing--protection)**.
 
-⚠️ Please read NOTICE AND LICENSING CAREFULLY, PRIOR TO FORKING OR SHARING THIS.
 ---
 
 ## 📚 Tutorial Overview & Dependency Map
