@@ -1,8 +1,23 @@
-# 🧠 Neuron Tutorial Series: Building Modular Intelligence
+# 🧠 Neuron Tutorial Series: Building Modular Intelligence – 27 TUTORIALS
 
-Welcome to the Neuron Tutorial Series — a practical, neuroscience-inspired guide to building composable, modular agents for cognitive AI.
+Welcome to the **Neuron Tutorial Series** — a practical, neuroscience-inspired guide to building composable, modular agents for cognitive AI.
 
-Each tutorial in this series teaches a different aspect of the Neuron framework: memory systems, reflex rules, inter-agent communication, orchestration, CLI usage, runtime monitoring, and recovery strategies — all grounded in biological intelligence patterns.
+Each tutorial in this series teaches a different aspect of the Neuron framework:
+
+- Memory systems  
+- Reflex rules  
+- Inter-agent communication  
+- Agent orchestration  
+- CLI usage  
+- Runtime monitoring  
+- Failure recovery strategies  
+
+All grounded in **biological intelligence patterns** and modular design principles.
+
+**📥 Tutorials 1–12 (Colab Notebooks) are uploaded here.**  
+**🔗 Tutorials 13–27 (Colab Notebooks)** are available at:  
+[https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links)
+
 
 ---
 
