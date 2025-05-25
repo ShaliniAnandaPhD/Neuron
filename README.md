@@ -481,7 +481,7 @@ benchmark_results = core.benchmarking.compare_against([
 ## 🚀 Getting Started
 
 1. **[Install Neuron](#installation)** and run the quick start example
-2. **[Explore Examples](examples/)** relevant to your use case
+2. **[Go through the Tutorials in Google Colab](Tutorials/)** to understand the architecture
 3. **[Read the Evaluation Notebook](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)** to understand capabilities
 4. **[Join the Community](https://github.com/ShaliniAnandaPhD/Neuron/discussions)** for support and contributions
 
