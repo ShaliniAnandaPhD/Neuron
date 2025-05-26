@@ -102,7 +102,7 @@ Please use the **Google Colab links** above for the full experience with **visua
 | 12 | Evaluation & Metrics        | [▶ Open](https://colab.research.google.com/drive/1BuomYNDz76oR7JBHLwoj-FQRSWeZM-4n?usp=sharing) |
 | 13 | Runtime Failures & Recovery | [▶ Open](https://colab.research.google.com/drive/1qn-B1WMg1ZoXDHtzpaLTnXZo-SVvbd6X?usp=sharing) |
 | 14 | Custom Agent Type           | [▶ Open](https://colab.research.google.com/drive/18HIPGQf-j8GXkEXtQLgHRRo9RmbqpqRe?usp=sharing) |
-
+| 15 | Dynamic Agent Personalities | [▶ Open](https://colab.research.google.com/drive/1I0imUOTYNihpWloeFftxo-SvpPLTDhN2?usp=sharing) |
 ---
 
 ## 🧠 Memory System Diagram (Tutorial 10)
@@ -144,7 +144,7 @@ Please use the **Google Colab links** above for the full experience with **visua
 | 12       | Metrics & Evaluation   | Scoring agent performance and alignment           |
 | 13       | Runtime Recovery       | Failover logic and error tracking                 |
 | 14       | Custom Agent Types     | Creating specialized, domain-specific agents      |
-
+| 15       | Dynamic Personalities  | Context-aware behavioral adaptation and social intelligence |
 ---
 
 ## 🔐 Licensing & Protection
