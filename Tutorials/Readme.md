@@ -84,7 +84,7 @@ Please use the **Google Colab links** above for the full experience with **visua
 
 ---
 
-## 🔗 Tutorials 1–14 (Colab Links)
+## 🔗 Tutorials (Colab Links)
 
 | #  | Tutorial Title              | Google Colab Link                                                                               |
 | -- | --------------------------- | ----------------------------------------------------------------------------------------------- |
