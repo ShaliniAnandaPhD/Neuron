@@ -103,6 +103,7 @@ Please use the **Google Colab links** above for the full experience with **visua
 | 13 | Runtime Failures & Recovery | [▶ Open](https://colab.research.google.com/drive/1qn-B1WMg1ZoXDHtzpaLTnXZo-SVvbd6X?usp=sharing) |
 | 14 | Custom Agent Type           | [▶ Open](https://colab.research.google.com/drive/18HIPGQf-j8GXkEXtQLgHRRo9RmbqpqRe?usp=sharing) |
 | 15 | Dynamic Agent Personalities | [▶ Open](https://colab.research.google.com/drive/1I0imUOTYNihpWloeFftxo-SvpPLTDhN2?usp=sharing) |
+| 16 | Coordination Patterns       | [▶ Open](https://colab.research.google.com/drive/1QcibEAwauKmyTszKXTpMkl0hedqepzrC?usp=sharing) |
 ---
 
 ## 🧠 Memory System Diagram (Tutorial 10)
@@ -145,6 +146,7 @@ Please use the **Google Colab links** above for the full experience with **visua
 | 13       | Runtime Recovery       | Failover logic and error tracking                 |
 | 14       | Custom Agent Types     | Creating specialized, domain-specific agents      |
 | 15       | Dynamic Personalities  | Context-aware behavioral adaptation and social intelligence |
+| 16       | Coordination Patterns  | Multi-agent orchestration with sequential, parallel, pipeline, and hierarchical workflows |
 ---
 
 ## 🔐 Licensing & Protection
