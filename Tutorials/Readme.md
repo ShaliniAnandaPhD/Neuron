@@ -8,6 +8,7 @@ Welcome to the **Neuron Tutorial Series** — a practical, neuroscience-inspired
 - **[Tutorials 1–27 (Google Colab Notebooks)](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-tutorials-114-colab-links)**  
 - **[Descriptions of Key Learnings Across Tutorials](https://github.com/ShaliniAnandaPhD/Neuron/tree/main/Tutorials#-key-learnings-across-tutorials)**
 - **[NOTION PAGES WITH DETAILS AND FURTHER EXPLAINATION](https://www.notion.so/shalini-ananda-phd/Neuron-Framework-Tutorial-Series-Cognitive-Architecture-for-Modular-AI-1fec18ea2aa180b5b1dff554f651bb01?pvs=4)**
+- **[FAQ to TUTORIALS 1 - 15 ](https://www.notion.so/shalini-ananda-phd/Neuron-FAQ-Tutorials-1-15-1ffc18ea2aa180d98757da8d7c4beac9?pvs=4)**
 
 ---
 ### ⚠️ IMPORTANT NOTE
