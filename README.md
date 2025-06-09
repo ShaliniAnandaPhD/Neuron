@@ -75,6 +75,44 @@ Neuron excels in scenarios traditional AI struggles with:
 | **Emergency Response Triage** | Static rule-based priority | Dynamic multi-modal assessment with uncertainty scoring |
 | **Regulatory Compliance** | Rigid rule checking | Contextual interpretation with jurisdiction conflict resolution |
 
+
+### 🧠 Neuron: A Journey Through Modular Intelligence
+[Main Documentation](https://www.notion.so/shalini-ananda-phd/Neuron-A-Journey-Through-Modular-Intelligence-1f7c18ea2aa18081a07ce75683eec80b)
+
+## 📚 Documentation & Tutorials
+
+### 🤖 Neuron as an Agent Orchestrator: How It Chooses, Evaluates, and Integrates Agents
+[View Documentation](https://www.notion.so/shalini-ananda-phd/Neuron-as-an-Agent-Orchestrator-How-It-Chooses-Evaluates-and-Integrates-Agents-1fbc18ea2aa1801ea227e59480caedf1)
+
+### 📋 Neuron Evaluation Notebook
+[Access Evaluation Framework](https://www.notion.so/shalini-ananda-phd/Neuron-Evaluation-Notebook-1cec18ea2aa18002b7acf9c1791ca8ea)
+
+### 📚 Neuron Framework Tutorial Series: Cognitive Architecture for Modular AI
+[Access Tutorials](https://www.notion.so/shalini-ananda-phd/Neuron-Framework-Tutorial-Series-Cognitive-Architecture-for-Modular-AI-1fec18ea2aa180b5b1dff554f651bb01)
+
+### 🏗️ Building the Neuron Sandbox: Behind the Scenes of Modular AI Architecture
+[Development Insights](https://www.notion.so/shalini-ananda-phd/Building-the-Neuron-Sandbox-Behind-the-Scenes-of-Modular-AI-Architecture-1fac18ea2aa180b89cf3ec456d6845a3)
+
+## 🌍 Applications & Case Studies
+
+### 🌐 Real World Use Cases
+[Explore Use Cases](https://www.notion.so/shalini-ananda-phd/Real-World-Use-Cases-1ffc18ea2aa180059a1cc44637326c84)
+
+### 🎯 NeuroCircuit: The Multi-Agent System I Built for Reliable AI Focus
+[System Overview](https://www.notion.so/shalini-ananda-phd/NeuroCircuit-The-Multi-Agent-System-I-Built-for-Reliable-AI-Focus-208c18ea2aa18048845ada542b565abd)
+
+### 🏥 Neuron Fine-Tuning for Healthcare
+[Healthcare Applications](https://www.notion.so/shalini-ananda-phd/Neuron-Fine-Tuning-for-Healthcare-20bc18ea2aa1801eafa0fba178e08143)
+
+## 📖 Articles & Insights
+
+### 🔮 The Future of AI Agents: Winners, Losers, and Reality Beyond the Hype
+[Read Article](https://www.notion.so/shalini-ananda-phd/The-Future-of-AI-Agents-Winners-Losers-and-Reality-Beyond-the-Hype-20bc18ea2aa18084b392c46786e127a7)
+
+### ⚖️ How Legal Stress Testing Led to Neuron's Architecture
+[Read Article](https://www.notion.so/shalini-ananda-phd/How-Legal-Stress-Testing-Led-to-Neuron-s-Architecture-20bc18ea2aa18034967cc0446dc6079d)
+
+
 ## 🚀 Quick Start
 
 ### Installation
@@ -445,21 +483,7 @@ benchmark_results = core.benchmarking.compare_against([
 ], test_cases="real_world_scenarios")
 ```
 
-## 📚 Examples and Documentation
 
-### Complete Examples
-
-- **[Healthcare Decision Support](examples/healthcare_circuit.py)**: HIPAA-compliant medical reasoning
-- **[Emergency Response System](examples/crisis_management.py)**: Multi-modal disaster response
-- **[Legal Document Analysis](examples/legal_reasoning.py)**: Cross-jurisdictional compliance
-- **[Customer Retention AI](examples/customer_intelligence.py)**: Multi-session relationship management
-- **[Financial Risk Assessment](examples/risk_analysis.py)**: Real-time market analysis with uncertainty
-
-### Documentation Links
-
-- 📘 **[Full Evaluation Notebook](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)**: Comprehensive benchmarks and analysis
-- 🎬 **[Video Demonstrations](https://github.com/ShaliniAnandaPhD/Neuron#-neuron-in-action--demo-links--use-case-walkthroughs)**: Real-world use case walkthroughs
-- 🧠 **[Building in Public Series](https://www.linkedin.com/posts/shalinianandaphd_buildinpublic-neuronframework-agentreasoning-activity-7327820225213620228-fS8D)**: Development insights and updates
 
 ## 🌟 Why Choose Neuron?
 
