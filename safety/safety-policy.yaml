@@ -1,0 +1,359 @@
+# Neuron Safety Policy Configuration
+# ===================================
+#
+# Created by Shalini Ananda, PhD
+# © 2025 All Rights Reserved
+#
+# Default safety configuration for the Neuron Framework
+# This file defines safety thresholds, escalation policies,
+# circuit breaker settings, and audit requirements.
+#
+# LEGAL NOTICE:
+# This configuration is part of proprietary safety protocols.
+# Commercial use requires explicit licensing from the author.
+
+# Configuration metadata
+metadata:
+  created_by: "Neuron Safety System"
+  author: "Shalini Ananda, PhD"
+  copyright: "© 2025 Shalini Ananda. All Rights Reserved."
+  version: "1.0.0"
+  license: "Modified MIT with Attribution Enforcement"
+  creation_date: "2025-01-20T00:00:00Z"
+  description: "Default safety policy for AI agent coordination"
+
+# Safety threshold configuration
+# These values determine when safety incidents are triggered
+thresholds:
+  # Minimum acceptable agent health score (0.0 - 1.0)
+  health_score_min: 0.7
+  
+  # Maximum acceptable response time in milliseconds
+  response_time_max: 5000.0
+  
+  # Maximum acceptable error rate (0.0 - 1.0, where 0.05 = 5%)
+  error_rate_max: 0.05
+  
+  # Maximum memory usage in megabytes
+  memory_usage_max: 1000.0
+  
+  # Maximum CPU usage (0.0 - 1.0, where 0.8 = 80%)
+  cpu_usage_max: 0.8
+  
+  # Minimum decision confidence score (0.0 - 1.0)
+  decision_confidence_min: 0.6
+  
+  # Minimum coordination score between agents (0.0 - 1.0)
+  coordination_score_min: 0.7
+  
+  # Maximum acceptable network latency in milliseconds
+  network_latency_max: 2000.0
+  
+  # Minimum required available disk space in megabytes
+  disk_space_min: 500.0
+
+# Escalation policy configuration
+# Defines when and how safety issues are escalated
+escalation:
+  # Health score threshold for warning level (0.0 - 1.0)
+  warning_threshold: 0.8
+  
+  # Health score threshold for critical level (0.0 - 1.0)
+  critical_threshold: 0.6
+  
+  # Health score threshold for emergency level (0.0 - 1.0)
+  emergency_threshold: 0.4
+  
+  # Automatically escalate critical issues to human oversight
+  auto_escalate_critical: true
+  
+  # Automatically escalate emergency issues to human oversight
+  auto_escalate_emergency: true
+  
+  # Maximum time in seconds before auto-escalation if unresolved
+  auto_escalation_timeout: 300
+  
+  # Contact information for escalation notifications
+  escalation_contacts:
+    - "safety-team@company.com"
+    - "on-call-engineer@company.com"
+  
+  # Notification channels for alerts
+  notification_channels:
+    - "email"
+    - "slack"
+    - "sms"
+  
+  # Escalation retry configuration
+  max_retry_attempts: 3
+  retry_interval_seconds: 60
+
+# Circuit breaker configuration
+# Protects against cascade failures
+circuit_breakers:
+  # Enable circuit breaker functionality
+  enabled: true
+  
+  # Number of failures before circuit opens
+  failure_threshold: 3
+  
+  # Time in milliseconds before attempting recovery
+  timeout_ms: 1000
+  
+  # Number of successful calls needed to close circuit
+  success_threshold: 2
+  
+  # Maximum calls allowed in half-open state
+  half_open_max_calls: 10
+  
+  # Request timeout in seconds
+  request_timeout: 5.0
+  
+  # Circuit breaker patterns to monitor
+  monitored_patterns:
+    - "agent_communication"
+    - "memory_operations"
+    - "decision_processing"
+    - "external_api_calls"
+
+# Audit and logging configuration
+# Ensures compliance and forensic capabilities
+audit:
+  # Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+  log_level: "INFO"
+  
+  # Log retention period in days
+  retention_days: 90
+  
+  # Enable compliance mode for regulated environments
+  compliance_mode: true
+  
+  # Default export format for audit reports
+  export_format: "json"
+  
+  # Enable log encryption for sensitive data
+  encryption_enabled: false
+  
+  # Compliance standards to adhere to
+  compliance_standards:
+    - "soc2"
+    - "iso27001"
+  
+  # Audit log rotation settings
+  log_rotation:
+    max_file_size_mb: 100
+    max_backup_count: 10
+    rotation_frequency: "daily"
+  
+  # Fields to include in audit logs
+  audit_fields:
+    - "timestamp"
+    - "agent_id"
+    - "event_type"
+    - "severity"
+    - "user_context"
+    - "system_state"
+    - "actions_taken"
+
+# Monitoring configuration
+# Real-time monitoring and alerting settings
+monitoring:
+  # Monitoring interval in seconds
+  check_interval: 1.0
+  
+  # Agent health check timeout in seconds
+  health_check_timeout: 10.0
+  
+  # Maximum time without agent update before marking stale
+  stale_agent_timeout: 30.0
+  
+  # Enable real-time dashboard
+  dashboard_enabled: true
+  
+  # Dashboard refresh interval in seconds
+  dashboard_refresh: 2.0
+  
+  # Metrics collection settings
+  metrics:
+    collect_system_metrics: true
+    collect_performance_metrics: true
+    collect_business_metrics: false
+    metrics_retention_hours: 168  # 7 days
+
+# Recovery configuration
+# Automatic recovery and fallback settings
+recovery:
+  # Enable automatic recovery attempts
+  auto_recovery_enabled: true
+  
+  # Maximum recovery attempts before human intervention
+  max_recovery_attempts: 3
+  
+  # Time between recovery attempts in seconds
+  recovery_interval: 60
+  
+  # Fallback strategies for different failure types
+  fallback_strategies:
+    timeout: "retry_with_backoff"
+    overload: "throttle_requests"
+    corruption: "isolate_and_restart"
+    network: "use_backup_connection"
+  
+  # Recovery validation checks
+  recovery_validation:
+    health_score_required: 0.8
+    response_time_required: 3000
+    error_rate_required: 0.02
+
+# Environment-specific overrides
+# These settings can be overridden based on deployment environment
+environment_overrides:
+  production:
+    thresholds:
+      health_score_min: 0.8
+      error_rate_max: 0.01
+    audit:
+      compliance_mode: true
+      encryption_enabled: true
+      retention_days: 365
+    escalation:
+      auto_escalate_critical: true
+      auto_escalate_emergency: true
+  
+  staging:
+    thresholds:
+      health_score_min: 0.6
+      error_rate_max: 0.1
+    audit:
+      compliance_mode: false
+      log_level: "DEBUG"
+  
+  development:
+    thresholds:
+      health_score_min: 0.5
+      error_rate_max: 0.2
+    audit:
+      compliance_mode: false
+      log_level: "DEBUG"
+      retention_days: 7
+    circuit_breakers:
+      enabled: false
+
+# Advanced safety features
+# Additional safety mechanisms for enterprise deployment
+advanced:
+  # Enable AI-based anomaly detection
+  ai_anomaly_detection: false
+  
+  # Machine learning model for pattern recognition
+  ml_model_path: null
+  
+  # Predictive failure detection
+  predictive_detection:
+    enabled: false
+    lookback_hours: 24
+    confidence_threshold: 0.85
+  
+  # Integration with external monitoring systems
+  external_integrations:
+    prometheus:
+      enabled: false
+      endpoint: "http://localhost:9090"
+    grafana:
+      enabled: false
+      dashboard_url: null
+    datadog:
+      enabled: false
+      api_key: null
+  
+  # Custom safety rules
+  custom_rules:
+    enabled: false
+    rules_file: "custom_safety_rules.py"
+
+# Notification templates
+# Customizable message templates for different alert types
+notifications:
+  templates:
+    warning:
+      subject: "⚠️ Neuron Safety Warning: {agent_id}"
+      body: |
+        Safety warning detected for agent {agent_id}.
+        
+        Issue: {description}
+        Health Score: {health_score}
+        Timestamp: {timestamp}
+        
+        Action Required: Monitor closely
+        
+        © 2025 Shalini Ananda - Neuron Framework
+    
+    critical:
+      subject: "🚨 Neuron Safety Critical Alert: {agent_id}"
+      body: |
+        CRITICAL safety issue detected for agent {agent_id}.
+        
+        Issue: {description}
+        Health Score: {health_score}
+        Timestamp: {timestamp}
+        
+        Action Required: Immediate investigation
+        
+        © 2025 Shalini Ananda - Neuron Framework
+    
+    emergency:
+      subject: "🚨 EMERGENCY: Neuron System Compromise"
+      body: |
+        EMERGENCY: System safety critically compromised.
+        
+        Affected Agent: {agent_id}
+        Issue: {description}
+        Health Score: {health_score}
+        Timestamp: {timestamp}
+        
+        IMMEDIATE ACTION REQUIRED
+        
+        © 2025 Shalini Ananda - Neuron Framework
+
+# Legal and attribution requirements
+# DO NOT MODIFY - Required for legal compliance
+legal:
+  copyright_notice: "© 2025 Shalini Ananda. All Rights Reserved."
+  license: "Modified MIT with Attribution Enforcement"
+  attribution_required: true
+  commercial_use_prohibited: true
+  modification_tracking: true
+  repository: "https://github.com/shalini-ananda/neuron-framework"
+  
+  # Violation reporting
+  violation_reporting:
+    enabled: true
+    contact: "legal@shalini-ananda.com"
+    tracking_id: "neuron-safety-v1.0"
+
+# Configuration validation rules
+# Internal validation schema (do not modify)
+validation:
+  schema_version: "1.0.0"
+  required_sections:
+    - "thresholds"
+    - "escalation"
+    - "circuit_breakers"
+    - "audit"
+    - "legal"
+  
+  threshold_ranges:
+    health_score_min: [0.0, 1.0]
+    response_time_max: [100.0, 60000.0]
+    error_rate_max: [0.0, 1.0]
+    memory_usage_max: [100.0, 10000.0]
+    cpu_usage_max: [0.0, 1.0]
+  
+  escalation_rules:
+    - "emergency_threshold < critical_threshold < warning_threshold"
+    - "all thresholds must be between 0.0 and 1.0"
+  
+  audit_requirements:
+    min_retention_days: 30
+    required_log_level: ["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
+    required_compliance_standards: ["soc2", "hipaa", "gdpr", "iso27001", "nist"]
