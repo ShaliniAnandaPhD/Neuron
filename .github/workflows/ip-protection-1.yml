@@ -1,0 +1,744 @@
+# .github/workflows/ip-protection-1.yml
+name: 🛡️ IP Protection 1
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    - cron: '0 9 * * 1'  # Weekly on Monday at 9 AM UTC
+  workflow_dispatch:
+    inputs:
+      update_headers:
+        description: 'Update copyright headers'
+        required: false
+        default: false
+        type: boolean
+
+env:
+  PYTHON_VERSION: '3.9'
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  security-events: write
+
+jobs:
+  # Job 1: License & Copyright Protection
+  license-copyright:
+    name: 📜 License & Copyright
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔐 Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install Tools
+        run: |
+          pip install --upgrade pip
+          pip install safety bandit pip-licenses
+
+      - name: 🔍 License Compatibility Scan
+        run: |
+          echo "🔍 Scanning for license compatibility issues..."
+          
+          # Create license report
+          echo "# License Compatibility Report" > license_report.md
+          echo "Generated: $(date)" >> license_report.md
+          echo "" >> license_report.md
+          
+          # Check Python dependencies
+          if pip freeze | wc -l | grep -q "[1-9]"; then
+            echo "## Python Dependencies" >> license_report.md
+            
+            # Get license information
+            if command -v pip-licenses >/dev/null 2>&1; then
+              pip-licenses --format=markdown >> license_report.md 2>/dev/null || echo "Could not generate license table" >> license_report.md
+            fi
+            
+            # Check for problematic licenses
+            echo "" >> license_report.md
+            echo "## License Compatibility Analysis" >> license_report.md
+            
+            PROBLEMATIC="GPL LGPL AGPL MPL CDDL EPL"
+            FOUND_ISSUES=false
+            
+            for license in $PROBLEMATIC; do
+              if pip-licenses 2>/dev/null | grep -i "$license" >/dev/null; then
+                echo "⚠️ **WARNING**: Found $license licensed dependency" >> license_report.md
+                FOUND_ISSUES=true
+              fi
+            done
+            
+            if [ "$FOUND_ISSUES" = "false" ]; then
+              echo "✅ **PASSED**: No problematic licenses detected" >> license_report.md
+            fi
+          else
+            echo "No Python dependencies found" >> license_report.md
+          fi
+          
+          echo "✅ License scan completed"
+
+      - name: 📝 Copyright Header Check
+        run: |
+          echo "📝 Checking copyright headers..."
+          
+          # Create copyright report
+          echo "# Copyright Header Analysis" > copyright_report.md
+          echo "Generated: $(date)" >> copyright_report.md
+          echo "" >> copyright_report.md
+          
+          # File types to check
+          EXTENSIONS="py js ts jsx tsx md yml yaml"
+          TOTAL_FILES=0
+          FILES_WITH_COPYRIGHT=0
+          MISSING_FILES=()
+          
+          echo "## File Analysis" >> copyright_report.md
+          echo "" >> copyright_report.md
+          
+          for ext in $EXTENSIONS; do
+            FILES=$(find . -name "*.$ext" -type f -not -path "./.git/*" -not -path "./node_modules/*" -not -path "./.venv/*" 2>/dev/null)
+            
+            if [ -n "$FILES" ]; then
+              COUNT=$(echo "$FILES" | wc -l)
+              TOTAL_FILES=$((TOTAL_FILES + COUNT))
+              
+              echo "**.$ext files**: $COUNT found" >> copyright_report.md
+              
+              # Check each file for copyright
+              echo "$FILES" | while read file; do
+                if head -20 "$file" 2>/dev/null | grep -qi "copyright\|©\|(c)"; then
+                  FILES_WITH_COPYRIGHT=$((FILES_WITH_COPYRIGHT + 1))
+                else
+                  echo "$file" >> missing_copyright_files.txt
+                fi
+              done
+            fi
+          done
+          
+          # Count files with copyright (recalculate)
+          if [ -f "missing_copyright_files.txt" ]; then
+            MISSING_COUNT=$(wc -l < missing_copyright_files.txt)
+            FILES_WITH_COPYRIGHT=$((TOTAL_FILES - MISSING_COUNT))
+          else
+            FILES_WITH_COPYRIGHT=$TOTAL_FILES
+          fi
+          
+          echo "" >> copyright_report.md
+          echo "## Summary" >> copyright_report.md
+          echo "- **Total files**: $TOTAL_FILES" >> copyright_report.md
+          echo "- **With copyright**: $FILES_WITH_COPYRIGHT" >> copyright_report.md
+          echo "- **Missing copyright**: $((TOTAL_FILES - FILES_WITH_COPYRIGHT))" >> copyright_report.md
+          
+          if [ $TOTAL_FILES -gt 0 ]; then
+            COVERAGE=$((FILES_WITH_COPYRIGHT * 100 / TOTAL_FILES))
+            echo "- **Coverage**: $COVERAGE%" >> copyright_report.md
+          fi
+          
+          # List missing files
+          if [ -f "missing_copyright_files.txt" ] && [ -s "missing_copyright_files.txt" ]; then
+            echo "" >> copyright_report.md
+            echo "## Files Missing Copyright Headers" >> copyright_report.md
+            head -20 missing_copyright_files.txt | while read file; do
+              echo "- \`$file\`" >> copyright_report.md
+            done
+            
+            if [ $(wc -l < missing_copyright_files.txt) -gt 20 ]; then
+              echo "- ... and $(($(wc -l < missing_copyright_files.txt) - 20)) more files" >> copyright_report.md
+            fi
+          fi
+          
+          echo "✅ Copyright analysis completed"
+
+      - name: 🔧 Auto-Update Copyright Headers
+        if: github.event.inputs.update_headers == 'true' || github.event_name == 'schedule'
+        run: |
+          echo "🔧 Updating copyright headers..."
+          
+          YEAR=$(date +%Y)
+          UPDATED=0
+          
+          # Python header template
+          create_python_header() {
+            cat << EOF
+#!/usr/bin/env python3
+"""
+Neuron Framework - Advanced Neural Agent Architecture
+
+Copyright (c) $YEAR Neuron Development Team
+License: MIT License
+
+This file is part of the Neuron Framework.
+"""
+
+EOF
+          }
+          
+          # JavaScript header template
+          create_js_header() {
+            cat << EOF
+/*
+ * Neuron Framework - Advanced Neural Agent Architecture
+ * 
+ * Copyright (c) $YEAR Neuron Development Team
+ * License: MIT License
+ */
+
+EOF
+          }
+          
+          # Update Python files
+          if [ -f "missing_copyright_files.txt" ]; then
+            grep "\.py$" missing_copyright_files.txt 2>/dev/null | while read file; do
+              if [ -f "$file" ]; then
+                echo "Updating $file"
+                
+                # Check if starts with shebang
+                if head -1 "$file" | grep -q "^#!" 2>/dev/null; then
+                  # Preserve shebang
+                  SHEBANG=$(head -1 "$file")
+                  CONTENT=$(tail -n +2 "$file")
+                  echo "$SHEBANG" > "$file"
+                  create_python_header >> "$file"
+                  echo "$CONTENT" >> "$file"
+                else
+                  # Add header at top
+                  CONTENT=$(cat "$file")
+                  create_python_header > "$file"
+                  echo "$CONTENT" >> "$file"
+                fi
+                
+                UPDATED=$((UPDATED + 1))
+              fi
+            done
+            
+            # Update JavaScript files
+            grep "\.js$\|\.ts$" missing_copyright_files.txt 2>/dev/null | while read file; do
+              if [ -f "$file" ]; then
+                echo "Updating $file"
+                CONTENT=$(cat "$file")
+                create_js_header > "$file"
+                echo "$CONTENT" >> "$file"
+                UPDATED=$((UPDATED + 1))
+              fi
+            done
+          fi
+          
+          echo "🔧 Updated $UPDATED files"
+          
+          # Commit changes if any
+          if [ $UPDATED -gt 0 ]; then
+            git config --local user.email "action@github.com"
+            git config --local user.name "GitHub Action"
+            git add .
+            git diff --staged --quiet || git commit -m "🔧 Auto-update copyright headers [skip ci]"
+          fi
+
+      - name: 📤 Upload License & Copyright Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: license-copyright-analysis
+          path: |
+            license_report.md
+            copyright_report.md
+            missing_copyright_files.txt
+          retention-days: 30
+
+  # Job 2: Security & Code Protection
+  security-scan:
+    name: 🔒 Security & Code Protection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔐 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🐍 Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: 📦 Install Security Tools
+        run: |
+          pip install --upgrade pip
+          pip install safety bandit
+
+      - name: 🔒 Dependency Vulnerability Scan
+        run: |
+          echo "🔒 Scanning for security vulnerabilities..."
+          
+          # Create security report
+          echo "# Security Vulnerability Report" > security_report.md
+          echo "Generated: $(date)" >> security_report.md
+          echo "" >> security_report.md
+          
+          # Python dependency security scan
+          echo "## Python Dependencies Security" >> security_report.md
+          
+          if pip freeze | wc -l | grep -q "[1-9]"; then
+            # Run safety check
+            safety check --json > safety_raw.json 2>/dev/null || echo "[]" > safety_raw.json
+            
+            # Parse results
+            VULN_COUNT=$(python3 -c "import json; print(len(json.load(open('safety_raw.json'))))" 2>/dev/null || echo "0")
+            
+            echo "**Vulnerabilities Found**: $VULN_COUNT" >> security_report.md
+            echo "" >> security_report.md
+            
+            if [ "$VULN_COUNT" -gt "0" ]; then
+              echo "### Vulnerability Details" >> security_report.md
+              python3 -c "
+import json
+try:
+    with open('safety_raw.json') as f:
+        vulns = json.load(f)
+    for vuln in vulns[:5]:  # Show first 5
+        print(f\"**Package**: {vuln.get('package', 'Unknown')}\")
+        print(f\"**Version**: {vuln.get('installed_version', 'Unknown')}\")
+        print(f\"**Vulnerability**: {vuln.get('advisory', 'No details')[:100]}...\")
+        print()
+except:
+    print('Could not parse vulnerability details')
+" >> security_report.md
+            else
+              echo "✅ **No known vulnerabilities found**" >> security_report.md
+            fi
+          else
+            echo "No Python dependencies to scan" >> security_report.md
+          fi
+          
+          echo "✅ Dependency scan completed"
+
+      - name: 🔍 Static Code Security Analysis
+        run: |
+          echo "🔍 Running static security analysis..."
+          
+          echo "" >> security_report.md
+          echo "## Static Code Analysis" >> security_report.md
+          
+          # Run bandit on Python files
+          if find . -name "*.py" -not -path "./.git/*" | head -1 | grep -q "\.py"; then
+            bandit -r . -f json -o bandit_results.json 2>/dev/null || echo "{\"results\":[]}" > bandit_results.json
+            
+            ISSUES=$(python3 -c "import json; print(len(json.load(open('bandit_results.json')).get('results', [])))" 2>/dev/null || echo "0")
+            
+            echo "**Static Analysis Issues**: $ISSUES" >> security_report.md
+            
+            if [ "$ISSUES" -gt "0" ]; then
+              echo "" >> security_report.md
+              echo "### Issue Summary" >> security_report.md
+              python3 -c "
+import json
+try:
+    with open('bandit_results.json') as f:
+        data = json.load(f)
+    issues = data.get('results', [])
+    for issue in issues[:3]:  # Show first 3
+        print(f\"**File**: {issue.get('filename', 'Unknown')}\")
+        print(f\"**Issue**: {issue.get('test_name', 'Unknown')}\")
+        print(f\"**Severity**: {issue.get('issue_severity', 'Unknown')}\")
+        print()
+except:
+    print('Could not parse static analysis results')
+" >> security_report.md
+            else
+              echo "✅ **No static analysis issues found**" >> security_report.md
+            fi
+          else
+            echo "No Python files found for static analysis" >> security_report.md
+          fi
+
+      - name: 🔐 Secret Detection Scan
+        run: |
+          echo "🔐 Scanning for potential secrets..."
+          
+          echo "" >> security_report.md
+          echo "## Secret Detection" >> security_report.md
+          
+          # Simple secret patterns
+          SECRET_PATTERNS="password.*=|api.*key.*=|secret.*=|token.*=|private.*key"
+          
+          # Scan for potential secrets
+          SECRETS_FOUND=$(find . -type f -name "*.py" -o -name "*.js" -o -name "*.yml" -o -name "*.yaml" | \
+            xargs grep -i -E "$SECRET_PATTERNS" 2>/dev/null | \
+            grep -v -E "example|placeholder|your_|xxx|123|test|demo" | \
+            wc -l)
+          
+          echo "**Potential Secrets Found**: $SECRETS_FOUND" >> security_report.md
+          
+          if [ "$SECRETS_FOUND" -gt "0" ]; then
+            echo "" >> security_report.md
+            echo "⚠️ **WARNING**: Potential secrets detected in code" >> security_report.md
+            echo "Review the following files for hardcoded credentials:" >> security_report.md
+            echo "" >> security_report.md
+            
+            find . -type f -name "*.py" -o -name "*.js" -o -name "*.yml" -o -name "*.yaml" | \
+              xargs grep -l -i -E "$SECRET_PATTERNS" 2>/dev/null | \
+              head -10 | while read file; do
+                echo "- \`$file\`" >> security_report.md
+              done
+          else
+            echo "✅ **No obvious secrets detected**" >> security_report.md
+          fi
+          
+          echo "✅ Secret detection completed"
+
+      - name: 📤 Upload Security Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: security-analysis
+          path: |
+            security_report.md
+            safety_raw.json
+            bandit_results.json
+          retention-days: 30
+
+  # Job 3: Innovation & IP Analysis
+  innovation-analysis:
+    name: 🔬 Innovation & IP Analysis
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: 🔐 Checkout
+        uses: actions/checkout@v4
+
+      - name: 🔬 Innovation Pattern Detection
+        run: |
+          echo "🔬 Analyzing code for innovation patterns..."
+          
+          # Create innovation report
+          echo "# Innovation & IP Analysis Report" > innovation_report.md
+          echo "Generated: $(date)" >> innovation_report.md
+          echo "" >> innovation_report.md
+          
+          echo "## Methodology" >> innovation_report.md
+          echo "This analysis identifies code patterns that may represent innovative algorithms, methods, or potentially patentable inventions." >> innovation_report.md
+          echo "" >> innovation_report.md
+          
+          # Innovation keywords
+          KEYWORDS="algorithm method process system technique optimization neural agent coordination fault tolerance memory management circuit breaker adaptive self-healing predictive machine learning artificial intelligence distributed system parallel processing"
+          
+          echo "## Innovation Keywords Analysis" >> innovation_report.md
+          echo "" >> innovation_report.md
+          
+          TOTAL_MATCHES=0
+          
+          # Search for innovation patterns
+          for keyword in $KEYWORDS; do
+            # Search in Python files
+            PY_MATCHES=$(find . -name "*.py" -not -path "./.git/*" -exec grep -l -i "$keyword" {} \; 2>/dev/null | wc -l)
+            
+            # Search in JavaScript files  
+            JS_MATCHES=$(find . -name "*.js" -not -path "./.git/*" -not -path "./node_modules/*" -exec grep -l -i "$keyword" {} \; 2>/dev/null | wc -l)
+            
+            TOTAL=$((PY_MATCHES + JS_MATCHES))
+            
+            if [ $TOTAL -gt 0 ]; then
+              echo "**$keyword**: $TOTAL files" >> innovation_report.md
+              TOTAL_MATCHES=$((TOTAL_MATCHES + TOTAL))
+            fi
+          done
+          
+          echo "" >> innovation_report.md
+          echo "## Architectural Components" >> innovation_report.md
+          
+          # Find class definitions
+          CLASSES=$(find . -name "*.py" -not -path "./.git/*" -exec grep -H "^class " {} \; 2>/dev/null | head -10)
+          if [ -n "$CLASSES" ]; then
+            echo "### Key Classes" >> innovation_report.md
+            echo "$CLASSES" | while IFS: read file class_line; do
+              CLASS_NAME=$(echo "$class_line" | sed 's/class //' | cut -d'(' -f1 | cut -d':' -f1)
+              echo "- **$CLASS_NAME** in \`$(basename "$file")\`" >> innovation_report.md
+            done
+            echo "" >> innovation_report.md
+          fi
+          
+          # Find function definitions with interesting names
+          FUNCTIONS=$(find . -name "*.py" -not -path "./.git/*" -exec grep -H "^def " {} \; 2>/dev/null | \
+            grep -E "algorithm|process|optimize|predict|analyze|detect|manage|coordinate" | head -10)
+          if [ -n "$FUNCTIONS" ]; then
+            echo "### Key Functions" >> innovation_report.md
+            echo "$FUNCTIONS" | while IFS: read file func_line; do
+              FUNC_NAME=$(echo "$func_line" | sed 's/def //' | cut -d'(' -f1)
+              echo "- **$FUNC_NAME** in \`$(basename "$file")\`" >> innovation_report.md
+            done
+            echo "" >> innovation_report.md
+          fi
+          
+          echo "## Summary" >> innovation_report.md
+          echo "- **Innovation keyword matches**: $TOTAL_MATCHES" >> innovation_report.md
+          echo "- **Classes identified**: $(echo "$CLASSES" | wc -l)" >> innovation_report.md
+          echo "- **Key functions identified**: $(echo "$FUNCTIONS" | wc -l)" >> innovation_report.md
+          echo "" >> innovation_report.md
+          echo "**Recommendation**: Review identified components for potential IP protection opportunities." >> innovation_report.md
+          
+          echo "✅ Innovation analysis completed"
+
+      - name: 🏷️ Trademark Usage Analysis
+        run: |
+          echo "🏷️ Analyzing trademark usage..."
+          
+          echo "" >> innovation_report.md
+          echo "## Trademark Usage Analysis" >> innovation_report.md
+          echo "" >> innovation_report.md
+          
+          # Trademark terms to monitor
+          TRADEMARKS="Neuron Framework NeuroCircuit NeuroPilot SynapticBus Agent Coordination"
+          
+          for trademark in $TRADEMARKS; do
+            echo "### $trademark" >> innovation_report.md
+            
+            # Count usage
+            USAGE=$(find . -name "*.py" -o -name "*.js" -o -name "*.md" | \
+              xargs grep -i "$trademark" 2>/dev/null | wc -l)
+            
+            # Count usage with trademark symbols
+            SYMBOL_USAGE=$(find . -name "*.py" -o -name "*.js" -o -name "*.md" | \
+              xargs grep -i "$trademark.*[™®]" 2>/dev/null | wc -l)
+            
+            echo "- **Usage count**: $USAGE" >> innovation_report.md
+            echo "- **With symbols**: $SYMBOL_USAGE" >> innovation_report.md
+            
+            if [ $USAGE -gt 0 ] && [ $SYMBOL_USAGE -eq 0 ]; then
+              echo "- ⚠️ **Recommendation**: Consider adding ™ symbol for brand protection" >> innovation_report.md
+            elif [ $USAGE -gt 0 ]; then
+              echo "- ✅ **Status**: Trademark symbols in use" >> innovation_report.md
+            fi
+            echo "" >> innovation_report.md
+          done
+          
+          echo "✅ Trademark analysis completed"
+
+      - name: 📤 Upload Innovation Analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: innovation-analysis
+          path: innovation_report.md
+          retention-days: 90
+
+  # Job 4: Generate Final Report & Notifications
+  final-report:
+    name: 📊 Final Report & Notifications
+    runs-on: ubuntu-latest
+    needs: [license-copyright, security-scan, innovation-analysis]
+    if: always()
+    
+    steps:
+      - name: 🔐 Checkout
+        uses: actions/checkout@v4
+
+      - name: 📥 Download All Analysis Results
+        uses: actions/download-artifact@v4
+        with:
+          path: ./results
+
+      - name: 📊 Generate Comprehensive Report
+        run: |
+          echo "📊 Generating comprehensive IP protection report..."
+          
+          # Create main report
+          cat > IP_PROTECTION_REPORT.md << EOF
+          # 🛡️ IP Protection Report
+          
+          **Repository**: $GITHUB_REPOSITORY  
+          **Generated**: $(date -u +"%Y-%m-%d %H:%M:%S UTC")  
+          **Commit**: $GITHUB_SHA  
+          **Workflow**: $GITHUB_RUN_ID
+          
+          ## 📊 Executive Summary
+          
+          This report provides a comprehensive analysis of intellectual property protection measures for this repository, covering license compliance, copyright coverage, security vulnerabilities, and innovation identification.
+          
+          EOF
+          
+          # Add license analysis if available
+          if [ -f "./results/license-copyright-analysis/license_report.md" ]; then
+            echo "## 📜 License Compliance" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+            
+            if grep -q "WARNING" "./results/license-copyright-analysis/license_report.md"; then
+              echo "**Status**: ⚠️ Issues Found" >> IP_PROTECTION_REPORT.md
+            else
+              echo "**Status**: ✅ Compliant" >> IP_PROTECTION_REPORT.md
+            fi
+            echo "" >> IP_PROTECTION_REPORT.md
+            tail -n +4 "./results/license-copyright-analysis/license_report.md" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+          fi
+          
+          # Add copyright analysis if available
+          if [ -f "./results/license-copyright-analysis/copyright_report.md" ]; then
+            echo "## 📝 Copyright Analysis" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+            tail -n +4 "./results/license-copyright-analysis/copyright_report.md" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+          fi
+          
+          # Add security analysis if available
+          if [ -f "./results/security-analysis/security_report.md" ]; then
+            echo "## 🔒 Security Analysis" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+            tail -n +4 "./results/security-analysis/security_report.md" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+          fi
+          
+          # Add innovation analysis if available
+          if [ -f "./results/innovation-analysis/innovation_report.md" ]; then
+            echo "## 🔬 Innovation Analysis" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+            tail -n +4 "./results/innovation-analysis/innovation_report.md" >> IP_PROTECTION_REPORT.md
+            echo "" >> IP_PROTECTION_REPORT.md
+          fi
+          
+          # Add recommendations
+          echo "## 🎯 Recommendations" >> IP_PROTECTION_REPORT.md
+          echo "" >> IP_PROTECTION_REPORT.md
+          echo "1. **Regular Reviews**: Schedule quarterly IP protection reviews" >> IP_PROTECTION_REPORT.md
+          echo "2. **Legal Consultation**: Review findings with IP attorney if needed" >> IP_PROTECTION_REPORT.md
+          echo "3. **Continuous Monitoring**: Keep IP protection measures updated" >> IP_PROTECTION_REPORT.md
+          echo "4. **Team Training**: Educate development team on IP best practices" >> IP_PROTECTION_REPORT.md
+          echo "" >> IP_PROTECTION_REPORT.md
+          
+          # Add footer
+          echo "---" >> IP_PROTECTION_REPORT.md
+          echo "*Report generated by IP Protection 1 workflow*" >> IP_PROTECTION_REPORT.md
+          echo "*For questions, contact: legal@neuron-framework.org*" >> IP_PROTECTION_REPORT.md
+          
+          echo "✅ Comprehensive report generated"
+
+      - name: 🔍 Create Issues for Critical Findings
+        if: github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // Check for critical issues that need attention
+            let criticalIssues = [];
+            
+            // Check license issues
+            try {
+              const licenseReport = fs.readFileSync('./results/license-copyright-analysis/license_report.md', 'utf8');
+              if (licenseReport.includes('WARNING')) {
+                criticalIssues.push('License compatibility issues detected');
+              }
+            } catch (e) {
+              console.log('Could not read license report');
+            }
+            
+            // Check security issues
+            try {
+              const securityReport = fs.readFileSync('./results/security-analysis/security_report.md', 'utf8');
+              if (securityReport.includes('Vulnerabilities Found**: [1-9]') || securityReport.includes('WARNING')) {
+                criticalIssues.push('Security vulnerabilities detected');
+              }
+            } catch (e) {
+              console.log('Could not read security report');
+            }
+            
+            // Create issue if critical problems found
+            if (criticalIssues.length > 0) {
+              const issueBody = `# 🛡️ IP Protection Issues Detected
+              
+              The automated IP protection scan has detected issues that require attention:
+              
+              ${criticalIssues.map(issue => `- ⚠️ ${issue}`).join('\n')}
+              
+              ## 📋 Next Steps
+              
+              1. Review the detailed IP Protection Report in the workflow artifacts
+              2. Address the identified issues
+              3. Consider consulting with legal team if needed
+              
+              **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              
+              ---
+              *This issue was automatically created by IP Protection 1*`;
+              
+              // Check if similar issue already exists
+              const { data: issues } = await github.rest.issues.listForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                state: 'open',
+                labels: 'ip-protection'
+              });
+              
+              if (issues.length === 0) {
+                await github.rest.issues.create({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  title: '🛡️ IP Protection Issues Detected',
+                  body: issueBody,
+                  labels: ['ip-protection', 'priority-medium']
+                });
+                console.log('Created IP protection issue');
+              } else {
+                console.log('IP protection issue already exists');
+              }
+            }
+
+      - name: 💬 Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const comment = `## 🛡️ IP Protection Analysis
+            
+            The IP protection analysis has completed for this pull request.
+            
+            ### 📊 Analysis Coverage
+            - ✅ License compatibility check
+            - ✅ Copyright header validation  
+            - ✅ Security vulnerability scan
+            - ✅ Innovation pattern analysis
+            
+            ### 📋 Results
+            View the complete analysis in the [workflow artifacts](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}).
+            
+            ---
+            *Automated by IP Protection 1*`;
+            
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+      - name: 📤 Upload Final Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: ip-protection-final-report
+          path: IP_PROTECTION_REPORT.md
+          retention-days: 90
+
+      - name: 📊 Workflow Summary
+        run: |
+          echo "📊 IP Protection 1 Workflow Complete!"
+          echo ""
+          echo "🎯 Analysis Completed:"
+          echo "  ✅ License & Copyright Protection"
+          echo "  ✅ Security & Code Protection"
+          echo "  ✅ Innovation & IP Analysis"
+          echo "  ✅ Comprehensive Reporting"
+          echo ""
+          echo "📋 Reports Generated:"
+          echo "  - IP_PROTECTION_REPORT.md (comprehensive)"
+          echo "  - Individual analysis reports in artifacts"
+          echo ""
+          echo "🔗 View Results:"
+          echo "  - Download artifacts from this workflow run"
+          echo "  - Check for any created issues in the repository"
+          echo "  - Review PR comments for pull request analysis"
+          echo ""
+          echo "✅ IP Protection 1 completed successfully!"
