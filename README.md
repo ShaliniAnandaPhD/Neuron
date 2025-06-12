@@ -108,15 +108,6 @@ Neuron excels in scenarios traditional AI struggles with:
 ### 🏥 Neuron Fine-Tuning for Healthcare
 [Healthcare Applications](https://www.notion.so/shalini-ananda-phd/Neuron-Fine-Tuning-for-Healthcare-20bc18ea2aa1801eafa0fba178e08143)
 
-## 📖 Articles & Insights
-
-### 🔮 The Future of AI Agents: Winners, Losers, and Reality Beyond the Hype
-[Read Article](https://www.notion.so/shalini-ananda-phd/The-Future-of-AI-Agents-Winners-Losers-and-Reality-Beyond-the-Hype-20bc18ea2aa18084b392c46786e127a7)
-
-### ⚖️ How Legal Stress Testing Led to Neuron's Architecture
-[Read Article](https://www.notion.so/shalini-ananda-phd/How-Legal-Stress-Testing-Led-to-Neuron-s-Architecture-20bc18ea2aa18034967cc0446dc6079d)
-
-# Neuron Framework - Complete Sections Rewrite
 
 ## 🚀 Quick Start
 
