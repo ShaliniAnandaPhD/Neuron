@@ -1,0 +1,200 @@
+{
+  "_comment": ".ip_protection_config.json - Configuration for IP Protection Toolkit",
+  "copyright_holder": "Neuron Development Team",
+  "license_type": "MIT",
+  "project_name": "Neuron Framework",
+  "project_url": "https://github.com/your-org/neuron-framework",
+  
+  "file_processing": {
+    "excluded_directories": [
+      ".git",
+      "__pycache__",
+      "node_modules",
+      ".venv",
+      "venv",
+      "dist",
+      "build",
+      ".pytest_cache",
+      ".mypy_cache",
+      "coverage_html",
+      "htmlcov"
+    ],
+    "file_extensions": [
+      ".py",
+      ".js",
+      ".ts",
+      ".jsx",
+      ".tsx",
+      ".md",
+      ".yml",
+      ".yaml",
+      ".json",
+      ".toml",
+      ".cfg"
+    ],
+    "excluded_files": [
+      "LICENSE",
+      "CHANGELOG.md",
+      "requirements.txt",
+      "package-lock.json",
+      "yarn.lock"
+    ]
+  },
+  
+  "license_compliance": {
+    "allowed_licenses": [
+      "MIT",
+      "BSD",
+      "BSD-2-Clause",
+      "BSD-3-Clause",
+      "Apache-2.0",
+      "ISC",
+      "Unlicense",
+      "Python Software Foundation License"
+    ],
+    "prohibited_licenses": [
+      "GPL",
+      "GPL-2.0",
+      "GPL-3.0",
+      "LGPL",
+      "LGPL-2.1",
+      "LGPL-3.0",
+      "AGPL",
+      "AGPL-3.0",
+      "MPL-2.0",
+      "CDDL",
+      "EPL"
+    ],
+    "review_required_licenses": [
+      "CC",
+      "OFL",
+      "Artistic",
+      "Zlib"
+    ]
+  },
+  
+  "trademark_terms": [
+    "Neuron Framework",
+    "Neuron",
+    "NeuroCircuit",
+    "NeuroPilot",
+    "SynapticBus",
+    "Agent Coordination",
+    "Circuit Breaker Pattern",
+    "Fault Injection System",
+    "Memory Controller",
+    "Kotler Flow"
+  ],
+  
+  "innovation_keywords": [
+    "algorithm",
+    "method",
+    "process",
+    "system",
+    "technique",
+    "optimization",
+    "neural",
+    "agent",
+    "coordination",
+    "fault tolerance",
+    "memory management",
+    "circuit breaker",
+    "adaptive",
+    "self-healing",
+    "predictive",
+    "machine learning",
+    "artificial intelligence",
+    "distributed system",
+    "parallel processing",
+    "real-time",
+    "pattern recognition",
+    "anomaly detection",
+    "load balancing",
+    "resilience",
+    "orchestration",
+    "multi-agent",
+    "neural network",
+    "cognitive architecture",
+    "autonomous system"
+  ],
+  
+  "security_scanning": {
+    "scan_for_secrets": true,
+    "secret_patterns": {
+      "api_key": "api[_-]?key[\"']?\\s*[:=]\\s*[\"']?[a-zA-Z0-9]{20,}",
+      "password": "password[\"']?\\s*[:=]\\s*[\"'][^\"']{8,}",
+      "secret": "secret[\"']?\\s*[:=]\\s*[\"'][^\"']{10,}",
+      "token": "token[\"']?\\s*[:=]\\s*[\"'][a-zA-Z0-9]{20,}",
+      "private_key": "-----BEGIN [A-Z ]+PRIVATE KEY-----",
+      "aws_access_key": "AKIA[0-9A-Z]{16}",
+      "slack_token": "xox[baprs]-([0-9a-zA-Z]{10,48})?",
+      "github_token": "ghp_[0-9a-zA-Z]{36}"
+    },
+    "excluded_secret_terms": [
+      "example",
+      "placeholder",
+      "your_",
+      "xxx",
+      "123",
+      "test",
+      "dummy",
+      "sample",
+      "demo"
+    ]
+  },
+  
+  "reporting": {
+    "output_directory": "ip_reports",
+    "retention_days": 90,
+    "formats": ["markdown", "json", "html"],
+    "include_file_hashes": true,
+    "include_git_info": true
+  },
+  
+  "notifications": {
+    "email": {
+      "enabled": false,
+      "recipients": ["legal@neuron-framework.org", "maintainers@neuron-framework.org"],
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587
+    },
+    "slack": {
+      "enabled": false,
+      "webhook_url": "",
+      "channel": "#ip-compliance"
+    },
+    "github_issues": {
+      "enabled": true,
+      "create_issues_for_violations": true,
+      "labels": ["ip-compliance", "legal", "priority-medium"]
+    }
+  },
+  
+  "automation": {
+    "git_hooks": {
+      "pre_commit": {
+        "enabled": true,
+        "check_copyright_headers": true,
+        "scan_for_secrets": true,
+        "check_license_compatibility": false
+      },
+      "pre_push": {
+        "enabled": true,
+        "generate_full_report": true,
+        "block_on_violations": false
+      }
+    },
+    "github_actions": {
+      "schedule": "0 9 * * 1",
+      "on_push": true,
+      "on_pull_request": true
+    }
+  },
+  
+  "thresholds": {
+    "max_license_violations": 0,
+    "max_security_issues": 5,
+    "max_potential_secrets": 0,
+    "min_copyright_coverage": 95
+  }
+}
