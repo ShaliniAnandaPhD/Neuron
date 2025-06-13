@@ -22,7 +22,7 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 [![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
 [![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
 [![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
-[![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
+[![IP Monitoring Simple](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml)
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
 
