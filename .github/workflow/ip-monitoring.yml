@@ -1,0 +1,409 @@
+name: IP Monitoring & Usage Detection
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Weekly Monday 6 AM
+  workflow_dispatch:
+    inputs:
+      search_intensity:
+        description: 'Search intensity level'
+        type: choice
+        options:
+        - light
+        - comprehensive
+        default: 'light'
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  code-usage-detection:
+    name: Code Usage Detection
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install monitoring tools
+        run: |
+          pip install requests beautifulsoup4 aiohttp
+      
+      - name: Extract unique code signatures
+        run: |
+          echo "Extracting unique code signatures for monitoring..."
+          
+          echo "# Code Signature Analysis" > signatures.md
+          echo "Generated: $(date)" >> signatures.md
+          echo "" >> signatures.md
+          
+          # Extract unique function signatures
+          echo "## Unique Function Signatures" >> signatures.md
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            # Extract function definitions with unique names
+            grep -n "^def " "$file" | head -5 | while read line; do
+              func_name=$(echo "$line" | sed 's/.*def //' | cut -d'(' -f1)
+              if [ ${#func_name} -gt 8 ]; then  # Only unique/long function names
+                echo "- \`$func_name\` in \`$(basename "$file")\`" >> signatures.md
+                echo "$func_name" >> unique_functions.txt
+              fi
+            done
+          done
+          
+          # Extract unique class names
+          echo "" >> signatures.md
+          echo "## Unique Class Names" >> signatures.md
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            grep -n "^class " "$file" | head -3 | while read line; do
+              class_name=$(echo "$line" | sed 's/.*class //' | cut -d'(' -f1 | cut -d':' -f1)
+              if [ ${#class_name} -gt 6 ]; then  # Only unique class names
+                echo "- \`$class_name\` in \`$(basename "$file")\`" >> signatures.md
+                echo "$class_name" >> unique_classes.txt
+              fi
+            done
+          done
+          
+          # Extract unique variable/constant patterns
+          echo "" >> signatures.md
+          echo "## Unique Constants/Variables" >> signatures.md
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            # Look for unique constants (ALL_CAPS with project-specific names)
+            grep -n "^[A-Z_]*NEURON\|^[A-Z_]*CIRCUIT\|^[A-Z_]*AGENT" "$file" | head -3 | while read line; do
+              constant=$(echo "$line" | cut -d'=' -f1 | tr -d ' ')
+              if [ -n "$constant" ]; then
+                echo "- \`$constant\` in \`$(basename "$file")\`" >> signatures.md
+                echo "$constant" >> unique_constants.txt
+              fi
+            done
+          done
+          
+          echo "Code signature extraction completed"
+      
+      - name: GitHub code search monitoring
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Searching GitHub for potential code usage..."
+          
+          echo "# GitHub Code Usage Analysis" > github_usage.md
+          echo "Generated: $(date)" >> github_usage.md
+          echo "" >> github_usage.md
+          
+          # Search for unique function names
+          if [ -f unique_functions.txt ]; then
+            echo "## Function Name Matches" >> github_usage.md
+            head -10 unique_functions.txt | while read func_name; do
+              echo "Searching for function: $func_name"
+              
+              # Use GitHub API to search for code
+              curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                   -H "Accept: application/vnd.github.v3+json" \
+                   "https://api.github.com/search/code?q=$func_name+language:python" | \
+                   python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    items = data.get('items', [])
+    if items:
+        print('### Function: $func_name')
+        for item in items[:5]:  # First 5 matches
+            repo = item.get('repository', {})
+            if repo.get('full_name') != '${{ github.repository }}':  # Exclude our own repo
+                print(f'- **Repository**: {repo.get(\"full_name\", \"Unknown\")}')
+                print(f'  - **File**: {item.get(\"name\", \"Unknown\")}')
+                print(f'  - **URL**: {item.get(\"html_url\", \"Unknown\")}')
+                print('')
+except:
+    pass
+" >> github_usage.md
+              
+              # Rate limiting - GitHub API allows 30 requests per minute
+              sleep 2
+            done
+          fi
+          
+          # Search for unique class names
+          if [ -f unique_classes.txt ]; then
+            echo "## Class Name Matches" >> github_usage.md
+            head -5 unique_classes.txt | while read class_name; do
+              echo "Searching for class: $class_name"
+              
+              curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                   -H "Accept: application/vnd.github.v3+json" \
+                   "https://api.github.com/search/code?q=class+$class_name+language:python" | \
+                   python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    items = data.get('items', [])
+    if items:
+        print('### Class: $class_name')
+        for item in items[:3]:  # First 3 matches
+            repo = item.get('repository', {})
+            if repo.get('full_name') != '${{ github.repository }}':
+                print(f'- **Repository**: {repo.get(\"full_name\", \"Unknown\")}')
+                print(f'  - **File**: {item.get(\"name\", \"Unknown\")}')
+                print(f'  - **URL**: {item.get(\"html_url\", \"Unknown\")}')
+                print('')
+except:
+    pass
+" >> github_usage.md
+              
+              sleep 2
+            done
+          fi
+          
+          echo "GitHub search completed"
+      
+      - name: Trademark and brand monitoring
+        run: |
+          echo "Monitoring trademark usage across platforms..."
+          
+          echo "# Trademark Usage Monitoring" > trademark_monitoring.md
+          echo "Generated: $(date)" >> trademark_monitoring.md
+          echo "" >> trademark_monitoring.md
+          
+          # Search for trademark terms in various contexts
+          TRADEMARKS="Neuron Framework NeuroCircuit NeuroPilot"
+          
+          for trademark in $TRADEMARKS; do
+            echo "## Monitoring: $trademark" >> trademark_monitoring.md
+            echo "Searching for: $trademark"
+            
+            # GitHub repository search
+            curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                 -H "Accept: application/vnd.github.v3+json" \
+                 "https://api.github.com/search/repositories?q=\"$trademark\"" | \
+                 python3 -c "
+import json, sys
+try:
+    data = json.load(sys.stdin)
+    items = data.get('items', [])
+    if items:
+        print('### GitHub Repositories')
+        for item in items[:3]:
+            if item.get('full_name') != '${{ github.repository }}':
+                print(f'- **{item.get(\"full_name\", \"Unknown\")}**')
+                print(f'  - Description: {item.get(\"description\", \"None\")}')
+                print(f'  - Stars: {item.get(\"stargazers_count\", 0)}')
+                print(f'  - Language: {item.get(\"language\", \"Unknown\")}')
+                print(f'  - URL: {item.get(\"html_url\", \"Unknown\")}')
+                print('')
+except:
+    pass
+" >> trademark_monitoring.md
+            
+            sleep 2
+          done
+          
+          echo "Trademark monitoring completed"
+      
+      - name: Code similarity detection
+        run: |
+          echo "Analyzing code for potential unauthorized usage patterns..."
+          
+          echo "# Code Similarity Analysis" > similarity_analysis.md
+          echo "Generated: $(date)" >> similarity_analysis.md
+          echo "" >> similarity_analysis.md
+          
+          # Extract unique code patterns (algorithmic signatures)
+          echo "## Unique Code Patterns Identified" >> similarity_analysis.md
+          
+          # Look for distinctive algorithm patterns
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            # Look for unique comments that indicate proprietary algorithms
+            grep -n "# Algorithm:\|# Method:\|# Innovation:\|# Patent:" "$file" | while read line; do
+              echo "- **File**: \`$(basename "$file")\`" >> similarity_analysis.md
+              echo "  - **Pattern**: $(echo "$line" | cut -d':' -f2-)" >> similarity_analysis.md
+            done
+            
+            # Look for unique docstrings
+            grep -A 3 -B 1 "\"\"\".*[Aa]lgorithm\|\"\"\".*[Nn]ovel\|\"\"\".*[Pp]atent" "$file" | while read line; do
+              if [[ "$line" == *'"""'* ]]; then
+                echo "- **Unique Implementation**: \`$(basename "$file")\`" >> similarity_analysis.md
+                echo "  - **Description**: $line" >> similarity_analysis.md
+              fi
+            done
+          done
+          
+          # Generate monitoring recommendations
+          echo "" >> similarity_analysis.md
+          echo "## Monitoring Recommendations" >> similarity_analysis.md
+          echo "1. **Regular Searches**: Monitor identified signatures monthly" >> similarity_analysis.md
+          echo "2. **Alert Setup**: Set up Google Alerts for unique class/function names" >> similarity_analysis.md
+          echo "3. **Legal Review**: Have IP attorney review any matches found" >> similarity_analysis.md
+          echo "4. **Documentation**: Maintain evidence of original creation dates" >> similarity_analysis.md
+          
+          echo "Similarity analysis completed"
+      
+      - name: Generate comprehensive monitoring report
+        run: |
+          echo "Generating comprehensive IP monitoring report..."
+          
+          cat > IP_MONITORING_REPORT.md << 'EOF'
+          # 🔍 IP Monitoring & Usage Detection Report
+          
+          **Repository**: ${{ github.repository }}
+          **Generated**: $(date)
+          **Monitoring Period**: Weekly automated scan
+          **Search Scope**: GitHub public repositories
+          
+          ## 📊 Executive Summary
+          
+          This report analyzes potential unauthorized usage of proprietary code, 
+          trademarks, and intellectual property across public platforms.
+          
+          ### Key Findings
+          EOF
+          
+          # Analyze results and add findings
+          if [ -f github_usage.md ] && grep -q "Repository" github_usage.md; then
+            echo "- ⚠️ **Potential code usage detected** - Review GitHub matches" >> IP_MONITORING_REPORT.md
+          else
+            echo "- ✅ **No obvious code usage detected** on GitHub" >> IP_MONITORING_REPORT.md
+          fi
+          
+          if [ -f trademark_monitoring.md ] && grep -q "GitHub Repositories" trademark_monitoring.md; then
+            echo "- ⚠️ **Trademark usage detected** - Review repository names" >> IP_MONITORING_REPORT.md
+          else
+            echo "- ✅ **No trademark conflicts detected**" >> IP_MONITORING_REPORT.md
+          fi
+          
+          echo "" >> IP_MONITORING_REPORT.md
+          
+          # Include all detailed reports
+          echo "---" >> IP_MONITORING_REPORT.md
+          echo "" >> IP_MONITORING_REPORT.md
+          
+          for report in signatures.md github_usage.md trademark_monitoring.md similarity_analysis.md; do
+            if [ -f "$report" ]; then
+              cat "$report" >> IP_MONITORING_REPORT.md
+              echo "" >> IP_MONITORING_REPORT.md
+              echo "---" >> IP_MONITORING_REPORT.md
+              echo "" >> IP_MONITORING_REPORT.md
+            fi
+          done
+          
+          # Add action items
+          cat >> IP_MONITORING_REPORT.md << 'EOF'
+          
+          # 🎯 Recommended Actions
+          
+          ## If Usage Detected
+          1. **Document Everything** - Screenshot and save all evidence
+          2. **Analyze Context** - Determine if usage is legitimate (attribution, licensing)
+          3. **Legal Consultation** - Contact IP attorney for potential violations
+          4. **Cease and Desist** - Consider formal notification if unauthorized
+          5. **Monitor Response** - Track whether usage is removed or properly attributed
+          
+          ## Ongoing Monitoring
+          1. **Automated Alerts** - Set up Google Alerts for unique terms
+          2. **Regular Scans** - Run this workflow monthly
+          3. **Community Monitoring** - Watch for discussions about your technology
+          4. **Patent Landscape** - Monitor for patent applications in your domain
+          
+          # 📞 Next Steps
+          
+          1. Review all flagged repositories and usage
+          2. Verify whether usage includes proper attribution
+          3. Check if forks are properly attributed to your repository
+          4. Consider reaching out to users for proper attribution
+          5. Document timeline of your original development for IP protection
+          
+          ---
+          *This monitoring report was generated by the Neuron Framework IP Protection System*
+          EOF
+          
+          echo "Comprehensive monitoring report generated"
+      
+      - name: Create issue for detected usage
+        if: github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            let usageDetected = false;
+            let findings = [];
+            
+            // Check for GitHub code usage
+            try {
+              const githubUsage = fs.readFileSync('github_usage.md', 'utf8');
+              if (githubUsage.includes('Repository:')) {
+                usageDetected = true;
+                findings.push('Code usage detected on GitHub');
+              }
+            } catch (e) {
+              console.log('No GitHub usage file found');
+            }
+            
+            // Check for trademark usage
+            try {
+              const trademarkUsage = fs.readFileSync('trademark_monitoring.md', 'utf8');
+              if (trademarkUsage.includes('GitHub Repositories')) {
+                usageDetected = true;
+                findings.push('Trademark usage detected');
+              }
+            } catch (e) {
+              console.log('No trademark usage file found');
+            }
+            
+            if (usageDetected) {
+              const issueBody = `# 🔍 IP Usage Detection Alert
+              
+              Automated monitoring has detected potential usage of your intellectual property:
+              
+              ## 🚨 Findings
+              ${findings.map(f => `- ${f}`).join('\n')}
+              
+              ## 📋 Immediate Actions Required
+              1. **Review Evidence**: Download and examine the monitoring report
+              2. **Verify Context**: Check if usage includes proper attribution
+              3. **Document**: Screenshot all evidence of usage
+              4. **Legal Review**: Consider consultation with IP attorney
+              
+              ## 📊 Detailed Analysis
+              View the complete monitoring report in workflow artifacts:
+              - IP_MONITORING_REPORT.md (comprehensive analysis)
+              - Individual analysis files for detailed findings
+              
+              **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              
+              ## ⚖️ Legal Considerations
+              - Determine if usage violates your license terms
+              - Check if proper attribution is provided
+              - Consider whether usage falls under fair use
+              - Document original creation dates and evidence
+              
+              ---
+              *This alert was automatically generated by IP monitoring system*`;
+              
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: '🔍 IP Usage Detection Alert - Review Required',
+                body: issueBody,
+                labels: ['ip-monitoring', 'legal-review', 'urgent']
+              });
+              
+              console.log('Created IP usage detection alert');
+            } else {
+              console.log('No unauthorized usage detected');
+            }
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ip-monitoring-report
+          path: |
+            IP_MONITORING_REPORT.md
+            signatures.md
+            github_usage.md
+            trademark_monitoring.md
+            similarity_analysis.md
+            unique_functions.txt
+            unique_classes.txt
+          retention-days: 180
