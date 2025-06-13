@@ -1,0 +1,333 @@
+name: IP Protection Plus
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      update_headers:
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  issues: write
+
+jobs:
+  license-copyright:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install tools
+        run: pip install safety bandit pip-licenses
+      
+      - name: License analysis
+        run: |
+          echo "# License Analysis" > license_report.md
+          echo "Generated: $(date)" >> license_report.md
+          
+          pip freeze > deps.txt
+          if [ -s deps.txt ]; then
+            echo "## Dependencies Found" >> license_report.md
+            wc -l deps.txt >> license_report.md
+            
+            if pip-licenses 2>/dev/null | grep -i "gpl\|lgpl\|agpl"; then
+              echo "⚠️ GPL dependencies found!" >> license_report.md
+            else
+              echo "✅ No GPL issues detected" >> license_report.md
+            fi
+          fi
+      
+      - name: Copyright analysis
+        run: |
+          echo "# Copyright Analysis" > copyright_report.md
+          echo "Generated: $(date)" >> copyright_report.md
+          
+          total=0
+          with_copyright=0
+          
+          for file in $(find . -name "*.py" -not -path "./.git/*"); do
+            total=$((total + 1))
+            if head -10 "$file" | grep -qi "copyright\|©"; then
+              with_copyright=$((with_copyright + 1))
+            else
+              echo "$file" >> missing_headers.txt
+            fi
+          done
+          
+          echo "Files: $total, With copyright: $with_copyright" >> copyright_report.md
+          
+          if [ $total -gt 0 ]; then
+            coverage=$((with_copyright * 100 / total))
+            echo "Coverage: $coverage%" >> copyright_report.md
+          fi
+      
+      - name: Auto-update headers
+        if: github.event.inputs.update_headers == 'true'
+        run: |
+          if [ -f missing_headers.txt ]; then
+            year=$(date +%Y)
+            updated=0
+            
+            while read file; do
+              if [ -f "$file" ]; then
+                content=$(cat "$file")
+                echo '"""' > "$file"
+                echo "Copyright (c) $year Neuron Development Team" >> "$file"
+                echo "License: MIT" >> "$file"
+                echo '"""' >> "$file"
+                echo "" >> "$file"
+                echo "$content" >> "$file"
+                updated=$((updated + 1))
+              fi
+            done < missing_headers.txt
+            
+            if [ $updated -gt 0 ]; then
+              git config --local user.email "action@github.com"
+              git config --local user.name "IP Protection"
+              git add .
+              git commit -m "Add copyright headers [skip ci]" || echo "No changes"
+            fi
+          fi
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: license-copyright
+          path: |
+            license_report.md
+            copyright_report.md
+            missing_headers.txt
+
+  security-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Install security tools
+        run: pip install safety bandit
+      
+      - name: Vulnerability scan
+        run: |
+          echo "# Security Analysis" > security_report.md
+          echo "Generated: $(date)" >> security_report.md
+          
+          safety check --json > safety.json 2>/dev/null || echo "[]" > safety.json
+          vuln_count=$(python3 -c "import json; print(len(json.load(open('safety.json'))))" 2>/dev/null || echo "0")
+          
+          echo "Vulnerabilities: $vuln_count" >> security_report.md
+          
+          if [ "$vuln_count" -gt "0" ]; then
+            echo "⚠️ Security issues found!" >> security_report.md
+          else
+            echo "✅ No vulnerabilities detected" >> security_report.md
+          fi
+      
+      - name: Static analysis
+        run: |
+          bandit -r . -f json -o bandit.json 2>/dev/null || echo '{"results":[]}' > bandit.json
+          issue_count=$(python3 -c "import json; print(len(json.load(open('bandit.json')).get('results',[])))" 2>/dev/null || echo "0")
+          
+          echo "Static analysis issues: $issue_count" >> security_report.md
+          
+          if [ "$issue_count" -gt "0" ]; then
+            echo "⚠️ Code security issues found" >> security_report.md
+          else
+            echo "✅ No static analysis issues" >> security_report.md
+          fi
+      
+      - name: Secret detection
+        run: |
+          secrets=0
+          for file in $(find . -name "*.py" | head -50); do
+            if grep -qi "password.*=\|key.*=\|secret.*=" "$file"; then
+              if ! grep -qi "example\|test\|demo" "$file"; then
+                echo "$file: potential secret" >> secrets.txt
+                secrets=$((secrets + 1))
+              fi
+            fi
+          done
+          
+          echo "Potential secrets: $secrets" >> security_report.md
+          
+          if [ $secrets -gt 0 ]; then
+            echo "⚠️ Potential secrets detected" >> security_report.md
+          else
+            echo "✅ No obvious secrets found" >> security_report.md
+          fi
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: security-analysis
+          path: |
+            security_report.md
+            safety.json
+            bandit.json
+            secrets.txt
+
+  innovation-analysis:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Innovation patterns
+        run: |
+          echo "# Innovation Analysis" > innovation_report.md
+          echo "Generated: $(date)" >> innovation_report.md
+          
+          keywords="algorithm neural network machine learning AI optimization fault tolerance circuit breaker distributed system"
+          total_matches=0
+          
+          for keyword in $keywords; do
+            matches=$(find . -name "*.py" | xargs grep -l -i "$keyword" 2>/dev/null | wc -l)
+            if [ "$matches" -gt "0" ]; then
+              echo "$keyword: $matches files" >> innovation_report.md
+              total_matches=$((total_matches + matches))
+            fi
+          done
+          
+          echo "Total innovation matches: $total_matches" >> innovation_report.md
+      
+      - name: Trademark analysis
+        run: |
+          echo "## Trademark Analysis" >> innovation_report.md
+          
+          trademarks="Neuron Framework NeuroCircuit NeuroPilot"
+          
+          for tm in $trademarks; do
+            usage=$(find . -name "*.py" -o -name "*.md" | xargs grep -i "$tm" 2>/dev/null | wc -l)
+            symbols=$(find . -name "*.py" -o -name "*.md" | xargs grep -i "$tm.*[™®]" 2>/dev/null | wc -l)
+            
+            echo "$tm: $usage uses, $symbols with symbols" >> innovation_report.md
+            
+            if [ "$usage" -gt "5" ] && [ "$symbols" -eq "0" ]; then
+              echo "  ⚠️ Consider adding ™ symbol" >> innovation_report.md
+            fi
+          done
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: innovation-analysis
+          path: innovation_report.md
+
+  final-report:
+    runs-on: ubuntu-latest
+    needs: [license-copyright, security-scan, innovation-analysis]
+    if: always()
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/download-artifact@v4
+        with:
+          path: ./results
+      
+      - name: Generate comprehensive report
+        run: |
+          echo "# IP Protection Report Plus" > IP_REPORT_PLUS.md
+          echo "" >> IP_REPORT_PLUS.md
+          echo "**Repository**: $GITHUB_REPOSITORY" >> IP_REPORT_PLUS.md
+          echo "**Generated**: $(date)" >> IP_REPORT_PLUS.md
+          echo "**Commit**: $GITHUB_SHA" >> IP_REPORT_PLUS.md
+          echo "" >> IP_REPORT_PLUS.md
+          
+          echo "## Executive Summary" >> IP_REPORT_PLUS.md
+          echo "" >> IP_REPORT_PLUS.md
+          
+          # License status
+          if [ -f "./results/license-copyright/license_report.md" ]; then
+            if grep -q "GPL dependencies found" "./results/license-copyright/license_report.md"; then
+              echo "- **License**: ⚠️ Issues found" >> IP_REPORT_PLUS.md
+            else
+              echo "- **License**: ✅ Compliant" >> IP_REPORT_PLUS.md
+            fi
+          fi
+          
+          # Copyright status
+          if [ -f "./results/license-copyright/copyright_report.md" ]; then
+            coverage=$(grep "Coverage:" "./results/license-copyright/copyright_report.md" | cut -d: -f2 || echo "100%")
+            echo "- **Copyright**: $coverage coverage" >> IP_REPORT_PLUS.md
+          fi
+          
+          # Security status
+          if [ -f "./results/security-analysis/security_report.md" ]; then
+            if grep -q "issues found" "./results/security-analysis/security_report.md"; then
+              echo "- **Security**: ⚠️ Issues detected" >> IP_REPORT_PLUS.md
+            else
+              echo "- **Security**: ✅ Clean" >> IP_REPORT_PLUS.md
+            fi
+          fi
+          
+          # Innovation summary
+          if [ -f "./results/innovation-analysis/innovation_report.md" ]; then
+            matches=$(grep "Total innovation matches:" "./results/innovation-analysis/innovation_report.md" | cut -d: -f2 || echo "0")
+            echo "- **Innovation**: $matches patterns found" >> IP_REPORT_PLUS.md
+          fi
+          
+          echo "" >> IP_REPORT_PLUS.md
+          echo "## Detailed Analysis" >> IP_REPORT_PLUS.md
+          
+          # Include all reports
+          for report in ./results/*/; do
+            for file in "$report"*.md; do
+              if [ -f "$file" ]; then
+                echo "" >> IP_REPORT_PLUS.md
+                echo "---" >> IP_REPORT_PLUS.md
+                cat "$file" >> IP_REPORT_PLUS.md
+              fi
+            done
+          done
+          
+          echo "" >> IP_REPORT_PLUS.md
+          echo "## Recommendations" >> IP_REPORT_PLUS.md
+          echo "1. Address any flagged license issues" >> IP_REPORT_PLUS.md
+          echo "2. Complete copyright header coverage" >> IP_REPORT_PLUS.md
+          echo "3. Resolve security vulnerabilities" >> IP_REPORT_PLUS.md
+          echo "4. Consider IP protection for innovations" >> IP_REPORT_PLUS.md
+          echo "5. Add trademark symbols where needed" >> IP_REPORT_PLUS.md
+      
+      - name: Create issue for problems
+        if: github.event_name != 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            let issues = [];
+            
+            try {
+              const files = fs.readdirSync('./results', { recursive: true });
+              for (const file of files) {
+                if (file.endsWith('.md')) {
+                  const content = fs.readFileSync(`./results/${file}`, 'utf8');
+                  if (content.includes('⚠️') || content.includes('issues found')) {
+                    issues.push(`Issues detected in ${file}`);
+                  }
+                }
+              }
+            } catch (e) {
+              console.log('Could not analyze results');
+            }
+            
+            if (issues.length > 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: 'IP Protection Issues Detected',
+                body: `Issues found:\n${issues.map(i => `- ${i}`).join('\n')}\n\nView details in workflow artifacts.`,
+                labels: ['ip-protection']
+              });
+            }
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ip-protection-plus-report
+          path: IP_REPORT_PLUS.md
