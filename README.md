@@ -21,7 +21,7 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 [![🧠 Agent Reference Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml)
 [![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
 [![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
-[![IP Protection](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-simple.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-simple.yml)
+[![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
 [![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
