@@ -1,0 +1,263 @@
+name: IP Monitoring Simple
+
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  ip-monitoring:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      
+      - name: Extract code signatures
+        run: |
+          echo "Extracting unique code signatures..."
+          
+          echo "# Code Signatures" > signatures.txt
+          echo "Generated: $(date)" >> signatures.txt
+          echo "" >> signatures.txt
+          
+          # Find unique function names
+          echo "## Functions" >> signatures.txt
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            grep "^def " "$file" | head -3 | while read line; do
+              func=$(echo "$line" | sed 's/def //' | cut -d'(' -f1)
+              if [ ${#func} -gt 8 ]; then
+                echo "$func" >> signatures.txt
+              fi
+            done
+          done
+          
+          # Find unique class names
+          echo "" >> signatures.txt
+          echo "## Classes" >> signatures.txt
+          find . -name "*.py" -not -path "./.git/*" | while read file; do
+            grep "^class " "$file" | head -3 | while read line; do
+              class=$(echo "$line" | sed 's/class //' | cut -d'(' -f1 | cut -d':' -f1)
+              if [ ${#class} -gt 6 ]; then
+                echo "$class" >> signatures.txt
+              fi
+            done
+          done
+          
+          echo "Signature extraction completed"
+      
+      - name: GitHub search monitoring
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Searching GitHub for code usage..."
+          
+          echo "# GitHub Search Results" > github_search.txt
+          echo "Generated: $(date)" >> github_search.txt
+          echo "" >> github_search.txt
+          
+          # Search for repository names containing our trademarks
+          TERMS="Neuron NeuroCircuit NeuroPilot"
+          
+          for term in $TERMS; do
+            echo "Searching for: $term"
+            echo "## Search: $term" >> github_search.txt
+            
+            # Simple curl request to GitHub API
+            response=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+                           "https://api.github.com/search/repositories?q=$term")
+            
+            # Basic parsing without complex JSON processing
+            if echo "$response" | grep -q "full_name"; then
+              echo "Results found for $term" >> github_search.txt
+              echo "$response" | grep "full_name" | head -3 >> github_search.txt
+            else
+              echo "No results for $term" >> github_search.txt
+            fi
+            
+            echo "" >> github_search.txt
+            
+            # Rate limiting
+            sleep 3
+          done
+          
+          echo "GitHub search completed"
+      
+      - name: Simple trademark monitoring
+        run: |
+          echo "Basic trademark monitoring..."
+          
+          echo "# Trademark Monitoring" > trademark_check.txt
+          echo "Generated: $(date)" >> trademark_check.txt
+          echo "" >> trademark_check.txt
+          
+          # Count usage of trademark terms in our own code
+          TRADEMARKS="Neuron Framework NeuroCircuit NeuroPilot"
+          
+          for tm in $TRADEMARKS; do
+            echo "## Checking: $tm" >> trademark_check.txt
+            
+            count=$(find . -name "*.py" -o -name "*.md" | xargs grep -i "$tm" 2>/dev/null | wc -l)
+            symbols=$(find . -name "*.py" -o -name "*.md" | xargs grep -i "$tm.*[™®]" 2>/dev/null | wc -l)
+            
+            echo "Internal usage: $count times" >> trademark_check.txt
+            echo "With symbols: $symbols times" >> trademark_check.txt
+            
+            if [ "$count" -gt "3" ] && [ "$symbols" -eq "0" ]; then
+              echo "Recommendation: Add ™ symbol" >> trademark_check.txt
+            fi
+            
+            echo "" >> trademark_check.txt
+          done
+          
+          echo "Trademark check completed"
+      
+      - name: Generate monitoring report
+        run: |
+          echo "Generating IP monitoring report..."
+          
+          cat > IP_MONITORING_REPORT.md << 'EOF'
+          # IP Monitoring Report
+          
+          **Generated**: $(date)
+          **Repository**: ${{ github.repository }}
+          **Scope**: Basic usage detection
+          
+          ## Summary
+          
+          This report monitors for potential usage of your intellectual property
+          across public platforms and repositories.
+          
+          ## Code Signatures Monitored
+          EOF
+          
+          # Add signatures if file exists
+          if [ -f signatures.txt ]; then
+            echo "" >> IP_MONITORING_REPORT.md
+            echo "### Unique Functions and Classes" >> IP_MONITORING_REPORT.md
+            tail -n +4 signatures.txt >> IP_MONITORING_REPORT.md
+            echo "" >> IP_MONITORING_REPORT.md
+          fi
+          
+          # Add GitHub search results
+          if [ -f github_search.txt ]; then
+            echo "## GitHub Search Results" >> IP_MONITORING_REPORT.md
+            tail -n +4 github_search.txt >> IP_MONITORING_REPORT.md
+            echo "" >> IP_MONITORING_REPORT.md
+          fi
+          
+          # Add trademark monitoring
+          if [ -f trademark_check.txt ]; then
+            echo "## Trademark Monitoring" >> IP_MONITORING_REPORT.md
+            tail -n +4 trademark_check.txt >> IP_MONITORING_REPORT.md
+            echo "" >> IP_MONITORING_REPORT.md
+          fi
+          
+          # Add recommendations
+          cat >> IP_MONITORING_REPORT.md << 'EOF'
+          
+          ## Recommendations
+          
+          1. **Regular Monitoring**: Run this check monthly
+          2. **Google Alerts**: Set up alerts for your unique terms
+          3. **Manual Review**: Periodically search for your class/function names
+          4. **Legal Consultation**: Contact IP attorney if usage concerns arise
+          5. **Documentation**: Keep records of your original creation dates
+          
+          ## Next Steps
+          
+          - Review any GitHub repositories found
+          - Check if usage includes proper attribution
+          - Consider reaching out for proper licensing compliance
+          - Document any potential violations
+          
+          ---
+          *Generated by IP Monitoring System*
+          EOF
+          
+          echo "Monitoring report generated"
+      
+      - name: Check for potential issues
+        id: check_issues
+        run: |
+          issues_found=false
+          
+          # Check if GitHub search found external repositories
+          if [ -f github_search.txt ]; then
+            if grep -q "Results found" github_search.txt; then
+              echo "potential_usage=true" >> $GITHUB_OUTPUT
+              issues_found=true
+            fi
+          fi
+          
+          # Check trademark usage recommendations
+          if [ -f trademark_check.txt ]; then
+            if grep -q "Recommendation:" trademark_check.txt; then
+              echo "trademark_issues=true" >> $GITHUB_OUTPUT
+            fi
+          fi
+          
+          echo "issues_found=$issues_found" >> $GITHUB_OUTPUT
+      
+      - name: Create alert issue
+        if: steps.check_issues.outputs.issues_found == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issueBody = `# 🔍 IP Monitoring Alert
+            
+            The IP monitoring system has detected potential usage or trademark issues:
+            
+            ## 📊 Findings
+            - Potential external usage detected
+            - Trademark recommendations available
+            
+            ## 📋 Actions Required
+            1. **Review Report**: Download IP_MONITORING_REPORT.md from artifacts
+            2. **Verify Usage**: Check if detected usage includes proper attribution
+            3. **Document**: Screenshot any concerning usage
+            4. **Consider**: Legal consultation if unauthorized usage suspected
+            
+            ## 🔗 Monitoring Report
+            View detailed findings in the workflow artifacts.
+            
+            **Workflow Run**: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+            
+            ---
+            *Automated IP monitoring alert*`;
+            
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: '🔍 IP Monitoring Alert - Review Required',
+              body: issueBody,
+              labels: ['ip-monitoring', 'review-needed']
+            });
+      
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ip-monitoring-results
+          path: |
+            IP_MONITORING_REPORT.md
+            signatures.txt
+            github_search.txt
+            trademark_check.txt
+          retention-days: 90
+      
+      - name: Monitoring summary
+        run: |
+          echo "🔍 IP Monitoring Complete!"
+          echo ""
+          echo "✅ Code signatures extracted"
+          echo "✅ GitHub search performed" 
+          echo "✅ Trademark usage checked"
+          echo "✅ Monitoring report generated"
+          echo ""
+          echo "📋 Results available in artifacts"
+          echo "🚨 Check for any created issues"
