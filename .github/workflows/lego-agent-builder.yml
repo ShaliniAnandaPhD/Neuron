@@ -1,4 +1,26 @@
-name: 🧱 Neuron LEGO Agent Builder
+- name: Add Main Function
+      run: |
+        cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
+        
+        async def main():
+            print("🧱 Starting ${{ inputs.industry }} LEGO Agent System...")
+            system = LegoSystem()
+            success = await system.demo()
+            
+            print(f"\n{'='*60}")
+            print(f"🏁 Final Status: {'SUCCESS' if success else 'PARTIAL'}")
+            print(f"🎯 Agent Type: ${{ inputs.industry }} Industry Agent")
+            print(f"💼 Use Case: ${{ inputs.use_case }}")
+            print(f"🧱 LEGO Blocks: Memory + Reasoning + Reliability")
+            print(f"{'='*60}")
+            
+            return success
+        
+        if __name__ == "__main__":
+            result = asyncio.run(main())
+            exit_code = 0 if result else 1
+            print(f"✅ Demo complete with exit code: {exit_code}")
+        EOFname: 🧱 Neuron LEGO Agent Builder
 
 on:
   workflow_dispatch:
@@ -145,125 +167,111 @@ jobs:
     - name: Add System Core
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
-
-class LegoSystem:
-    def __init__(self):
-        self.agents = {
-            "memory": MemoryAgent(),
-            "reasoning": ReasoningAgent(),
-            "reliability": ReliabilityAgent()
-        }
-        self.message_log = []
-        logger.info(f"🧱 System ready with {len(self.agents)} agents")
+        
+        class LegoSystem:
+            def __init__(self):
+                self.agents = {
+                    "memory": MemoryAgent(),
+                    "reasoning": ReasoningAgent(),
+                    "reliability": ReliabilityAgent()
+                }
+                self.message_log = []
+                logger.info(f"🧱 System ready with {len(self.agents)} agents")
+            
+            async def send(self, agent_name, msg_type, payload):
+                if agent_name in self.agents:
+                    message = AgentMessage("system", agent_name, msg_type, payload)
+                    self.message_log.append({
+                        "id": message.id,
+                        "to": agent_name,
+                        "type": msg_type,
+                        "timestamp": message.timestamp.isoformat()
+                    })
+                    return await self.agents[agent_name].process(message)
+                return None
+        EOF
     
-    async def send(self, agent_name, msg_type, payload):
-        if agent_name in self.agents:
-            message = AgentMessage("system", agent_name, msg_type, payload)
-            self.message_log.append({
-                "id": message.id,
-                "to": agent_name,
-                "type": msg_type,
-                "timestamp": message.timestamp.isoformat()
-            })
-            return await self.agents[agent_name].process(message)
-        return None
-    
-    async def demo(self):
-        print(f"\n🎭 DEMO: ${{ inputs.industry }} LEGO Agent")
-        print("=" * 60)
-        print(f"Industry: ${{ inputs.industry }}")
-        print(f"Use Case: ${{ inputs.use_case }}")
-        print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("=" * 60)
-        
-        success_count = 0
-        total_tests = 4
-        
-        # Test 1: Memory Operations
-        print("\n🧱 Testing Memory Agent...")
-        await self.send("memory", "store", {
-            "key": "${{ inputs.industry }}_data",
-            "data": {"test": "success", "timestamp": datetime.now().isoformat()}
-        })
-        result = await self.send("memory", "retrieve", {
-            "key": "${{ inputs.industry }}_data"
-        })
-        if result and result.get("status") == "success":
-            print("   ✅ Memory operations successful")
-            success_count += 1
-        else:
-            print("   ❌ Memory operations failed")
-        
-        # Test 2: Reasoning Analysis
-        print("\n🧱 Testing Reasoning Agent...")
-        result = await self.send("reasoning", "analyze", {
-            "data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        })
-        if result and result.get("patterns"):
-            patterns = result['patterns']
-            print(f"   ✅ Found {len(patterns)} patterns")
-            for pattern in patterns:
-                print(f"      - {pattern['pattern']}: {pattern['confidence']:.1%} confidence")
-            success_count += 1
-        else:
-            print("   ❌ Reasoning analysis failed")
-        
-        # Test 3: Health Check
-        print("\n🧱 Testing Reliability Agent...")
-        result = await self.send("reliability", "health", {})
-        if result and result.get("status") == "healthy":
-            compliance = result.get("compliance", [])
-            protocols = result.get("protocols", [])
-            print(f"   ✅ System healthy")
-            print(f"      Compliance: {', '.join(compliance)}")
-            print(f"      Protocols: {len(protocols)} active")
-            success_count += 1
-        else:
-            print("   ❌ Health check failed")
-        
-        # Test 4: Compliance Check
-        print("\n🧱 Testing Compliance Validation...")
-        result = await self.send("reliability", "compliance_check", {})
-        if result and result.get("compliant"):
-            print(f"   ✅ Compliance validation passed")
-            print(f"      Standards: {', '.join(result.get('standards', []))}")
-            success_count += 1
-        else:
-            print("   ❌ Compliance validation failed")
-        
-        # Results Summary
-        print(f"\n🎉 Test Results: {success_count}/{total_tests} tests passed")
-        print(f"📊 Success Rate: {(success_count/total_tests)*100:.1f}%")
-        print(f"📝 Messages Sent: {len(self.message_log)}")
-        
-        if success_count == total_tests:
-            print("🚀 All LEGO blocks working perfectly!")
-        elif success_count >= total_tests * 0.75:
-            print("⚡ Most LEGO blocks working well!")
-        else:
-            print("⚠️ Some LEGO blocks need attention")
-        
-        return success_count == total_tests
-
-async def main():
-    print("🧱 Starting ${{ inputs.industry }} LEGO Agent System...")
-    system = LegoSystem()
-    success = await system.demo()
-    
-    print(f"\n{'='*60}")
-    print(f"🏁 Final Status: {'SUCCESS' if success else 'PARTIAL'}")
-    print(f"🎯 Agent Type: ${{ inputs.industry }} Industry Agent")
-    print(f"💼 Use Case: ${{ inputs.use_case }}")
-    print(f"🧱 LEGO Blocks: Memory + Reasoning + Reliability")
-    print(f"{'='*60}")
-    
-    return success
-
-if __name__ == "__main__":
-    result = asyncio.run(main())
-    exit_code = 0 if result else 1
-    print(f"✅ Demo complete with exit code: {exit_code}")
-EOF
+    - name: Add Demo Method
+      run: |
+        cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
+            
+            async def demo(self):
+                print(f"\n🎭 DEMO: ${{ inputs.industry }} LEGO Agent")
+                print("=" * 60)
+                print(f"Industry: ${{ inputs.industry }}")
+                print(f"Use Case: ${{ inputs.use_case }}")
+                print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                print("=" * 60)
+                
+                success_count = 0
+                total_tests = 4
+                
+                # Test 1: Memory Operations
+                print("\n🧱 Testing Memory Agent...")
+                await self.send("memory", "store", {
+                    "key": "${{ inputs.industry }}_data",
+                    "data": {"test": "success", "timestamp": datetime.now().isoformat()}
+                })
+                result = await self.send("memory", "retrieve", {
+                    "key": "${{ inputs.industry }}_data"
+                })
+                if result and result.get("status") == "success":
+                    print("   ✅ Memory operations successful")
+                    success_count += 1
+                else:
+                    print("   ❌ Memory operations failed")
+                
+                # Test 2: Reasoning Analysis
+                print("\n🧱 Testing Reasoning Agent...")
+                result = await self.send("reasoning", "analyze", {
+                    "data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                })
+                if result and result.get("patterns"):
+                    patterns = result['patterns']
+                    print(f"   ✅ Found {len(patterns)} patterns")
+                    for pattern in patterns:
+                        print(f"      - {pattern['pattern']}: {pattern['confidence']:.1%} confidence")
+                    success_count += 1
+                else:
+                    print("   ❌ Reasoning analysis failed")
+                
+                # Test 3: Health Check
+                print("\n🧱 Testing Reliability Agent...")
+                result = await self.send("reliability", "health", {})
+                if result and result.get("status") == "healthy":
+                    compliance = result.get("compliance", [])
+                    protocols = result.get("protocols", [])
+                    print(f"   ✅ System healthy")
+                    print(f"      Compliance: {', '.join(compliance)}")
+                    print(f"      Protocols: {len(protocols)} active")
+                    success_count += 1
+                else:
+                    print("   ❌ Health check failed")
+                
+                # Test 4: Compliance Check
+                print("\n🧱 Testing Compliance Validation...")
+                result = await self.send("reliability", "compliance_check", {})
+                if result and result.get("compliant"):
+                    print(f"   ✅ Compliance validation passed")
+                    print(f"      Standards: {', '.join(result.get('standards', []))}")
+                    success_count += 1
+                else:
+                    print("   ❌ Compliance validation failed")
+                
+                # Results Summary
+                print(f"\n🎉 Test Results: {success_count}/{total_tests} tests passed")
+                print(f"📊 Success Rate: {(success_count/total_tests)*100:.1f}%")
+                print(f"📝 Messages Sent: {len(self.message_log)}")
+                
+                if success_count == total_tests:
+                    print("🚀 All LEGO blocks working perfectly!")
+                elif success_count >= total_tests * 0.75:
+                    print("⚡ Most LEGO blocks working well!")
+                else:
+                    print("⚠️ Some LEGO blocks need attention")
+                
+                return success_count == total_tests
+        EOF
 
     - name: Create Docker Support
       run: |
