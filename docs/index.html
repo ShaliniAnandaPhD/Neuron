@@ -100,6 +100,35 @@
         .deployment-link:hover {
             color: #0056b3; /* Darker on hover */
         }
+        /* Styling for the new build button */
+        .build-button-container {
+            text-align: center;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background-color: #e6fffa; /* Light teal background */
+            border: 1px solid #b2f5ea; /* Teal border */
+            border-radius: 0.75rem;
+        }
+        .build-button {
+            display: inline-block;
+            background-color: #38b2ac; /* Strong teal button */
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            font-size: 1.25rem; /* Larger font size */
+        }
+        .build-button:hover {
+            background-color: #319795; /* Darker teal on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        .build-button:active {
+            transform: translateY(0); /* Press down effect */
+        }
     </style>
 </head>
 <body>
@@ -131,6 +160,15 @@
                 <div class="metric-label">Avg. Build Time (Idea to Deployment)</div>
             </div>
         </div>
+
+        <!-- New Build Agent Button -->
+        <div class="build-button-container">
+            <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" target="_blank" class="build-button">
+                🚀 Build Your Custom Agent Now!
+            </a>
+            <p class="text-sm text-gray-600 mt-2">Clicking this button will take you to GitHub Actions to initiate a new agent build.</p>
+        </div>
+
 
         <!-- New section for Deployment Methods & Lifecycle -->
         <h2 class="text-2xl font-semibold">⚙️ Deployment Methods & Lifecycle</h2>
@@ -339,5 +377,4 @@
     </div>
 </body>
 </html>
-
 
