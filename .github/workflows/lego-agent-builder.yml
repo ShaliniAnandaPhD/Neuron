@@ -54,29 +54,15 @@ jobs:
         mkdir -p "generated-agents/$AGENT_NAME/tests"
         echo "Created directories for $AGENT_NAME"
         
-    - name: Generate Agent Code
+    - name: Create Main Agent File
       run: |
         AGENT_NAME="neuron-${{ inputs.industry }}-agent"
         
-        # Create a Python script to generate the agent
-        cat > generate_agent.py << 'SCRIPT_END'
-import os
-import sys
-
-# Get inputs
-industry = sys.argv[1] if len(sys.argv) > 1 else "Healthcare"
-use_case = sys.argv[2] if len(sys.argv) > 2 else "Data Management" 
-blocks = sys.argv[3] if len(sys.argv) > 3 else "Memory, Reasoning"
-agent_name = f"neuron-{industry}-agent"
-
-# Create main.py content
-main_content = f"""#!/usr/bin/env python3
-'''
-{industry} Agent - Generated from LEGO Blocks
-Industry: {industry}
-Use Case: {use_case}
-LEGO Blocks: {blocks}
-'''
+        cat > "generated-agents/$AGENT_NAME/src/main.py" << 'EOF'
+#!/usr/bin/env python3
+"""
+Neuron LEGO Agent - Generated from LEGO Blocks
+"""
 
 import asyncio
 import json
@@ -93,26 +79,26 @@ class AgentMessage:
         self.sender = sender
         self.recipient = recipient
         self.message_type = message_type
-        self.payload = payload or {{}}
+        self.payload = payload or {}
         self.timestamp = datetime.now()
 
 class MemoryAgent:
     def __init__(self):
-        self.memory = {{}}
+        self.memory = {}
         logger.info("🧠 Memory Agent initialized")
     
     async def process(self, message):
         if message.message_type == "store":
             key = message.payload.get("key", "default")
-            data = message.payload.get("data", {{}})
+            data = message.payload.get("data", {})
             self.memory[key] = data
-            logger.info(f"📝 Stored memory: {{key}}")
-            return AgentMessage("memory", message.sender, "stored", {{"status": "success"}})
+            logger.info(f"📝 Stored memory: {key}")
+            return AgentMessage("memory", message.sender, "stored", {"status": "success"})
         
         elif message.message_type == "retrieve":
             key = message.payload.get("key", "default")
-            data = self.memory.get(key, {{}})
-            return AgentMessage("memory", message.sender, "retrieved", {{"data": data}})
+            data = self.memory.get(key, {})
+            return AgentMessage("memory", message.sender, "retrieved", {"data": data})
 
 class ReasoningAgent:
     def __init__(self):
@@ -121,42 +107,36 @@ class ReasoningAgent:
     async def process(self, message):
         if message.message_type == "analyze":
             data = message.payload.get("data", [])
-            # Simple pattern detection
             patterns = [
-                {{"pattern": "sequence", "confidence": 0.85}},
-                {{"pattern": "trend", "confidence": 0.72}}
+                {"pattern": "sequence", "confidence": 0.85},
+                {"pattern": "trend", "confidence": 0.72}
             ]
-            logger.info(f"📊 Analyzed {{len(data)}} items, found {{len(patterns)}} patterns")
-            return AgentMessage("reasoning", message.sender, "analyzed", {{"patterns": patterns}})
+            logger.info(f"📊 Analyzed {len(data)} items, found {len(patterns)} patterns")
+            return AgentMessage("reasoning", message.sender, "analyzed", {"patterns": patterns})
 
 class ReliabilityAgent:
     def __init__(self):
-        self.compliance = ["HIPAA"] if "{industry}" == "Healthcare" else ["SOC2"]
-        logger.info(f"🛡️ Reliability Agent initialized with {{self.compliance}} compliance")
+        self.compliance = ["HIPAA", "SOC2"]
+        logger.info(f"🛡️ Reliability Agent initialized with compliance frameworks")
     
     async def process(self, message):
         if message.message_type == "health_check":
-            status = {{
+            status = {
                 "status": "healthy",
                 "uptime": "99.9%",
                 "compliance": self.compliance,
                 "timestamp": datetime.now().isoformat()
-            }}
+            }
             return AgentMessage("reliability", message.sender, "health_report", status)
 
 class NeuronSystem:
     def __init__(self):
-        self.agents = {{}}
-        
-        # Initialize agents based on requested blocks
-        if "memory" in "{blocks}".lower():
-            self.agents["memory"] = MemoryAgent()
-        if "reasoning" in "{blocks}".lower():
-            self.agents["reasoning"] = ReasoningAgent()
-        if "reliability" in "{blocks}".lower():
-            self.agents["reliability"] = ReliabilityAgent()
-        
-        logger.info(f"🧱 System initialized with {{len(self.agents)}} agents")
+        self.agents = {
+            "memory": MemoryAgent(),
+            "reasoning": ReasoningAgent(),
+            "reliability": ReliabilityAgent()
+        }
+        logger.info(f"🧱 System initialized with {len(self.agents)} agents")
     
     async def send_message(self, agent_name, message_type, payload):
         if agent_name in self.agents:
@@ -165,128 +145,116 @@ class NeuronSystem:
         return None
     
     async def demo(self):
-        print(f"\\n🎭 DEMO: {industry} LEGO Agent System")
+        print("\n🎭 DEMO: Neuron LEGO Agent System")
         print("=" * 50)
-        print(f"Industry: {industry}")
-        print(f"Use Case: {use_case}")
-        print(f"LEGO Blocks: {blocks}")
+        print("Running demonstration of all LEGO blocks...")
         print("=" * 50)
         
-        for name, agent in self.agents.items():
-            print(f"\\n🧱 Testing {{name.title()}} Agent...")
-            
-            if name == "memory":
-                await self.send_message("memory", "store", {{
-                    "key": "{industry}_data",
-                    "data": {{"industry": "{industry}", "use_case": "{use_case}"}}
-                }})
-                response = await self.send_message("memory", "retrieve", {{"key": "{industry}_data"}})
-                if response:
-                    print("   ✅ Memory operations successful")
-            
-            elif name == "reasoning":
-                response = await self.send_message("reasoning", "analyze", {{"data": [1, 2, 3, 4, 5]}})
-                if response:
-                    patterns = response.payload.get("patterns", [])
-                    print(f"   ✅ Found {{len(patterns)}} patterns")
-            
-            elif name == "reliability":
-                response = await self.send_message("reliability", "health_check", {{}})
-                if response:
-                    status = response.payload.get("status", "unknown")
-                    print(f"   ✅ System {{status}}")
+        # Test Memory Agent
+        print("\n🧱 Testing Memory Agent...")
+        await self.send_message("memory", "store", {
+            "key": "demo_data",
+            "data": {"industry": "Healthcare", "use_case": "Patient Management"}
+        })
+        response = await self.send_message("memory", "retrieve", {"key": "demo_data"})
+        if response:
+            print("   ✅ Memory operations successful")
         
-        print(f"\\n🎉 Demo completed! All {{len(self.agents)}} agents working.")
+        # Test Reasoning Agent
+        print("\n🧱 Testing Reasoning Agent...")
+        response = await self.send_message("reasoning", "analyze", {"data": [1, 2, 3, 4, 5]})
+        if response:
+            patterns = response.payload.get("patterns", [])
+            print(f"   ✅ Found {len(patterns)} patterns")
+        
+        # Test Reliability Agent
+        print("\n🧱 Testing Reliability Agent...")
+        response = await self.send_message("reliability", "health_check", {})
+        if response:
+            status = response.payload.get("status", "unknown")
+            print(f"   ✅ System {status}")
+        
+        print(f"\n🎉 Demo completed! All {len(self.agents)} agents working.")
         return True
 
 async def main():
     print("🧱 Starting Neuron LEGO Agent...")
-    print(f"Industry: {industry}")
-    print(f"Use Case: {use_case}")
     
     system = NeuronSystem()
     await system.demo()
     
-    print("\\n✅ System ready! Press Ctrl+C to stop")
+    print("\n✅ System ready! Press Ctrl+C to stop")
     try:
         while True:
             await asyncio.sleep(1)
     except KeyboardInterrupt:
-        print("\\n👋 Goodbye!")
+        print("\n👋 Goodbye!")
 
 if __name__ == "__main__":
     asyncio.run(main())
-"""
-
-# Write files
-agent_dir = f"generated-agents/{agent_name}"
-os.makedirs(f"{agent_dir}/src", exist_ok=True)
-os.makedirs(f"{agent_dir}/tests", exist_ok=True)
-
-with open(f"{agent_dir}/src/main.py", "w") as f:
-    f.write(main_content)
-
-# Create requirements.txt
-with open(f"{agent_dir}/requirements.txt", "w") as f:
-    f.write("asyncio\\nlogging\\ndatetime\\nuuid\\njson\\n")
-
-# Create Dockerfile
-dockerfile_content = f"""FROM python:3.11-slim
+EOF
+        
+    - name: Create Support Files
+      run: |
+        AGENT_NAME="neuron-${{ inputs.industry }}-agent"
+        
+        # Create requirements.txt
+        echo "asyncio" > "generated-agents/$AGENT_NAME/requirements.txt"
+        echo "logging" >> "generated-agents/$AGENT_NAME/requirements.txt"
+        echo "datetime" >> "generated-agents/$AGENT_NAME/requirements.txt"
+        echo "uuid" >> "generated-agents/$AGENT_NAME/requirements.txt"
+        echo "json" >> "generated-agents/$AGENT_NAME/requirements.txt"
+        
+        # Create Dockerfile
+        cat > "generated-agents/$AGENT_NAME/Dockerfile" << 'EOF'
+FROM python:3.11-slim
 WORKDIR /app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 COPY src/ ./src/
 CMD ["python", "src/main.py"]
-"""
-
-with open(f"{agent_dir}/Dockerfile", "w") as f:
-    f.write(dockerfile_content)
-
-# Create docker-compose.yml
-compose_content = """version: '3.8'
+EOF
+        
+        # Create docker-compose.yml
+        cat > "generated-agents/$AGENT_NAME/docker-compose.yml" << 'EOF'
+version: '3.8'
 services:
   agent:
     build: .
     ports:
       - "8080:8080"
-"""
+EOF
+        
+        # Create README
+        cat > "generated-agents/$AGENT_NAME/README.md" << EOF
+# ${{ inputs.industry }} Agent
 
-with open(f"{agent_dir}/docker-compose.yml", "w") as f:
-    f.write(compose_content)
+Generated LEGO Agent for ${{ inputs.industry }} industry.
 
-# Create README
-readme_content = f"""# {industry} Agent
-
-Generated LEGO Agent for {industry} industry.
+**Use Case**: ${{ inputs.use_case }}
+**LEGO Blocks**: ${{ inputs.blocks_requested }}
 
 ## Quick Start
 
-```bash
-# Docker
+### Docker
+\`\`\`bash
 docker-compose up --build
+\`\`\`
 
-# Python  
+### Python  
+\`\`\`bash
 pip install -r requirements.txt
 python src/main.py
-```
+\`\`\`
 
 ## Features
 
-- Industry: {industry}
-- Use Case: {use_case}  
-- LEGO Blocks: {blocks}
+- 🧠 Memory Agent: Store and retrieve data
+- 🤔 Reasoning Agent: Pattern analysis  
+- 🛡️ Reliability Agent: Health monitoring
 
 Generated by Neuron LEGO Blocks!
-"""
-
-with open(f"{agent_dir}/README.md", "w") as f:
-    f.write(readme_content)
-
-print(f"✅ Generated {agent_name} successfully!")
-SCRIPT_END
-        
-        # Run the generator
-        python generate_agent.py "${{ inputs.industry }}" "${{ inputs.use_case }}" "${{ inputs.blocks_requested }}"
+EOF
         
     - name: Show Results
       run: |
@@ -295,7 +263,6 @@ SCRIPT_END
         echo ""
         echo "📁 Files created:"
         ls -la "generated-agents/$AGENT_NAME/"
-        ls -la "generated-agents/$AGENT_NAME/src/"
         echo ""
         echo "🚀 To test your agent:"
         echo "  cd generated-agents/$AGENT_NAME"
@@ -304,11 +271,13 @@ SCRIPT_END
         echo "🐳 To run with Docker:"
         echo "  cd generated-agents/$AGENT_NAME"  
         echo "  docker-compose up --build"
+        echo ""
+        echo "✨ Your ${{ inputs.industry }} LEGO agent is ready!"
         
     - name: Commit Files
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
         git add generated-agents/
-        git commit -m "🧱 Generated ${{ inputs.industry }} LEGO agent" || exit 0
+        git commit -m "🧱 Generated ${{ inputs.industry }} LEGO agent for ${{ inputs.use_case }}" || exit 0
         git push
