@@ -1,0 +1,255 @@
+name: 🏪 Simple Marketplace Fix
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix-marketplace:
+    name: 🔧 Fix Marketplace (Direct to Main)
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📁 Checkout Repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        
+    - name: 🏪 Create Simple Marketplace
+      run: |
+        echo "🏪 Creating marketplace directly in main branch..."
+        
+        # Create docs directory
+        mkdir -p docs
+        
+        # Create a simple but beautiful index.html
+        cat > docs/index.html << 'EOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>🧱 Neuron LEGO Agent Marketplace</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body {
+                    font-family: 'Segoe UI', sans-serif;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    min-height: 100vh;
+                    padding: 20px;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background: white;
+                    border-radius: 20px;
+                    padding: 40px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 40px;
+                    padding: 30px;
+                    background: linear-gradient(135deg, #4CAF50, #45a049);
+                    border-radius: 15px;
+                    color: white;
+                }
+                .header h1 { font-size: 2.5em; margin-bottom: 10px; }
+                .header p { font-size: 1.2em; opacity: 0.9; }
+                .stats {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                    margin-bottom: 40px;
+                }
+                .stat-card {
+                    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                    color: white;
+                    padding: 30px;
+                    border-radius: 15px;
+                    text-align: center;
+                }
+                .stat-number {
+                    font-size: 3em;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+                .build-section {
+                    text-align: center;
+                    margin: 40px 0;
+                    padding: 40px;
+                    background: linear-gradient(135deg, #a8edea, #fed6e3);
+                    border-radius: 15px;
+                }
+                .build-button {
+                    background: #6c5ce7;
+                    color: white;
+                    padding: 20px 40px;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1.3em;
+                    font-weight: bold;
+                    text-decoration: none;
+                    display: inline-block;
+                    margin-top: 20px;
+                    transition: transform 0.3s ease;
+                }
+                .build-button:hover { transform: scale(1.05); }
+                .lego-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                    gap: 25px;
+                    margin-top: 40px;
+                }
+                .lego-block {
+                    background: white;
+                    border: 3px solid #ddd;
+                    border-radius: 15px;
+                    padding: 30px;
+                    text-align: center;
+                    transition: all 0.3s ease;
+                }
+                .lego-block:hover {
+                    border-color: #4CAF50;
+                    transform: translateY(-5px);
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+                }
+                .block-icon { font-size: 4em; margin-bottom: 20px; }
+                .block-title { font-size: 1.3em; font-weight: bold; margin-bottom: 10px; }
+                .block-desc { color: #666; line-height: 1.5; }
+                .footer {
+                    text-align: center;
+                    margin-top: 50px;
+                    padding: 30px;
+                    background: #f8f9fa;
+                    border-radius: 15px;
+                }
+                .success-banner {
+                    background: #d4edda;
+                    color: #155724;
+                    padding: 20px;
+                    border-radius: 10px;
+                    margin-bottom: 30px;
+                    border: 1px solid #c3e6cb;
+                    text-align: center;
+                    font-weight: bold;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="success-banner">
+                    🎉 Marketplace Successfully Deployed! This page is now live on GitHub Pages.
+                </div>
+                
+                <div class="header">
+                    <h1>🧱 Neuron LEGO Agent Marketplace</h1>
+                    <p>Build specialized AI agents in minutes with modular LEGO blocks!</p>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div>Generated Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div>LEGO Block Types</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8+</div>
+                        <div>Industries Supported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5min</div>
+                        <div>Build Time</div>
+                    </div>
+                </div>
+
+                <div class="build-section">
+                    <h2>🚀 Build Your First Custom Agent</h2>
+                    <p>Choose your industry and LEGO blocks to automatically generate a specialized AI agent!</p>
+                    <a href="../../actions" class="build-button">🧱 Start Building Now</a>
+                </div>
+
+                <h2 style="text-align: center; margin-bottom: 30px; color: #333;">🎯 Available LEGO Blocks</h2>
+                <div class="lego-grid">
+                    <div class="lego-block">
+                        <div class="block-icon">🧠</div>
+                        <div class="block-title">Memory Blocks</div>
+                        <div class="block-desc">Episodic, semantic, and contextual memory for learning and recall</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🤔</div>
+                        <div class="block-title">Reasoning Blocks</div>
+                        <div class="block-desc">Pattern analysis, logical inference, and contradiction detection</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🤝</div>
+                        <div class="block-title">Coordination Blocks</div>
+                        <div class="block-desc">Multi-agent orchestration and workflow management</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">👁️</div>
+                        <div class="block-title">Perception Blocks</div>
+                        <div class="block-desc">Voice, text, image, and multi-modal input processing</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">💬</div>
+                        <div class="block-title">Expression Blocks</div>
+                        <div class="block-desc">Tone adaptation, style matching, and response generation</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🛡️</div>
+                        <div class="block-title">Reliability Blocks</div>
+                        <div class="block-desc">HIPAA compliance, error handling, and fault tolerance</div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <h2>🎮 Ready to Build?</h2>
+                    <p>Click the "Start Building Now" button above to create your first AI agent!</p>
+                    <p><strong>From idea to deployment in just 5 minutes.</strong></p>
+                    <hr style="margin: 20px 0; border: 1px solid #ddd;">
+                    <p><small>Powered by Neuron Framework | Built with ❤️ for developers</small></p>
+                </div>
+            </div>
+        </body>
+        </html>
+        EOF
+        
+        # Also create a simple index.html in root for backup
+        cp docs/index.html index.html
+        
+        echo "✅ Marketplace created in both docs/ and root"
+        ls -la docs/
+        ls -la index.html
+        
+    - name: 💾 Commit and Push Changes
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
+        git add .
+        git commit -m "🏪 Deploy LEGO Agent Marketplace (fix 404)" || echo "No changes to commit"
+        git push origin main
+        
+    - name: 📢 Success Report
+      run: |
+        echo "🎉 MARKETPLACE DEPLOYED SUCCESSFULLY!" >> $GITHUB_STEP_SUMMARY
+        echo "=================================" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "✅ **Files Created:**" >> $GITHUB_STEP_SUMMARY
+        echo "   • \`docs/index.html\` - Main marketplace page" >> $GITHUB_STEP_SUMMARY
+        echo "   • \`index.html\` - Backup in root directory" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🔧 **Next Steps:**" >> $GITHUB_STEP_SUMMARY
+        echo "   1. Go to **Repository Settings → Pages**" >> $GITHUB_STEP_SUMMARY
+        echo "   2. Set **Source**: Deploy from a branch" >> $GITHUB_STEP_SUMMARY
+        echo "   3. Set **Branch**: main" >> $GITHUB_STEP_SUMMARY
+        echo "   4. Set **Folder**: /docs" >> $GITHUB_STEP_SUMMARY
+        echo "   5. Click **Save**" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🌐 **Your site will be live at:**" >> $GITHUB_STEP_SUMMARY
+        echo "   https://ShaliniAnandaPhD.github.io/Neuron" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "⏰ **Wait time**: 2-5 minutes after saving Pages settings" >> $GITHUB_STEP_SUMMARY
