@@ -119,34 +119,33 @@ class ReasoningAgent:
         return {"status": "error", "message": "Unknown analysis type"}
 PYTHONEOF
 
-    - name: "Add Reliability Agent with Compliance"
+    - name: "Add Reliability Agent"
       run: |
-        industry="${{ inputs.industry }}"
-        
-        if [ "$industry" = "Healthcare" ]; then
-          compliance_list='["HIPAA", "FDA", "HITECH"]'
-          protocols_list='["patient_privacy", "data_encryption", "audit_logging"]'
-        elif [ "$industry" = "Financial" ]; then
-          compliance_list='["PCI-DSS", "SOX", "GDPR"]'
-          protocols_list='["transaction_security", "fraud_detection", "compliance_reporting"]'
-        elif [ "$industry" = "Insurance" ]; then
-          compliance_list='["SOC2", "ISO-27001", "NAIC"]'
-          protocols_list='["risk_assessment", "claims_processing", "regulatory_reporting"]'
-        elif [ "$industry" = "Legal" ]; then
-          compliance_list='["ABA", "ISO-27001", "GDPR"]'
-          protocols_list='["client_privilege", "document_retention", "conflict_checking"]'
-        else
-          compliance_list='["SOC2", "ISO-27001"]'
-          protocols_list='["data_protection", "access_control"]'
-        fi
-        
         cat >> "agents/$AGENT_NAME/main.py" << 'PYTHONEOF'
 
         class ReliabilityAgent:
             def __init__(self):
-                self.compliance = ["HIPAA", "FDA", "HITECH"]
-                self.protocols = ["patient_privacy", "data_encryption", "audit_logging"]
-                logger.info(f"🛡️ Reliability Agent with compliance: {self.compliance}")
+                # Industry-specific compliance will be set based on input
+                industry = "${{ inputs.industry }}"
+                
+                if industry == "Healthcare":
+                    self.compliance = ["HIPAA", "FDA", "HITECH"]
+                    self.protocols = ["patient_privacy", "data_encryption", "audit_logging"]
+                elif industry == "Financial":
+                    self.compliance = ["PCI-DSS", "SOX", "GDPR"]
+                    self.protocols = ["transaction_security", "fraud_detection", "compliance_reporting"]
+                elif industry == "Insurance":
+                    self.compliance = ["SOC2", "ISO-27001", "NAIC"]
+                    self.protocols = ["risk_assessment", "claims_processing", "regulatory_reporting"]
+                elif industry == "Legal":
+                    self.compliance = ["ABA", "ISO-27001", "GDPR"]
+                    self.protocols = ["client_privilege", "document_retention", "conflict_checking"]
+                else:
+                    self.compliance = ["SOC2", "ISO-27001"]
+                    self.protocols = ["data_protection", "access_control"]
+                
+                self.industry = industry
+                logger.info(f"🛡️ Reliability Agent for {industry} with compliance: {self.compliance}")
             
             async def process(self, message):
                 if message.msg_type == "health":
@@ -155,7 +154,7 @@ PYTHONEOF
                         "uptime": "99.9%",
                         "compliance": self.compliance,
                         "protocols": self.protocols,
-                        "industry": "Healthcare",
+                        "industry": self.industry,
                         "timestamp": datetime.now().isoformat()
                     }
                 elif message.msg_type == "compliance_check":
@@ -169,11 +168,6 @@ PYTHONEOF
                 
                 return {"status": "error", "message": "Unknown health operation"}
         PYTHONEOF
-        
-        # Now replace with actual industry values
-        sed -i "s/\"HIPAA\", \"FDA\", \"HITECH\"/$compliance_list/g" "agents/$AGENT_NAME/main.py"
-        sed -i "s/\"patient_privacy\", \"data_encryption\", \"audit_logging\"/$protocols_list/g" "agents/$AGENT_NAME/main.py"
-        sed -i "s/\"Healthcare\"/\"${{ inputs.industry }}\"/g" "agents/$AGENT_NAME/main.py"
 
     - name: "Add LEGO System"
       run: |
