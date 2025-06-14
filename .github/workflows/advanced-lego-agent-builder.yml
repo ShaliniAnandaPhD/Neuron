@@ -636,7 +636,7 @@ jobs:
         ENDFILE
 
 
-- name: Create Advanced Agent Core - Part 2
+    - name: Create Advanced Agent Core - Part 2
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'ENDFILE'
         
@@ -1422,9 +1422,9 @@ jobs:
                     "evaluation_criteria": criteria,
                     "rationality_factor": rationality
                 }
+        ENDFILE
 
-
-## 🔒 Security & Compliance Features
+    ## 🔒 Security & Compliance Features
         
         - **Industry-specific compliance** automated checking
         - **Secure data handling** with encryption
@@ -4521,4 +4521,4 @@ jobs:
         # List generated files
         echo "📁 Generated files:"
         ls -la "agents/$AGENT_NAME/"
-
+        
