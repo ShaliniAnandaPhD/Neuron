@@ -34,178 +34,233 @@ jobs:
         fi
         
         # Generate marketplace HTML
-        cat > docs/index.html << 'EOF'
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧱 Neuron LEGO Agent Marketplace</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: #333;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-        }
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-            padding: 20px;
-            background: linear-gradient(135deg, #4CAF50, #45a049);
-            border-radius: 15px;
-            color: white;
-        }
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-        .stat-card {
-            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-            color: white;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-        }
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 10px;
-        }
-        .build-new {
-            text-align: center;
-            margin: 40px 0;
-            padding: 30px;
-            background: linear-gradient(135deg, #a8edea, #fed6e3);
-            border-radius: 15px;
-        }
-        .build-button {
-            background: #6c5ce7;
-            color: white;
-            padding: 15px 30px;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.2em;
-            font-weight: bold;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-        .lego-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-        .lego-block {
-            background: white;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            text-align: center;
-            transition: all 0.3s ease;
-        }
-        .lego-block:hover {
-            border-color: #4CAF50;
-            transform: scale(1.05);
-        }
-        .block-icon {
-            font-size: 3em;
-            margin-bottom: 15px;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="header">
-            <h1>🧱 Neuron LEGO Agent Marketplace</h1>
-            <p>Build specialized AI agents in minutes with LEGO blocks!</p>
-        </div>
+        cat > docs/index.html << 'HTMLEOF'
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>🧱 Neuron LEGO Agent Marketplace</title>
+            <style>
+                body {
+                    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                    margin: 0;
+                    padding: 20px;
+                    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                    color: #333;
+                    min-height: 100vh;
+                }
+                .container {
+                    max-width: 1200px;
+                    margin: 0 auto;
+                    background: white;
+                    border-radius: 20px;
+                    padding: 30px;
+                    box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+                }
+                .header {
+                    text-align: center;
+                    margin-bottom: 40px;
+                    padding: 20px;
+                    background: linear-gradient(135deg, #4CAF50, #45a049);
+                    border-radius: 15px;
+                    color: white;
+                }
+                .stats {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+                    gap: 20px;
+                    margin-bottom: 40px;
+                }
+                .stat-card {
+                    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+                    color: white;
+                    padding: 20px;
+                    border-radius: 15px;
+                    text-align: center;
+                }
+                .stat-number {
+                    font-size: 2.5em;
+                    font-weight: bold;
+                    margin-bottom: 10px;
+                }
+                .build-new {
+                    text-align: center;
+                    margin: 40px 0;
+                    padding: 30px;
+                    background: linear-gradient(135deg, #a8edea, #fed6e3);
+                    border-radius: 15px;
+                }
+                .build-button {
+                    background: #6c5ce7;
+                    color: white;
+                    padding: 15px 30px;
+                    border: none;
+                    border-radius: 10px;
+                    font-size: 1.2em;
+                    font-weight: bold;
+                    cursor: pointer;
+                    text-decoration: none;
+                    display: inline-block;
+                }
+                .lego-grid {
+                    display: grid;
+                    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                    gap: 20px;
+                    margin-top: 30px;
+                }
+                .lego-block {
+                    background: white;
+                    border: 2px solid #ddd;
+                    border-radius: 10px;
+                    padding: 20px;
+                    text-align: center;
+                    transition: all 0.3s ease;
+                }
+                .lego-block:hover {
+                    border-color: #4CAF50;
+                    transform: scale(1.05);
+                }
+                .block-icon {
+                    font-size: 3em;
+                    margin-bottom: 15px;
+                }
+                .agent-gallery {
+                    margin-top: 40px;
+                }
+                .agent-card {
+                    background: #f8f9fa;
+                    border: 1px solid #e9ecef;
+                    border-radius: 10px;
+                    padding: 20px;
+                    margin-bottom: 20px;
+                }
+                .footer {
+                    text-align: center;
+                    margin-top: 40px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <div class="header">
+                    <h1>🧱 Neuron LEGO Agent Marketplace</h1>
+                    <p>Build specialized AI agents in minutes with LEGO blocks!</p>
+                </div>
 
-        <div class="stats">
-            <div class="stat-card">
-                <div class="stat-number">EOF
-        echo "$AGENT_COUNT" >> docs/index.html
-        cat >> docs/index.html << 'EOF'
-</div>
-                <div>Generated Agents</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">6</div>
-                <div>LEGO Block Types</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">8</div>
-                <div>Industries Supported</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number">5min</div>
-                <div>Generation Time</div>
-            </div>
-        </div>
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-number">__AGENT_COUNT__</div>
+                        <div>Generated Agents</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">6</div>
+                        <div>LEGO Block Types</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">8</div>
+                        <div>Industries Supported</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">5min</div>
+                        <div>Generation Time</div>
+                    </div>
+                </div>
 
-        <div class="build-new">
-            <h2>🚀 Build Your Custom Agent</h2>
-            <p>Choose your industry and LEGO blocks to automatically generate a specialized agent!</p>
-            <a href="../../actions/workflows/lego-agent-builder.yml" class="build-button">🧱 Build New Agent</a>
-        </div>
+                <div class="build-new">
+                    <h2>🚀 Build Your Custom Agent</h2>
+                    <p>Choose your industry and LEGO blocks to automatically generate a specialized agent!</p>
+                    <a href="../../actions/workflows/lego-agent-builder.yml" class="build-button">🧱 Build New Agent</a>
+                </div>
 
-        <h2>🎯 Available LEGO Blocks</h2>
-        <div class="lego-grid">
-            <div class="lego-block">
-                <div class="block-icon">🧠</div>
-                <div><strong>Memory Blocks</strong></div>
-                <div>Episodic, Semantic, and Contextual memory</div>
-            </div>
-            <div class="lego-block">
-                <div class="block-icon">🤔</div>
-                <div><strong>Reasoning Blocks</strong></div>
-                <div>Pattern analysis, contradiction detection</div>
-            </div>
-            <div class="lego-block">
-                <div class="block-icon">🤝</div>
-                <div><strong>Coordination Blocks</strong></div>
-                <div>Agent orchestration and workflow management</div>
-            </div>
-            <div class="lego-block">
-                <div class="block-icon">👁️</div>
-                <div><strong>Perception Blocks</strong></div>
-                <div>Voice, text, and multi-modal processing</div>
-            </div>
-            <div class="lego-block">
-                <div class="block-icon">💬</div>
-                <div><strong>Expression Blocks</strong></div>
-                <div>Tone adaptation and response generation</div>
-            </div>
-            <div class="lego-block">
-                <div class="block-icon">🛡️</div>
-                <div><strong>Reliability Blocks</strong></div>
-                <div>HIPAA compliance, error handling</div>
-            </div>
-        </div>
+                <h2>🎯 Available LEGO Blocks</h2>
+                <div class="lego-grid">
+                    <div class="lego-block">
+                        <div class="block-icon">🧠</div>
+                        <div><strong>Memory Blocks</strong></div>
+                        <div>Episodic, Semantic, and Contextual memory</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🤔</div>
+                        <div><strong>Reasoning Blocks</strong></div>
+                        <div>Pattern analysis, contradiction detection</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🤝</div>
+                        <div><strong>Coordination Blocks</strong></div>
+                        <div>Agent orchestration and workflow management</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">👁️</div>
+                        <div><strong>Perception Blocks</strong></div>
+                        <div>Voice, text, and multi-modal processing</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">💬</div>
+                        <div><strong>Expression Blocks</strong></div>
+                        <div>Tone adaptation and response generation</div>
+                    </div>
+                    <div class="lego-block">
+                        <div class="block-icon">🛡️</div>
+                        <div><strong>Reliability Blocks</strong></div>
+                        <div>HIPAA compliance, error handling</div>
+                    </div>
+                </div>
 
-        <div style="text-align: center; margin-top: 40px;">
-            <h2>🎮 Try Building Your First Agent!</h2>
-            <p>Click the button above to start the GitHub Action workflow</p>
-            <p><strong>It takes just 5 minutes from idea to deployment!</strong></p>
-        </div>
-    </div>
-</body>
-</html>
-EOF
+                <div class="agent-gallery">
+                    <h2>🤖 Recently Generated Agents</h2>
+                    <div id="agent-list">
+                        <!-- Agents will be dynamically added here -->
+                    </div>
+                </div>
 
+                <div class="footer">
+                    <h2>🎮 Try Building Your First Agent!</h2>
+                    <p>Click the button above to start the GitHub Action workflow</p>
+                    <p><strong>It takes just 5 minutes from idea to deployment!</strong></p>
+                    <hr>
+                    <p><small>Powered by Neuron Framework | Last updated: __TIMESTAMP__</small></p>
+                </div>
+            </div>
+        </body>
+        </html>
+        HTMLEOF
+        
+        # Replace placeholders
+        sed -i "s/__AGENT_COUNT__/$AGENT_COUNT/g" docs/index.html
+        sed -i "s/__TIMESTAMP__/$(date)/g" docs/index.html
+        
+        # Generate agent list if agents exist
+        if [ -d "generated-agents" ] && [ "$(ls -A generated-agents)" ]; then
+          echo "📋 Found generated agents, adding to marketplace..."
+          
+          # Create agent list
+          echo '<div class="agent-gallery">' >> docs/agent-list.html
+          
+          for agent_dir in generated-agents/*/; do
+            if [ -d "$agent_dir" ]; then
+              agent_name=$(basename "$agent_dir")
+              echo "  <div class=\"agent-card\">" >> docs/agent-list.html
+              echo "    <h3>🤖 $agent_name</h3>" >> docs/agent-list.html
+              echo "    <p>Specialized agent for automated workflows</p>" >> docs/agent-list.html
+              
+              # Check if README exists
+              if [ -f "$agent_dir/README.md" ]; then
+                echo "    <a href=\"../generated-agents/$agent_name/README.md\">📖 View Documentation</a>" >> docs/agent-list.html
+              fi
+              
+              echo "  </div>" >> docs/agent-list.html
+            fi
+          done
+          
+          echo '</div>' >> docs/agent-list.html
+        else
+          echo '<p>No agents generated yet. Be the first to build one!</p>' > docs/agent-list.html
+        fi
+        
         echo "✅ Marketplace generated with $AGENT_COUNT agents"
         
     - name: 📖 Deploy to GitHub Pages
@@ -213,19 +268,20 @@ EOF
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
+        force_orphan: true
         
     - name: 📢 Update Summary
       run: |
-        echo "🏪 MARKETPLACE UPDATED!"
-        echo "====================="
-        echo ""
-        echo "🔗 Live marketplace: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
-        echo "🧱 Total agents: $AGENT_COUNT"
-        echo "📊 LEGO blocks: 6 types available"
-        echo "🎯 Industries: 8+ supported"
-        echo ""
-        echo "🚀 Developers can now:"
-        echo "   • Browse existing agents"
-        echo "   • Build custom agents"
-        echo "   • Deploy in minutes"
-        echo "   • Share their creations"
+        echo "🏪 MARKETPLACE UPDATED!" >> $GITHUB_STEP_SUMMARY
+        echo "=====================" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🔗 Live marketplace: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> $GITHUB_STEP_SUMMARY
+        echo "🧱 Total agents: $(if [ -d "generated-agents" ]; then find generated-agents -maxdepth 1 -type d | wc -l | awk '{print $1-1}'; else echo "0"; fi)" >> $GITHUB_STEP_SUMMARY
+        echo "📊 LEGO blocks: 6 types available" >> $GITHUB_STEP_SUMMARY
+        echo "🎯 Industries: 8+ supported" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "🚀 Developers can now:" >> $GITHUB_STEP_SUMMARY
+        echo "   • Browse existing agents" >> $GITHUB_STEP_SUMMARY
+        echo "   • Build custom agents" >> $GITHUB_STEP_SUMMARY
+        echo "   • Deploy in minutes" >> $GITHUB_STEP_SUMMARY
+        echo "   • Share their creations" >> $GITHUB_STEP_SUMMARY
