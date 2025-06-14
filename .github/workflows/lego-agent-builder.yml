@@ -31,65 +31,65 @@ jobs:
     - name: Create Agent Core
       run: |
         cat > "agents/$AGENT_NAME/main.py" << 'EOF'
-#!/usr/bin/env python3
-"""
-${{ inputs.industry }} Agent - Generated from LEGO Blocks
-Industry: ${{ inputs.industry }}
-Use Case: ${{ inputs.use_case }}
-Generated: $(date)
-"""
-
-import asyncio
-import logging
-from datetime import datetime
-import uuid
-import json
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("lego-agent")
-
-class AgentMessage:
-    def __init__(self, sender, recipient, msg_type, payload):
-        self.id = str(uuid.uuid4())
-        self.sender = sender
-        self.recipient = recipient
-        self.msg_type = msg_type
-        self.payload = payload or {}
-        self.timestamp = datetime.now()
-
-class MemoryAgent:
-    def __init__(self):
-        self.memory = {}
-        logger.info("🧠 Memory Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "store":
-            key = message.payload.get("key", "default")
-            data = message.payload.get("data", {})
-            self.memory[key] = data
-            logger.info(f"📝 Stored: {key}")
-            return {"status": "success", "key": key}
+        #!/usr/bin/env python3
+        """
+        ${{ inputs.industry }} Agent - Generated from LEGO Blocks
+        Industry: ${{ inputs.industry }}
+        Use Case: ${{ inputs.use_case }}
+        Generated: $(date)
+        """
         
-        elif message.msg_type == "retrieve":
-            key = message.payload.get("key", "default")
-            data = self.memory.get(key, {})
-            logger.info(f"🔍 Retrieved: {key}")
-            return {"status": "success", "data": data}
-
-class ReasoningAgent:
-    def __init__(self):
-        logger.info("🤔 Reasoning Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "analyze":
-            data = message.payload.get("data", [])
-            patterns = [
-                {"pattern": "trend", "confidence": 0.87},
-                {"pattern": "anomaly", "confidence": 0.74}
-            ]
-            logger.info(f"📊 Analyzed {len(data)} data points")
-            return {"patterns": patterns, "count": len(data)}
-EOF
+        import asyncio
+        import logging
+        from datetime import datetime
+        import uuid
+        import json
+        
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger("lego-agent")
+        
+        class AgentMessage:
+            def __init__(self, sender, recipient, msg_type, payload):
+                self.id = str(uuid.uuid4())
+                self.sender = sender
+                self.recipient = recipient
+                self.msg_type = msg_type
+                self.payload = payload or {}
+                self.timestamp = datetime.now()
+        
+        class MemoryAgent:
+            def __init__(self):
+                self.memory = {}
+                logger.info("🧠 Memory Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "store":
+                    key = message.payload.get("key", "default")
+                    data = message.payload.get("data", {})
+                    self.memory[key] = data
+                    logger.info(f"📝 Stored: {key}")
+                    return {"status": "success", "key": key}
+                
+                elif message.msg_type == "retrieve":
+                    key = message.payload.get("key", "default")
+                    data = self.memory.get(key, {})
+                    logger.info(f"🔍 Retrieved: {key}")
+                    return {"status": "success", "data": data}
+        
+        class ReasoningAgent:
+            def __init__(self):
+                logger.info("🤔 Reasoning Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "analyze":
+                    data = message.payload.get("data", [])
+                    patterns = [
+                        {"pattern": "trend", "confidence": 0.87},
+                        {"pattern": "anomaly", "confidence": 0.74}
+                    ]
+                    logger.info(f"📊 Analyzed {len(data)} data points")
+                    return {"patterns": patterns, "count": len(data)}
+        EOF
 
     - name: Add Compliance Logic
       run: |
@@ -118,29 +118,29 @@ EOF
         esac
         
         cat >> "agents/$AGENT_NAME/main.py" << EOF
-
-class ReliabilityAgent:
-    def __init__(self):
-        self.compliance = $compliance
-        self.protocols = $protocols
-        logger.info(f"🛡️ Reliability Agent with {self.compliance}")
-    
-    async def process(self, message):
-        if message.msg_type == "health":
-            return {
-                "status": "healthy",
-                "uptime": "99.9%",
-                "compliance": self.compliance,
-                "protocols": self.protocols,
-                "industry": "${{ inputs.industry }}"
-            }
-        elif message.msg_type == "compliance_check":
-            return {
-                "compliant": True,
-                "standards": self.compliance,
-                "last_audit": datetime.now().isoformat()
-            }
-EOF
+        
+        class ReliabilityAgent:
+            def __init__(self):
+                self.compliance = $compliance
+                self.protocols = $protocols
+                logger.info(f"🛡️ Reliability Agent with {self.compliance}")
+            
+            async def process(self, message):
+                if message.msg_type == "health":
+                    return {
+                        "status": "healthy",
+                        "uptime": "99.9%",
+                        "compliance": self.compliance,
+                        "protocols": self.protocols,
+                        "industry": "${{ inputs.industry }}"
+                    }
+                elif message.msg_type == "compliance_check":
+                    return {
+                        "compliant": True,
+                        "standards": self.compliance,
+                        "last_audit": datetime.now().isoformat()
+                    }
+        EOF
 
     - name: Add System Core
       run: |
