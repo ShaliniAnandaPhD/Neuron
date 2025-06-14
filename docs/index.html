@@ -92,6 +92,14 @@
             display: flex;
             align-items: center;
         }
+        .deployment-link {
+            color: #007bff; /* Link color */
+            text-decoration: underline;
+            font-weight: 600;
+        }
+        .deployment-link:hover {
+            color: #0056b3; /* Darker on hover */
+        }
     </style>
 </head>
 <body>
@@ -166,7 +174,14 @@
                 <span class="deployment-icon">⚡</span>
                 <div>
                     <strong class="text-lg text-blue-700">Rapid Deployment Workflow:</strong>
-                    <span class="deployment-description">Leverages GitHub Actions for CI/CD, allowing for an incredibly fast "idea to production" time, often within 5-10 minutes.</span>
+                    <span class="deployment-description">Leverages <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" target="_blank" class="deployment-link">GitHub Actions for CI/CD</a>, allowing for an incredibly fast "idea to production" time, often within 5-10 minutes.</span>
+                </div>
+            </li>
+             <li class="deployment-item">
+                <span class="deployment-icon">🔗</span>
+                <div>
+                    <strong class="text-lg text-blue-700">Marketplace CI/CD Workflow:</strong>
+                    <span class="deployment-description">The marketplace itself utilizes a dedicated <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/simple-marketplace-fix.yml" target="_blank" class="deployment-link">GitHub Actions workflow</a> for its continuous integration and deployment.</span>
                 </div>
             </li>
         </ul>
@@ -324,4 +339,5 @@
     </div>
 </body>
 </html>
+
 
