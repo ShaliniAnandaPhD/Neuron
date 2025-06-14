@@ -38,23 +38,6 @@
             margin-top: 2rem;
             margin-bottom: 1rem;
         }
-        /* Metric box specific styles */
-        .metric-box {
-            background-color: #edf2f7; /* Light blue-gray background for metrics */
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-        }
-        .metric-value {
-            font-size: 2.5rem;
-            font-weight: 700; /* Bold */
-            color: #4299e1; /* Blue for emphasis */
-        }
-        .metric-label {
-            font-size: 1rem;
-            color: #4a5568; /* Gray for labels */
-            margin-top: 0.5rem;
-        }
         /* List item styles for modules and industries */
         ul li {
             background-color: #f7fafc; /* Even lighter background for list items */
@@ -71,18 +54,6 @@
             font-size: 1.5rem;
             margin-right: 0.75rem;
         }
-        .industry-item {
-            background-color: #f7fafc;
-            border: 1px solid #ebf4ff;
-            border-left: 0.5rem solid #4299e1; /* Blue accent bar on the left */
-            padding: 1.25rem;
-            border-radius: 0.5rem;
-        }
-        .industry-name {
-            font-weight: 600; /* Semi-bold */
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
         .deployment-item {
             background-color: #f7fafc;
             padding: 1rem 1.25rem;
@@ -92,12 +63,12 @@
             display: flex;
             align-items: center;
         }
-        .deployment-link, .navigation-link {
+        .deployment-link {
             color: #007bff; /* Link color */
             text-decoration: underline;
             font-weight: 600;
         }
-        .deployment-link:hover, .navigation-link:hover {
+        .deployment-link:hover {
             color: #0056b3; /* Darker on hover */
         }
         /* Styling for the new build button */
@@ -129,17 +100,6 @@
         .build-button:active {
             transform: translateY(0); /* Press down effect */
         }
-        .navigation-section {
-            text-align: center;
-            margin-top: 2rem;
-            padding-top: 1.5rem;
-            border-top: 1px dashed #e2e8f0;
-        }
-        .last-update-info {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 0.5rem;
-        }
     </style>
 </head>
 <body>
@@ -147,35 +107,7 @@
         <!-- Main title -->
         <h1 class="text-4xl font-bold text-center mb-10">Neuron LEGO Agent Marketplace</h1>
 
-        <!-- Section for current deployment and capabilities metrics -->
-        <h2 class="text-2xl font-semibold">🧱 Current Deployment & Capabilities</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
-            <!-- Deployed Agents Metric Box -->
-            <div class="metric-box">
-                <div class="metric-value" id="deployedAgentsValue">0</div>
-                <div class="metric-label" id="deployedAgentsStatus">Ready for first build</div>
-                <div class="last-update-info" id="lastUpdateInfo">Last activity: Just now</div>
-            </div>
-            <!-- Available LEGO Modules Metric Box -->
-            <div class="metric-box">
-                <div class="metric-value">6</div>
-                <div class="metric-label">Available LEGO Modules</div>
-            </div>
-            <!-- Supported Industry Verticals Metric Box (now a link to new page) -->
-            <div class="metric-box">
-                <div class="metric-value">20</div>
-                <div class="metric-label">
-                    <a href="#" onclick="openIndustryVerticalsPage()" class="navigation-link">Supported Industry Verticals</a>
-                </div>
-            </div>
-            <!-- Average Build Time Metric Box -->
-            <div class="metric-box">
-                <div class="metric-value" id="buildTimeValue">--</div>
-                <div class="metric-label" id="buildTimeLabel">Idea to deployment</div>
-            </div>
-        </div>
-
-        <!-- New Build Agent Button -->
+        <!-- Build Agent Button Section -->
         <div class="build-button-container">
             <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" target="_blank" class="build-button" id="buildAgentButton">
                 ⚙️ Build Your Custom Agent Now!
@@ -183,8 +115,7 @@
             <p class="text-sm text-gray-600 mt-2">Clicking this button will take you to GitHub Actions to initiate a new agent build.</p>
         </div>
 
-
-        <!-- New section for Deployment Methods & Lifecycle -->
+        <!-- Section for Deployment Methods & Lifecycle -->
         <h2 class="text-2xl font-semibold">⚙️ Deployment Methods & Lifecycle</h2>
         <ul class="list-none p-0 mt-6">
             <li class="deployment-item">
@@ -302,85 +233,8 @@
                 </div>
             </li>
         </ul>
-
-        <!-- New Navigation Section -->
-        <div class="navigation-section">
-            <h2 class="text-2xl font-semibold">🔗 Explore More</h2>
-            <p class="text-md text-gray-700 mt-4">
-                Dive deeper into the specific applications of Neuron LEGO Agents across various domains:
-            </p>
-            <p class="mt-4">
-                <a href="#" onclick="openIndustryVerticalsPage()" class="navigation-link text-xl">
-                    🌍 View All Supported Industry Verticals
-                </a>
-            </p>
-        </div>
-
     </div>
-
-    <script>
-        let deployedAgentsCount = 0; // Initial count
-        const deployedAgentsValue = document.getElementById('deployedAgentsValue');
-        const deployedAgentsStatus = document.getElementById('deployedAgentsStatus');
-        const lastUpdateInfo = document.getElementById('lastUpdateInfo');
-        const buildTimeValue = document.getElementById('buildTimeValue');
-        const buildTimeLabel = document.getElementById('buildTimeLabel');
-        const buildAgentButton = document.getElementById('buildAgentButton');
-
-        // Function to format current time
-        function getCurrentTime() {
-            const now = new Date();
-            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-        }
-
-        // Function to update the metrics display
-        function updateMetricsDisplay(isBuildEvent = false) {
-            deployedAgentsValue.textContent = deployedAgentsCount;
-
-            if (deployedAgentsCount === 0) {
-                deployedAgentsStatus.textContent = "Ready for first build";
-                buildTimeValue.textContent = "--";
-                buildTimeLabel.textContent = "Idea to deployment";
-            } else if (deployedAgentsCount === 1) {
-                deployedAgentsStatus.textContent = "healthcare-agent deployed";
-                buildTimeValue.textContent = "~5";
-                buildTimeLabel.textContent = "minutes avg";
-            } else {
-                deployedAgentsStatus.textContent = `${deployedAgentsCount} active agents`;
-                buildTimeValue.textContent = "~5";
-                buildTimeLabel.textContent = "minutes avg";
-            }
-
-            if (isBuildEvent) {
-                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()} (Built)`;
-            } else {
-                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()}`;
-            }
-        }
-
-        // Event listener for the build button
-        buildAgentButton.addEventListener('click', function(event) {
-            // No preventDefault as the link opens in a new tab to GitHub Actions
-            deployedAgentsCount++; // Increment count on build
-            updateMetricsDisplay(true); // Update display with 'isBuildEvent' flag
-        });
-
-        // Initial display update on page load
-        updateMetricsDisplay();
-
-        // Periodically update the "Last activity" timestamp to make it feel live
-        setInterval(() => {
-            if (!lastUpdateInfo.textContent.includes('(Built)')) { // Only update if not showing a recent build status
-                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()}`;
-            }
-        }, 5000); // Update every 5 seconds
-
-        // Placeholder function for navigation to industry verticals page
-        function openIndustryVerticalsPage() {
-            // In a live GitHub Pages site, this would be: window.location.href = 'industry_verticals.html';
-            // For now, we'll indicate to the user what would happen in the Canvas preview.
-            alert("This link would typically navigate to a dedicated page for 'Supported Industry Verticals'. You would need to create a file named 'industry_verticals.html' in your repository with that content.");
-        }
-    </script>
+    <!-- Removed JavaScript related to dynamic metrics as the section is removed -->
 </body>
 </html>
+
