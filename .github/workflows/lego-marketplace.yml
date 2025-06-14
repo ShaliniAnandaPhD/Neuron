@@ -263,25 +263,88 @@ jobs:
         
         echo "✅ Marketplace generated with $AGENT_COUNT agents"
         
+    - name: 🔧 Configure Git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        
     - name: 📖 Deploy to GitHub Pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ./docs
         force_orphan: true
+        enable_jekyll: false
+        commit_message: "🏪 Update LEGO Agent Marketplace"
+      continue-on-error: true
+      
+    - name: 🔄 Alternative Deployment (if Pages fails)
+      if: failure()
+      run: |
+        echo "⚠️ GitHub Pages deployment failed, creating artifacts instead..."
+        
+        # Create a simple deployment package
+        mkdir -p marketplace-package
+        cp -r docs/* marketplace-package/
+        
+        # Add deployment instructions
+        cat > marketplace-package/DEPLOY.md << 'EOF'
+        # 🏪 LEGO Agent Marketplace Deployment
+        
+        This package contains the generated marketplace website.
+        
+        ## Manual Deployment Options:
+        
+        1. **GitHub Pages**: Copy contents to `docs/` folder and enable GitHub Pages
+        2. **Netlify**: Drag and drop this folder to Netlify
+        3. **Vercel**: Deploy this folder using Vercel CLI
+        4. **Local**: Open `index.html` in your browser
+        
+        ## Contents:
+        - `index.html` - Main marketplace page
+        - `agent-list.html` - Generated agent list
+        - All necessary assets
+        EOF
+        
+        echo "📦 Marketplace package created in marketplace-package/"
+        ls -la marketplace-package/
+        
+    - name: 🎁 Upload Marketplace as Artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: lego-agent-marketplace
+        path: docs/
+        retention-days: 30
         
     - name: 📢 Update Summary
       run: |
         echo "🏪 MARKETPLACE UPDATED!" >> $GITHUB_STEP_SUMMARY
         echo "=====================" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "🔗 Live marketplace: https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}" >> $GITHUB_STEP_SUMMARY
-        echo "🧱 Total agents: $(if [ -d "generated-agents" ]; then find generated-agents -maxdepth 1 -type d | wc -l | awk '{print $1-1}'; else echo "0"; fi)" >> $GITHUB_STEP_SUMMARY
-        echo "📊 LEGO blocks: 6 types available" >> $GITHUB_STEP_SUMMARY
-        echo "🎯 Industries: 8+ supported" >> $GITHUB_STEP_SUMMARY
+        
+        AGENT_COUNT=$(if [ -d "generated-agents" ]; then find generated-agents -maxdepth 1 -type d | wc -l | awk '{print $1-1}'; else echo "0"; fi)
+        
+        # Check if GitHub Pages is enabled
+        PAGES_URL="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}"
+        
+        echo "🔗 **Marketplace Access:**" >> $GITHUB_STEP_SUMMARY
+        echo "   • 🌐 GitHub Pages: $PAGES_URL" >> $GITHUB_STEP_SUMMARY
+        echo "   • 📁 Artifact: Download from this workflow run" >> $GITHUB_STEP_SUMMARY
+        echo "   • 📋 Local: Open \`docs/index.html\` in browser" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "🚀 Developers can now:" >> $GITHUB_STEP_SUMMARY
-        echo "   • Browse existing agents" >> $GITHUB_STEP_SUMMARY
-        echo "   • Build custom agents" >> $GITHUB_STEP_SUMMARY
-        echo "   • Deploy in minutes" >> $GITHUB_STEP_SUMMARY
-        echo "   • Share their creations" >> $GITHUB_STEP_SUMMARY
+        
+        echo "📊 **Marketplace Stats:**" >> $GITHUB_STEP_SUMMARY
+        echo "   • 🧱 Total agents: $AGENT_COUNT" >> $GITHUB_STEP_SUMMARY
+        echo "   • 🔧 LEGO blocks: 6 types available" >> $GITHUB_STEP_SUMMARY
+        echo "   • 🎯 Industries: 8+ supported" >> $GITHUB_STEP_SUMMARY
+        echo "   • ⚡ Generation time: ~5 minutes" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        echo "🚀 **Next Steps:**" >> $GITHUB_STEP_SUMMARY
+        echo "   1. 🎮 Visit the marketplace to browse agents" >> $GITHUB_STEP_SUMMARY
+        echo "   2. 🧱 Use the LEGO Agent Builder to create new agents" >> $GITHUB_STEP_SUMMARY
+        echo "   3. 📖 Enable GitHub Pages in repository settings for public access" >> $GITHUB_STEP_SUMMARY
+        echo "   4. 🌟 Share your custom agents with the community" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        
+        echo "💡 **Tip:** If GitHub Pages deployment failed, download the artifact above and deploy manually to your preferred hosting platform!" >> $GITHUB_STEP_SUMMARY
