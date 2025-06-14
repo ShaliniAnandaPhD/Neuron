@@ -212,7 +212,8 @@ class ReliabilityAgent:
     
     def __init__(self):
         self.agent_type = "reliability"
-        self.compliance_frameworks = ["${{ inputs.industry }}" in "Healthcare" and "HIPAA" or "SOC2"]
+        industry = "${{ inputs.industry }}"
+        self.compliance_frameworks = ["HIPAA"] if "Healthcare" in industry else ["SOC2"]
         self.error_count = 0
         logger.info(f"🛡️ Reliability Agent initialized with {self.compliance_frameworks} compliance")
     
@@ -429,7 +430,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/ ./src/
 
 ENV PYTHONPATH=/app/src
-ENV AGENT_NAME=${{ inputs.industry }}-agent
 
 EXPOSE 8080
 
@@ -443,7 +443,7 @@ version: '3.8'
 services:
   neuron-lego-agent:
     build: .
-    container_name: ${{ inputs.industry }}-agent
+    container_name: neuron-lego-agent
     ports:
       - "8080:8080"
     environment:
@@ -452,17 +452,6 @@ services:
       - LEGO_BLOCKS=${{ inputs.blocks_requested }}
       - DEPLOYMENT_TYPE=${{ inputs.deployment_type }}
     restart: unless-stopped
-
-  # Optional: Add monitoring
-  prometheus:
-    image: prom/prometheus:latest
-    container_name: ${AGENT_NAME}-prometheus
-    ports:
-      - "9090:9090"
-    volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-    depends_on:
-      - neuron-lego-agent
 COMPOSE_EOF
         
         # Generate README.md
@@ -519,25 +508,7 @@ You'll see:
 
 ## 🔧 Customization
 
-Edit `src/main.py` to add your specific business logic:
-
-```python
-# Add custom logic to any agent
-class CustomLogicExtension:
-    def process_industry_specific_data(self, data):
-        # Your ${{ inputs.industry }} logic here
-        return processed_data
-```
-
-## 📈 Monitoring
-
-Access monitoring at:
-- Health check: http://localhost:8080/health
-- Prometheus metrics: http://localhost:9090
-
-## 🚀 Deployment
-
-Ready for ${{ inputs.deployment_type }} deployment!
+Edit `src/main.py` to add your specific business logic for ${{ inputs.industry }}.
 
 ---
 
@@ -608,108 +579,10 @@ TEST_EOF
         echo ""
         echo "🧱 Your ${{ inputs.industry }} agent is ready!"
         
-    - name: 📊 Generate Agent Analytics
-      run: |
-        echo "📊 AGENT GENERATION ANALYTICS"
-        echo "============================="
-        echo ""
-        echo "🎯 Configuration Summary:"
-        echo "   Industry: ${{ inputs.industry }}"
-        echo "   Use Case: ${{ inputs.use_case }}"
-        echo "   LEGO Blocks: ${{ inputs.blocks_requested }}"
-        echo "   Deployment: ${{ inputs.deployment_type }}"
-        echo ""
-        echo "🧱 LEGO Blocks Analysis:"
-        IFS=',' read -ra BLOCKS <<< "${{ inputs.blocks_requested }}"
-        for block in "${BLOCKS[@]}"; do
-          clean_block=$(echo "$block" | xargs)  # trim whitespace
-          echo "   ✅ $clean_block - Configured and ready"
-        done
-        echo ""
-        echo "🏭 Industry-Specific Features:"
-        case "${{ inputs.industry }}" in
-          "Healthcare"*)
-            echo "   🏥 HIPAA compliance enabled"
-            echo "   📋 Patient data encryption"
-            echo "   🔒 Audit logging configured"
-            ;;
-          "Financial"*)
-            echo "   💰 PCI-DSS compliance enabled"
-            echo "   🔍 Fraud detection patterns"
-            echo "   📊 Financial reporting modules"
-            ;;
-          "Insurance"*)
-            echo "   📋 Claims processing workflows"
-            echo "   🔍 Risk assessment algorithms"
-            echo "   📊 Compliance reporting"
-            ;;
-          *)
-            echo "   🔧 Standard compliance frameworks"
-            echo "   📊 Industry-neutral configurations"
-            ;;
-        esac
-        echo ""
-        echo "⚡ Performance Characteristics:"
-        echo "   🚀 Generation Time: ~5 minutes"
-        echo "   📦 Container Size: ~200MB"
-        echo "   💾 Memory Usage: ~128MB typical"
-        echo "   ⚡ Startup Time: ~3 seconds"
-        echo "   🔄 Response Time: ~50ms average"
-        echo ""
-        echo "🎉 Agent ready for immediate deployment!"
-        
-    - name: 🚀 Create Deployment Instructions
+    - name: 📊 Generate Success Report
       run: |
         AGENT_NAME="neuron-$(echo '${{ inputs.industry }}' | tr '[:upper:]' '[:lower:]' | tr ' &' '-')-agent"
         
-        echo "🚀 DEPLOYMENT INSTRUCTIONS"
-        echo "========================="
-        echo ""
-        echo "Your ${{ inputs.industry }} agent is ready! Here's how to use it:"
-        echo ""
-        echo "📦 Quick Start (Docker):"
-        echo "   1. cd generated-agents/$AGENT_NAME"
-        echo "   2. docker-compose up --build"
-        echo "   3. Open browser to: http://localhost:8080"
-        echo ""
-        echo "🐍 Python Development:"
-        echo "   1. cd generated-agents/$AGENT_NAME"
-        echo "   2. pip install -r requirements.txt"
-        echo "   3. python src/main.py"
-        echo ""
-        echo "🧪 Run Tests:"
-        echo "   1. cd generated-agents/$AGENT_NAME"
-        echo "   2. pip install pytest pytest-asyncio"
-        echo "   3. pytest tests/"
-        echo ""
-        echo "☸️ Kubernetes Deployment:"
-        echo "   (K8s manifests can be generated in future iterations)"
-        echo ""
-        echo "📊 Monitor Your Agent:"
-        echo "   - Health: http://localhost:8080/health"
-        echo "   - Metrics: http://localhost:9090 (if using docker-compose)"
-        echo ""
-        echo "🎮 What You'll See:"
-        echo "   ✅ Live demonstration of all LEGO blocks"
-        echo "   ✅ Memory operations (store/retrieve)"
-        echo "   ✅ Pattern analysis and reasoning"
-        echo "   ✅ Health monitoring and compliance"
-        echo "   ✅ Workflow orchestration"
-        echo ""
-        echo "🔧 Customize Your Agent:"
-        echo "   Edit 'src/main.py' to add your specific business logic!"
-        echo ""
-        echo "🎉 Enjoy your new LEGO-powered agent!"
-
-  share-success:
-    name: 📢 Share Success
-    runs-on: ubuntu-latest
-    needs: build-lego-agent
-    if: success()
-    
-    steps:
-    - name: 🎉 Celebrate Success
-      run: |
         echo "🎉 NEURON LEGO AGENT SUCCESSFULLY GENERATED!"
         echo "==========================================="
         echo ""
@@ -726,15 +599,18 @@ TEST_EOF
         echo "   🧱 LEGO Blocks: 5 minutes"
         echo "   📈 99.7% time reduction!"
         echo ""
-        echo "🎯 Perfect for sharing:"
-        echo "   📱 Tweet: 'Just built a ${{ inputs.industry }} agent in 5 minutes with @Neuron LEGO blocks!'"
-        echo "   💼 LinkedIn: 'Transformed ${{ inputs.use_case }} with composable AI blocks'"
-        echo "   📧 Email team: 'Our new ${{ inputs.industry }} agent is ready for testing'"
-        echo ""
         echo "🚀 Next steps:"
-        echo "   1. Test your agent: cd generated-agents/[agent-name] && docker-compose up"
+        echo "   1. Test your agent: cd generated-agents/$AGENT_NAME && docker-compose up"
         echo "   2. Customize business logic in src/main.py"
         echo "   3. Deploy to ${{ inputs.deployment_type }} environment"
         echo "   4. Share your success story!"
         echo ""
         echo "🧱 Build more agents anytime with different LEGO block combinations!"
+        
+    - name: 📦 Commit Generated Agent
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add generated-agents/
+        git commit -m "🧱 Generated new LEGO agent: ${{ inputs.industry }} for ${{ inputs.use_case }}" || exit 0
+        git push
