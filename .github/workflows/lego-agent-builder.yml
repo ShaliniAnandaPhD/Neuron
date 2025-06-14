@@ -37,78 +37,78 @@ jobs:
     - name: Create Agent Header
       run: |
         cat > "agents/$AGENT_NAME/main.py" << 'EOF'
-#!/usr/bin/env python3
-"""
-${{ inputs.industry }} Agent - Generated from LEGO Blocks
-Industry: ${{ inputs.industry }}
-Use Case: ${{ inputs.use_case }}
-"""
+        #!/usr/bin/env python3
+        """
+        ${{ inputs.industry }} Agent - Generated from LEGO Blocks
+        Industry: ${{ inputs.industry }}
+        Use Case: ${{ inputs.use_case }}
+        """
 
-import asyncio
-import logging
-from datetime import datetime
-import uuid
+        import asyncio
+        import logging
+        from datetime import datetime
+        import uuid
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("lego-agent")
-EOF
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger("lego-agent")
+        EOF
         
     - name: Add Message Class
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
 
-class AgentMessage:
-    def __init__(self, sender, recipient, msg_type, payload):
-        self.id = str(uuid.uuid4())
-        self.sender = sender
-        self.recipient = recipient
-        self.msg_type = msg_type
-        self.payload = payload or {}
-        self.timestamp = datetime.now()
-EOF
+        class AgentMessage:
+            def __init__(self, sender, recipient, msg_type, payload):
+                self.id = str(uuid.uuid4())
+                self.sender = sender
+                self.recipient = recipient
+                self.msg_type = msg_type
+                self.payload = payload or {}
+                self.timestamp = datetime.now()
+        EOF
 
     - name: Add Memory Agent
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
 
-class MemoryAgent:
-    def __init__(self):
-        self.memory = {}
-        logger.info("🧠 Memory Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "store":
-            key = message.payload.get("key", "default")
-            data = message.payload.get("data", {})
-            self.memory[key] = data
-            logger.info(f"📝 Stored: {key}")
-            return {"status": "success", "key": key}
-        
-        elif message.msg_type == "retrieve":
-            key = message.payload.get("key", "default")
-            data = self.memory.get(key, {})
-            logger.info(f"🔍 Retrieved: {key}")
-            return {"status": "success", "data": data}
-EOF
+        class MemoryAgent:
+            def __init__(self):
+                self.memory = {}
+                logger.info("🧠 Memory Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "store":
+                    key = message.payload.get("key", "default")
+                    data = message.payload.get("data", {})
+                    self.memory[key] = data
+                    logger.info(f"📝 Stored: {key}")
+                    return {"status": "success", "key": key}
+                
+                elif message.msg_type == "retrieve":
+                    key = message.payload.get("key", "default")
+                    data = self.memory.get(key, {})
+                    logger.info(f"🔍 Retrieved: {key}")
+                    return {"status": "success", "data": data}
+        EOF
 
     - name: Add Reasoning Agent
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
 
-class ReasoningAgent:
-    def __init__(self):
-        logger.info("🤔 Reasoning Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "analyze":
-            data = message.payload.get("data", [])
-            patterns = [
-                {"pattern": "trend", "confidence": 0.87},
-                {"pattern": "anomaly", "confidence": 0.74}
-            ]
-            logger.info(f"📊 Analyzed {len(data)} data points")
-            return {"patterns": patterns, "count": len(data)}
-EOF
+        class ReasoningAgent:
+            def __init__(self):
+                logger.info("🤔 Reasoning Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "analyze":
+                    data = message.payload.get("data", [])
+                    patterns = [
+                        {"pattern": "trend", "confidence": 0.87},
+                        {"pattern": "anomaly", "confidence": 0.74}
+                    ]
+                    logger.info(f"📊 Analyzed {len(data)} data points")
+                    return {"patterns": patterns, "count": len(data)}
+        EOF
 
     - name: Add Reliability Agent
       run: |
@@ -122,99 +122,99 @@ EOF
         fi
         
         cat >> "agents/$AGENT_NAME/main.py" << EOF
-
-class ReliabilityAgent:
-    def __init__(self):
-        self.compliance = $compliance
-        logger.info(f"🛡️ Reliability Agent with {self.compliance}")
-    
-    async def process(self, message):
-        if message.msg_type == "health":
-            return {
-                "status": "healthy",
-                "uptime": "99.9%",
-                "compliance": self.compliance,
-                "industry": "${{ inputs.industry }}"
-            }
-EOF
+        
+        class ReliabilityAgent:
+            def __init__(self):
+                self.compliance = $compliance
+                logger.info(f"🛡️ Reliability Agent with {self.compliance}")
+            
+            async def process(self, message):
+                if message.msg_type == "health":
+                    return {
+                        "status": "healthy",
+                        "uptime": "99.9%",
+                        "compliance": self.compliance,
+                        "industry": "${{ inputs.industry }}"
+                    }
+        EOF
 
     - name: Add Main System
       run: |
         cat >> "agents/$AGENT_NAME/main.py" << 'EOF'
 
-class LegoSystem:
-    def __init__(self):
-        self.agents = {
-            "memory": MemoryAgent(),
-            "reasoning": ReasoningAgent(),
-            "reliability": ReliabilityAgent()
-        }
-        logger.info(f"🧱 System ready with {len(self.agents)} agents")
-    
-    async def send(self, agent_name, msg_type, payload):
-        if agent_name in self.agents:
-            message = AgentMessage("system", agent_name, msg_type, payload)
-            return await self.agents[agent_name].process(message)
-        return None
-    
-    async def demo(self):
-        print(f"\n🎭 DEMO: ${{ inputs.industry }} LEGO Agent")
-        print("=" * 50)
-        print(f"Industry: ${{ inputs.industry }}")
-        print(f"Use Case: ${{ inputs.use_case }}")
-        print("=" * 50)
-        
-        success = 0
-        
-        # Test Memory
-        print("\n🧱 Testing Memory Agent...")
-        await self.send("memory", "store", {
-            "key": "${{ inputs.industry }}_data",
-            "data": {"test": "success"}
-        })
-        result = await self.send("memory", "retrieve", {
-            "key": "${{ inputs.industry }}_data"
-        })
-        if result and result.get("status") == "success":
-            print("   ✅ Memory operations successful")
-            success += 1
-        
-        # Test Reasoning
-        print("\n🧱 Testing Reasoning Agent...")
-        result = await self.send("reasoning", "analyze", {
-            "data": [1, 2, 3, 4, 5]
-        })
-        if result and result.get("patterns"):
-            print(f"   ✅ Found {len(result['patterns'])} patterns")
-            success += 1
-        
-        # Test Reliability
-        print("\n🧱 Testing Reliability Agent...")
-        result = await self.send("reliability", "health", {})
-        if result and result.get("status") == "healthy":
-            compliance = result.get("compliance", [])
-            print(f"   ✅ System healthy - {', '.join(compliance)}")
-            success += 1
-        
-        print(f"\n🎉 Results: {success}/3 agents working")
-        return success == 3
+        class LegoSystem:
+            def __init__(self):
+                self.agents = {
+                    "memory": MemoryAgent(),
+                    "reasoning": ReasoningAgent(),
+                    "reliability": ReliabilityAgent()
+                }
+                logger.info(f"🧱 System ready with {len(self.agents)} agents")
+            
+            async def send(self, agent_name, msg_type, payload):
+                if agent_name in self.agents:
+                    message = AgentMessage("system", agent_name, msg_type, payload)
+                    return await self.agents[agent_name].process(message)
+                return None
+            
+            async def demo(self):
+                print(f"\n🎭 DEMO: ${{ inputs.industry }} LEGO Agent")
+                print("=" * 50)
+                print(f"Industry: ${{ inputs.industry }}")
+                print(f"Use Case: ${{ inputs.use_case }}")
+                print("=" * 50)
+                
+                success = 0
+                
+                # Test Memory
+                print("\n🧱 Testing Memory Agent...")
+                await self.send("memory", "store", {
+                    "key": "${{ inputs.industry }}_data",
+                    "data": {"test": "success"}
+                })
+                result = await self.send("memory", "retrieve", {
+                    "key": "${{ inputs.industry }}_data"
+                })
+                if result and result.get("status") == "success":
+                    print("   ✅ Memory operations successful")
+                    success += 1
+                
+                # Test Reasoning
+                print("\n🧱 Testing Reasoning Agent...")
+                result = await self.send("reasoning", "analyze", {
+                    "data": [1, 2, 3, 4, 5]
+                })
+                if result and result.get("patterns"):
+                    print(f"   ✅ Found {len(result['patterns'])} patterns")
+                    success += 1
+                
+                # Test Reliability
+                print("\n🧱 Testing Reliability Agent...")
+                result = await self.send("reliability", "health", {})
+                if result and result.get("status") == "healthy":
+                    compliance = result.get("compliance", [])
+                    print(f"   ✅ System healthy - {', '.join(compliance)}")
+                    success += 1
+                
+                print(f"\n🎉 Results: {success}/3 agents working")
+                return success == 3
 
-async def main():
-    print("🧱 Starting ${{ inputs.industry }} LEGO Agent...")
-    system = LegoSystem()
-    success = await system.demo()
-    
-    if success:
-        print("🚀 All LEGO blocks working!")
-    else:
-        print("⚠️ Some blocks need attention")
-    
-    return success
+        async def main():
+            print("🧱 Starting ${{ inputs.industry }} LEGO Agent...")
+            system = LegoSystem()
+            success = await system.demo()
+            
+            if success:
+                print("🚀 All LEGO blocks working!")
+            else:
+                print("⚠️ Some blocks need attention")
+            
+            return success
 
-if __name__ == "__main__":
-    result = asyncio.run(main())
-    print(f"✅ Demo complete: {'SUCCESS' if result else 'PARTIAL'}")
-EOF
+        if __name__ == "__main__":
+            result = asyncio.run(main())
+            print(f"✅ Demo complete: {'SUCCESS' if result else 'PARTIAL'}")
+        EOF
 
     - name: Create Support Files
       run: |
@@ -230,34 +230,36 @@ EOF
         echo "COPY requirements.txt ." >> "agents/$AGENT_NAME/Dockerfile"
         echo "RUN pip install -r requirements.txt" >> "agents/$AGENT_NAME/Dockerfile"
         echo "COPY main.py ." >> "agents/$AGENT_NAME/Dockerfile"
-        echo "CMD [\"python\", \"main.py\"]" >> "agents/$AGENT_NAME/Dockerfile"
+        echo 'CMD ["python", "main.py"]' >> "agents/$AGENT_NAME/Dockerfile"
         
     - name: Create README
       run: |
-        echo "# ${{ inputs.industry }} LEGO Agent" > "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "**Industry**: ${{ inputs.industry }}" >> "agents/$AGENT_NAME/README.md"
-        echo "**Use Case**: ${{ inputs.use_case }}" >> "agents/$AGENT_NAME/README.md"
-        echo "**Generated**: $(date)" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "## Quick Start" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "\`\`\`bash" >> "agents/$AGENT_NAME/README.md"
-        echo "# Python" >> "agents/$AGENT_NAME/README.md"
-        echo "python main.py" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "# Docker" >> "agents/$AGENT_NAME/README.md"
-        echo "docker build -t ${{ inputs.industry }}-agent ." >> "agents/$AGENT_NAME/README.md"
-        echo "docker run ${{ inputs.industry }}-agent" >> "agents/$AGENT_NAME/README.md"
-        echo "\`\`\`" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "## LEGO Blocks" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "- 🧠 **Memory**: Store and retrieve data" >> "agents/$AGENT_NAME/README.md"
-        echo "- 🤔 **Reasoning**: Pattern analysis" >> "agents/$AGENT_NAME/README.md"
-        echo "- 🛡️ **Reliability**: Health monitoring" >> "agents/$AGENT_NAME/README.md"
-        echo "" >> "agents/$AGENT_NAME/README.md"
-        echo "Generated by Neuron LEGO Blocks!" >> "agents/$AGENT_NAME/README.md"
+        cat > "agents/$AGENT_NAME/README.md" << EOF
+        # ${{ inputs.industry }} LEGO Agent
+        
+        **Industry**: ${{ inputs.industry }}
+        **Use Case**: ${{ inputs.use_case }}
+        **Generated**: $(date)
+        
+        ## Quick Start
+        
+        \`\`\`bash
+        # Python
+        python main.py
+        
+        # Docker
+        docker build -t ${{ inputs.industry }}-agent .
+        docker run ${{ inputs.industry }}-agent
+        \`\`\`
+        
+        ## LEGO Blocks
+        
+        - 🧠 **Memory**: Store and retrieve data
+        - 🤔 **Reasoning**: Pattern analysis
+        - 🛡️ **Reliability**: Health monitoring
+        
+        Generated by Neuron LEGO Blocks!
+        EOF
         
     - name: Test Agent
       run: |
