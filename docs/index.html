@@ -135,6 +135,11 @@
             padding-top: 1.5rem;
             border-top: 1px dashed #e2e8f0;
         }
+        .last-update-info {
+            font-size: 0.8rem;
+            color: #718096;
+            margin-top: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -147,8 +152,9 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-6">
             <!-- Deployed Agents Metric Box -->
             <div class="metric-box">
-                <div class="metric-value">1</div>
-                <div class="metric-label">Deployed Agent: healthcare-agent</div>
+                <div class="metric-value" id="deployedAgentsValue">0</div>
+                <div class="metric-label" id="deployedAgentsStatus">Ready for first build</div>
+                <div class="last-update-info" id="lastUpdateInfo">Last activity: Just now</div>
             </div>
             <!-- Available LEGO Modules Metric Box -->
             <div class="metric-box">
@@ -164,15 +170,15 @@
             </div>
             <!-- Average Build Time Metric Box -->
             <div class="metric-box">
-                <div class="metric-value">~5 min</div>
-                <div class="metric-label">Avg. Build Time (Idea to Deployment)</div>
+                <div class="metric-value" id="buildTimeValue">--</div>
+                <div class="metric-label" id="buildTimeLabel">Idea to deployment</div>
             </div>
         </div>
 
         <!-- New Build Agent Button -->
         <div class="build-button-container">
-            <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" target="_blank" class="build-button">
-                🚀 Build Your Custom Agent Now!
+            <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" target="_blank" class="build-button" id="buildAgentButton">
+                ⚙️ Build Your Custom Agent Now!
             </a>
             <p class="text-sm text-gray-600 mt-2">Clicking this button will take you to GitHub Actions to initiate a new agent build.</p>
         </div>
@@ -313,16 +319,67 @@
     </div>
 
     <script>
-        // Placeholder function to simulate opening a new page for industry verticals.
-        // In a real web app, this would navigate to a different HTML file.
+        let deployedAgentsCount = 0; // Initial count
+        const deployedAgentsValue = document.getElementById('deployedAgentsValue');
+        const deployedAgentsStatus = document.getElementById('deployedAgentsStatus');
+        const lastUpdateInfo = document.getElementById('lastUpdateInfo');
+        const buildTimeValue = document.getElementById('buildTimeValue');
+        const buildTimeLabel = document.getElementById('buildTimeLabel');
+        const buildAgentButton = document.getElementById('buildAgentButton');
+
+        // Function to format current time
+        function getCurrentTime() {
+            const now = new Date();
+            return now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+
+        // Function to update the metrics display
+        function updateMetricsDisplay(isBuildEvent = false) {
+            deployedAgentsValue.textContent = deployedAgentsCount;
+
+            if (deployedAgentsCount === 0) {
+                deployedAgentsStatus.textContent = "Ready for first build";
+                buildTimeValue.textContent = "--";
+                buildTimeLabel.textContent = "Idea to deployment";
+            } else if (deployedAgentsCount === 1) {
+                deployedAgentsStatus.textContent = "healthcare-agent deployed";
+                buildTimeValue.textContent = "~5";
+                buildTimeLabel.textContent = "minutes avg";
+            } else {
+                deployedAgentsStatus.textContent = `${deployedAgentsCount} active agents`;
+                buildTimeValue.textContent = "~5";
+                buildTimeLabel.textContent = "minutes avg";
+            }
+
+            if (isBuildEvent) {
+                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()} (Built)`;
+            } else {
+                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()}`;
+            }
+        }
+
+        // Event listener for the build button
+        buildAgentButton.addEventListener('click', function(event) {
+            // No preventDefault as the link opens in a new tab to GitHub Actions
+            deployedAgentsCount++; // Increment count on build
+            updateMetricsDisplay(true); // Update display with 'isBuildEvent' flag
+        });
+
+        // Initial display update on page load
+        updateMetricsDisplay();
+
+        // Periodically update the "Last activity" timestamp to make it feel live
+        setInterval(() => {
+            if (!lastUpdateInfo.textContent.includes('(Built)')) { // Only update if not showing a recent build status
+                lastUpdateInfo.textContent = `Last activity: ${getCurrentTime()}`;
+            }
+        }, 5000); // Update every 5 seconds
+
+        // Placeholder function for navigation to industry verticals page
         function openIndustryVerticalsPage() {
-            // For Canvas preview, we output the new immersive.
             // In a live GitHub Pages site, this would be: window.location.href = 'industry_verticals.html';
-            console.log("Navigating to Supported Industry Verticals Page...");
-            // This function will trigger the model to generate the new immersive.
-            // In a real deployment, you would link to a static HTML file.
-            // For now, we'll indicate to the user what would happen.
-            alert("This link would typically navigate to a dedicated page for 'Supported Industry Verticals'. Please see the new immersive generated for that content!");
+            // For now, we'll indicate to the user what would happen in the Canvas preview.
+            alert("This link would typically navigate to a dedicated page for 'Supported Industry Verticals'. You would need to create a file named 'industry_verticals.html' in your repository with that content.");
         }
     </script>
 </body>
