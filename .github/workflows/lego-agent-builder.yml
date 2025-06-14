@@ -1,4 +1,4 @@
-name: "Neuron LEGO Agent Builder"
+name: "🧱🧱🧱 Neuron LEGO Agent Builder"
 
 on:
   workflow_dispatch:
@@ -30,11 +30,11 @@ jobs:
     steps:
     - name: Setup Environment
       run: |
-        echo "Building ${{ inputs.industry }} LEGO Agent"
+        echo "🧱🧱🧱 Building ${{ inputs.industry }} LEGO Agent"
         AGENT_NAME="neuron-${{ inputs.industry }}-agent"
         mkdir -p "agents/$AGENT_NAME"
         echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
-        echo "Created directory: $AGENT_NAME"
+        echo "✅ Created directory: $AGENT_NAME"
         
     - name: Create Python File
       run: |
@@ -326,23 +326,23 @@ jobs:
         
     - name: Generate Summary
       run: |
-        echo "## ${{ inputs.industry }} LEGO Agent Generated!" >> $GITHUB_STEP_SUMMARY
+        echo "## 🧱🧱🧱 ${{ inputs.industry }} LEGO Agent Generated!" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Details" >> $GITHUB_STEP_SUMMARY
-        echo "- **Industry**: ${{ inputs.industry }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Use Case**: ${{ inputs.use_case }}" >> $GITHUB_STEP_SUMMARY
-        echo "- **Agent Name**: $AGENT_NAME" >> $GITHUB_STEP_SUMMARY
-        echo "- **Generated**: $(date)" >> $GITHUB_STEP_SUMMARY
+        echo "### 📋 Details" >> $GITHUB_STEP_SUMMARY
+        echo "- **🧱 Industry**: ${{ inputs.industry }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **💼 Use Case**: ${{ inputs.use_case }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **🤖 Agent Name**: $AGENT_NAME" >> $GITHUB_STEP_SUMMARY
+        echo "- **📅 Generated**: $(date)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### LEGO Blocks" >> $GITHUB_STEP_SUMMARY
-        echo "- Memory Agent - Data storage and retrieval" >> $GITHUB_STEP_SUMMARY
-        echo "- Reasoning Agent - Pattern analysis" >> $GITHUB_STEP_SUMMARY
-        echo "- Reliability Agent - Health and compliance monitoring" >> $GITHUB_STEP_SUMMARY
+        echo "### 🧱 LEGO Blocks (3 pieces)" >> $GITHUB_STEP_SUMMARY
+        echo "- 🧠 **Memory Agent** - Data storage and retrieval" >> $GITHUB_STEP_SUMMARY
+        echo "- 🤔 **Reasoning Agent** - Pattern analysis" >> $GITHUB_STEP_SUMMARY
+        echo "- 🛡️ **Reliability Agent** - Health and compliance monitoring" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
-        echo "### Usage" >> $GITHUB_STEP_SUMMARY
-        echo "1. Download artifact below" >> $GITHUB_STEP_SUMMARY
-        echo "2. Extract and run: \`python main.py\`" >> $GITHUB_STEP_SUMMARY
-        echo "3. Or build Docker: \`docker build -t ${{ inputs.industry }}-agent .\`" >> $GITHUB_STEP_SUMMARY
+        echo "### 🚀 Usage" >> $GITHUB_STEP_SUMMARY
+        echo "1. 📦 Download artifact below" >> $GITHUB_STEP_SUMMARY
+        echo "2. ▶️ Extract and run: \`python main.py\`" >> $GITHUB_STEP_SUMMARY
+        echo "3. 🐳 Or build Docker: \`docker build -t ${{ inputs.industry }}-agent .\`" >> $GITHUB_STEP_SUMMARY
         
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
@@ -354,14 +354,14 @@ jobs:
     - name: Success Message
       run: |
         echo ""
-        echo "SUCCESS! ${{ inputs.industry }} LEGO Agent Complete!"
+        echo "🧱🧱🧱 SUCCESS! ${{ inputs.industry }} LEGO Agent Complete!"
         echo "=============================================="
         echo ""
         echo "Summary:"
-        echo "   Industry: ${{ inputs.industry }}"
-        echo "   Use Case: ${{ inputs.use_case }}"
-        echo "   LEGO Blocks: 3 (Memory + Reasoning + Reliability)"
-        echo "   Self-Test: PASSED"
+        echo "   🧱 Industry: ${{ inputs.industry }}"
+        echo "   🧱 Use Case: ${{ inputs.use_case }}"
+        echo "   🧱 LEGO Blocks: 3 (Memory + Reasoning + Reliability)"
+        echo "   ✅ Self-Test: PASSED"
         echo ""
-        echo "Your agent is ready for deployment!"
-        echo "Download from artifacts section above"
+        echo "🚀 Your agent is ready for deployment!"
+        echo "📦 Download from artifacts section above"
