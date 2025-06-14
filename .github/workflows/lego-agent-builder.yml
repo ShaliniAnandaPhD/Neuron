@@ -38,239 +38,232 @@ jobs:
         
     - name: Create Python File
       run: |
-        cat > "agents/$AGENT_NAME/main.py" << 'EOF'
-#!/usr/bin/env python3
-"""
-${{ inputs.industry }} Agent - Generated from LEGO Blocks
-Industry: ${{ inputs.industry }}
-Use Case: ${{ inputs.use_case }}
-"""
-
-import asyncio
-import logging
-from datetime import datetime
-import uuid
-import json
-
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("lego-agent")
-
-class AgentMessage:
-    def __init__(self, sender, recipient, msg_type, payload):
-        self.id = str(uuid.uuid4())
-        self.sender = sender
-        self.recipient = recipient
-        self.msg_type = msg_type
-        self.payload = payload or {}
-        self.timestamp = datetime.now()
-
-class MemoryAgent:
-    def __init__(self):
-        self.memory = {}
-        logger.info("Memory Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "store":
-            key = message.payload.get("key", "default")
-            data = message.payload.get("data", {})
-            self.memory[key] = data
-            logger.info(f"Stored: {key}")
-            return {"status": "success", "key": key}
-        elif message.msg_type == "retrieve":
-            key = message.payload.get("key", "default")
-            data = self.memory.get(key, {})
-            logger.info(f"Retrieved: {key}")
-            return {"status": "success", "data": data}
-        return {"status": "error", "message": "Unknown operation"}
-
-class ReasoningAgent:
-    def __init__(self):
-        logger.info("Reasoning Agent initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "analyze":
-            data = message.payload.get("data", [])
-            patterns = [
-                {"pattern": "trend", "confidence": 0.87},
-                {"pattern": "anomaly", "confidence": 0.74}
-            ]
-            logger.info(f"Analyzed {len(data)} data points")
-            return {"patterns": patterns, "count": len(data), "status": "success"}
-        return {"status": "error", "message": "Unknown analysis type"}
-
-class ReliabilityAgent:
-    def __init__(self):
-        industry = "${{ inputs.industry }}"
+        cat > "agents/$AGENT_NAME/main.py" << 'ENDFILE'
+        #!/usr/bin/env python3
+        """
+        ${{ inputs.industry }} Agent - Generated from LEGO Blocks
+        Industry: ${{ inputs.industry }}
+        Use Case: ${{ inputs.use_case }}
+        """
         
-        if industry == "Healthcare":
-            self.compliance = ["HIPAA", "FDA", "HITECH"]
-            self.protocols = ["patient_privacy", "data_encryption", "audit_logging"]
-        elif industry == "Financial":
-            self.compliance = ["PCI-DSS", "SOX", "GDPR"]
-            self.protocols = ["transaction_security", "fraud_detection", "compliance_reporting"]
-        elif industry == "Insurance":
-            self.compliance = ["SOC2", "ISO-27001", "NAIC"]
-            self.protocols = ["risk_assessment", "claims_processing", "regulatory_reporting"]
-        elif industry == "Legal":
-            self.compliance = ["ABA", "ISO-27001", "GDPR"]
-            self.protocols = ["client_privilege", "document_retention", "conflict_checking"]
-        else:
-            self.compliance = ["SOC2", "ISO-27001"]
-            self.protocols = ["data_protection", "access_control"]
+        import asyncio
+        import logging
+        from datetime import datetime
+        import uuid
+        import json
         
-        self.industry = industry
-        logger.info(f"Reliability Agent for {industry} initialized")
-    
-    async def process(self, message):
-        if message.msg_type == "health":
-            return {
-                "status": "healthy",
-                "uptime": "99.9%",
-                "compliance": self.compliance,
-                "protocols": self.protocols,
-                "industry": self.industry,
-                "timestamp": datetime.now().isoformat()
-            }
-        elif message.msg_type == "compliance_check":
-            return {
-                "compliant": True,
-                "standards": self.compliance,
-                "protocols_active": len(self.protocols),
-                "last_audit": datetime.now().isoformat(),
-                "status": "success"
-            }
-        return {"status": "error", "message": "Unknown health operation"}
-
-class LegoSystem:
-    def __init__(self):
-        self.agents = {
-            "memory": MemoryAgent(),
-            "reasoning": ReasoningAgent(),
-            "reliability": ReliabilityAgent()
-        }
-        self.message_log = []
-        logger.info(f"LEGO System ready with {len(self.agents)} agents")
-    
-    async def send(self, agent_name, msg_type, payload):
-        if agent_name in self.agents:
-            message = AgentMessage("system", agent_name, msg_type, payload)
-            self.message_log.append({
-                "id": message.id,
-                "to": agent_name,
-                "type": msg_type,
-                "timestamp": message.timestamp.isoformat()
-            })
-            return await self.agents[agent_name].process(message)
-        return {"status": "error", "message": f"Agent {agent_name} not found"}
-    
-    async def demo(self):
-        print(f"\nDEMO: ${{ inputs.industry }} LEGO Agent")
-        print("=" * 60)
-        print(f"Industry: ${{ inputs.industry }}")
-        print(f"Use Case: ${{ inputs.use_case }}")
-        print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print("=" * 60)
+        logging.basicConfig(level=logging.INFO)
+        logger = logging.getLogger("lego-agent")
         
-        success_count = 0
-        total_tests = 4
+        class AgentMessage:
+            def __init__(self, sender, recipient, msg_type, payload):
+                self.id = str(uuid.uuid4())
+                self.sender = sender
+                self.recipient = recipient
+                self.msg_type = msg_type
+                self.payload = payload or {}
+                self.timestamp = datetime.now()
         
-        # Test 1: Memory Operations
-        print("\nTesting Memory Agent...")
-        store_result = await self.send("memory", "store", {
-            "key": "${{ inputs.industry }}_data",
-            "data": {"test": "success", "timestamp": datetime.now().isoformat()}
-        })
+        class MemoryAgent:
+            def __init__(self):
+                self.memory = {}
+                logger.info("Memory Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "store":
+                    key = message.payload.get("key", "default")
+                    data = message.payload.get("data", {})
+                    self.memory[key] = data
+                    logger.info(f"Stored: {key}")
+                    return {"status": "success", "key": key}
+                elif message.msg_type == "retrieve":
+                    key = message.payload.get("key", "default")
+                    data = self.memory.get(key, {})
+                    logger.info(f"Retrieved: {key}")
+                    return {"status": "success", "data": data}
+                return {"status": "error", "message": "Unknown operation"}
         
-        retrieve_result = await self.send("memory", "retrieve", {
-            "key": "${{ inputs.industry }}_data"
-        })
+        class ReasoningAgent:
+            def __init__(self):
+                logger.info("Reasoning Agent initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "analyze":
+                    data = message.payload.get("data", [])
+                    patterns = [
+                        {"pattern": "trend", "confidence": 0.87},
+                        {"pattern": "anomaly", "confidence": 0.74}
+                    ]
+                    logger.info(f"Analyzed {len(data)} data points")
+                    return {"patterns": patterns, "count": len(data), "status": "success"}
+                return {"status": "error", "message": "Unknown analysis type"}
         
-        if (store_result and store_result.get("status") == "success" and
-            retrieve_result and retrieve_result.get("status") == "success"):
-            print("   Memory operations successful")
-            success_count += 1
-        else:
-            print("   Memory operations failed")
+        class ReliabilityAgent:
+            def __init__(self):
+                industry = "${{ inputs.industry }}"
+                
+                if industry == "Healthcare":
+                    self.compliance = ["HIPAA", "FDA", "HITECH"]
+                    self.protocols = ["patient_privacy", "data_encryption", "audit_logging"]
+                elif industry == "Financial":
+                    self.compliance = ["PCI-DSS", "SOX", "GDPR"]
+                    self.protocols = ["transaction_security", "fraud_detection", "compliance_reporting"]
+                elif industry == "Insurance":
+                    self.compliance = ["SOC2", "ISO-27001", "NAIC"]
+                    self.protocols = ["risk_assessment", "claims_processing", "regulatory_reporting"]
+                elif industry == "Legal":
+                    self.compliance = ["ABA", "ISO-27001", "GDPR"]
+                    self.protocols = ["client_privilege", "document_retention", "conflict_checking"]
+                else:
+                    self.compliance = ["SOC2", "ISO-27001"]
+                    self.protocols = ["data_protection", "access_control"]
+                
+                self.industry = industry
+                logger.info(f"Reliability Agent for {industry} initialized")
+            
+            async def process(self, message):
+                if message.msg_type == "health":
+                    return {
+                        "status": "healthy",
+                        "uptime": "99.9%",
+                        "compliance": self.compliance,
+                        "protocols": self.protocols,
+                        "industry": self.industry,
+                        "timestamp": datetime.now().isoformat()
+                    }
+                elif message.msg_type == "compliance_check":
+                    return {
+                        "compliant": True,
+                        "standards": self.compliance,
+                        "protocols_active": len(self.protocols),
+                        "last_audit": datetime.now().isoformat(),
+                        "status": "success"
+                    }
+                return {"status": "error", "message": "Unknown health operation"}
         
-        # Test 2: Reasoning Analysis
-        print("\nTesting Reasoning Agent...")
-        analysis_result = await self.send("reasoning", "analyze", {
-            "data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-        })
+        class LegoSystem:
+            def __init__(self):
+                self.agents = {
+                    "memory": MemoryAgent(),
+                    "reasoning": ReasoningAgent(),
+                    "reliability": ReliabilityAgent()
+                }
+                self.message_log = []
+                logger.info(f"LEGO System ready with {len(self.agents)} agents")
+            
+            async def send(self, agent_name, msg_type, payload):
+                if agent_name in self.agents:
+                    message = AgentMessage("system", agent_name, msg_type, payload)
+                    self.message_log.append({
+                        "id": message.id,
+                        "to": agent_name,
+                        "type": msg_type,
+                        "timestamp": message.timestamp.isoformat()
+                    })
+                    return await self.agents[agent_name].process(message)
+                return {"status": "error", "message": f"Agent {agent_name} not found"}
+            
+            async def demo(self):
+                print(f"DEMO: ${{ inputs.industry }} LEGO Agent")
+                print("=" * 60)
+                print(f"Industry: ${{ inputs.industry }}")
+                print(f"Use Case: ${{ inputs.use_case }}")
+                print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+                print("=" * 60)
+                
+                success_count = 0
+                total_tests = 4
+                
+                print("Testing Memory Agent...")
+                store_result = await self.send("memory", "store", {
+                    "key": "${{ inputs.industry }}_data",
+                    "data": {"test": "success", "timestamp": datetime.now().isoformat()}
+                })
+                
+                retrieve_result = await self.send("memory", "retrieve", {
+                    "key": "${{ inputs.industry }}_data"
+                })
+                
+                if (store_result and store_result.get("status") == "success" and
+                    retrieve_result and retrieve_result.get("status") == "success"):
+                    print("   Memory operations successful")
+                    success_count += 1
+                else:
+                    print("   Memory operations failed")
+                
+                print("Testing Reasoning Agent...")
+                analysis_result = await self.send("reasoning", "analyze", {
+                    "data": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+                })
+                
+                if analysis_result and analysis_result.get("status") == "success":
+                    patterns = analysis_result.get("patterns", [])
+                    print(f"   Found {len(patterns)} patterns")
+                    for pattern in patterns:
+                        print(f"      - {pattern['pattern']}: {pattern['confidence']:.1%} confidence")
+                    success_count += 1
+                else:
+                    print("   Reasoning analysis failed")
+                
+                print("Testing Reliability Agent...")
+                health_result = await self.send("reliability", "health", {})
+                
+                if health_result and health_result.get("status") == "healthy":
+                    compliance = health_result.get("compliance", [])
+                    protocols = health_result.get("protocols", [])
+                    print(f"   System healthy")
+                    print(f"      Compliance: {', '.join(compliance)}")
+                    print(f"      Protocols: {len(protocols)} active")
+                    success_count += 1
+                else:
+                    print("   Health check failed")
+                
+                print("Testing Compliance Validation...")
+                compliance_result = await self.send("reliability", "compliance_check", {})
+                
+                if compliance_result and compliance_result.get("compliant"):
+                    standards = compliance_result.get("standards", [])
+                    print(f"   Compliance validation passed")
+                    print(f"      Standards: {', '.join(standards)}")
+                    success_count += 1
+                else:
+                    print("   Compliance validation failed")
+                
+                success_rate = (success_count / total_tests) * 100
+                print(f"Test Results: {success_count}/{total_tests} tests passed")
+                print(f"Success Rate: {success_rate:.1f}%")
+                print(f"Messages Sent: {len(self.message_log)}")
+                
+                if success_count == total_tests:
+                    print("All LEGO blocks working perfectly!")
+                elif success_count >= total_tests * 0.75:
+                    print("Most LEGO blocks working well!")
+                else:
+                    print("Some LEGO blocks need attention")
+                
+                return success_count == total_tests
         
-        if analysis_result and analysis_result.get("status") == "success":
-            patterns = analysis_result.get("patterns", [])
-            print(f"   Found {len(patterns)} patterns")
-            for pattern in patterns:
-                print(f"      - {pattern['pattern']}: {pattern['confidence']:.1%} confidence")
-            success_count += 1
-        else:
-            print("   Reasoning analysis failed")
+        async def main():
+            print("Starting ${{ inputs.industry }} LEGO Agent System...")
+            system = LegoSystem()
+            success = await system.demo()
+            
+            print(f"Final Status: {'SUCCESS' if success else 'PARTIAL'}")
+            print(f"Agent Type: ${{ inputs.industry }} Industry Agent")
+            print(f"Use Case: ${{ inputs.use_case }}")
+            print(f"LEGO Blocks: Memory + Reasoning + Reliability")
+            
+            return success
         
-        # Test 3: Health Check
-        print("\nTesting Reliability Agent...")
-        health_result = await self.send("reliability", "health", {})
-        
-        if health_result and health_result.get("status") == "healthy":
-            compliance = health_result.get("compliance", [])
-            protocols = health_result.get("protocols", [])
-            print(f"   System healthy")
-            print(f"      Compliance: {', '.join(compliance)}")
-            print(f"      Protocols: {len(protocols)} active")
-            success_count += 1
-        else:
-            print("   Health check failed")
-        
-        # Test 4: Compliance Check
-        print("\nTesting Compliance Validation...")
-        compliance_result = await self.send("reliability", "compliance_check", {})
-        
-        if compliance_result and compliance_result.get("compliant"):
-            standards = compliance_result.get("standards", [])
-            print(f"   Compliance validation passed")
-            print(f"      Standards: {', '.join(standards)}")
-            success_count += 1
-        else:
-            print("   Compliance validation failed")
-        
-        # Results Summary
-        success_rate = (success_count / total_tests) * 100
-        print(f"\nTest Results: {success_count}/{total_tests} tests passed")
-        print(f"Success Rate: {success_rate:.1f}%")
-        print(f"Messages Sent: {len(self.message_log)}")
-        
-        if success_count == total_tests:
-            print("All LEGO blocks working perfectly!")
-        elif success_count >= total_tests * 0.75:
-            print("Most LEGO blocks working well!")
-        else:
-            print("Some LEGO blocks need attention")
-        
-        return success_count == total_tests
-
-async def main():
-    print("Starting ${{ inputs.industry }} LEGO Agent System...")
-    system = LegoSystem()
-    success = await system.demo()
-    
-    print(f"\n{'='*60}")
-    print(f"Final Status: {'SUCCESS' if success else 'PARTIAL'}")
-    print(f"Agent Type: ${{ inputs.industry }} Industry Agent")
-    print(f"Use Case: ${{ inputs.use_case }}")
-    print(f"LEGO Blocks: Memory + Reasoning + Reliability")
-    print(f"{'='*60}")
-    
-    return success
-
-if __name__ == "__main__":
-    try:
-        result = asyncio.run(main())
-        exit_code = 0 if result else 1
-        print(f"Demo complete with exit code: {exit_code}")
-    except Exception as e:
-        print(f"Error running demo: {e}")
-        exit(1)
-EOF
+        if __name__ == "__main__":
+            try:
+                result = asyncio.run(main())
+                exit_code = 0 if result else 1
+                print(f"Demo complete with exit code: {exit_code}")
+            except Exception as e:
+                print(f"Error running demo: {e}")
+                exit(1)
+        ENDFILE
 
     - name: Create Support Files
       run: |
