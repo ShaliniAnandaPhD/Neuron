@@ -92,12 +92,12 @@
             display: flex;
             align-items: center;
         }
-        .deployment-link {
+        .deployment-link, .navigation-link {
             color: #007bff; /* Link color */
             text-decoration: underline;
             font-weight: 600;
         }
-        .deployment-link:hover {
+        .deployment-link:hover, .navigation-link:hover {
             color: #0056b3; /* Darker on hover */
         }
         /* Styling for the new build button */
@@ -129,6 +129,12 @@
         .build-button:active {
             transform: translateY(0); /* Press down effect */
         }
+        .navigation-section {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px dashed #e2e8f0;
+        }
     </style>
 </head>
 <body>
@@ -149,10 +155,12 @@
                 <div class="metric-value">6</div>
                 <div class="metric-label">Available LEGO Modules</div>
             </div>
-            <!-- Supported Industry Verticals Metric Box -->
+            <!-- Supported Industry Verticals Metric Box (now a link to new page) -->
             <div class="metric-box">
                 <div class="metric-value">20</div>
-                <div class="metric-label">Supported Industry Verticals</div>
+                <div class="metric-label">
+                    <a href="#" onclick="openIndustryVerticalsPage()" class="navigation-link">Supported Industry Verticals</a>
+                </div>
             </div>
             <!-- Average Build Time Metric Box -->
             <div class="metric-box">
@@ -289,92 +297,33 @@
             </li>
         </ul>
 
-        <!-- Section for Supported Industry Verticals -->
-        <h2 class="text-2xl font-semibold">🌍 Supported Industry Verticals (Agents You Can Build)</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
-            <!-- Industry items -->
-            <div class="industry-item">
-                <div class="industry-name">01. Healthcare Providers & Hospitals</div>
-                <div class="industry-description">Patient data management, clinical decision support</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">02. Financial Institutions</div>
-                <div class="industry-description">Fraud detection, risk assessment, customer support</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">03. Insurance Companies</div>
-                <div class="industry-description">Claims processing, policy management, underwriting</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">04. Government Agencies</div>
-                <div class="industry-description">Citizen services, policy analysis, secure data</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">05. Defense & Intelligence</div>
-                <div class="industry-description">Intelligence assessment, operational planning</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">06. Large Customer Support Centers</div>
-                <div class="industry-description">Ambiguous queries, multi-session journeys</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">07. IT Departments & System Integrators</div>
-                <div class="industry-description">API integration, workflow orchestration</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">08. Digital Transformation Consulting</div>
-                <div class="industry-description">AI solution design, explainable AI</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">09. Manufacturing & Industrial Automation</div>
-                <div class="industry-description">Production optimization, predictive maintenance</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">10. Retail & E-commerce</div>
-                <div class="industry-description">Personalized experience, inventory management</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">11. Academic AI/ML Research Groups</div>
-                <div class="industry-description">Cognitive architecture, explainable AI studies</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">12. Enterprise AI/ML R&D Divisions</div>
-                <div class="industry-description">Production AI, compliance-driven development</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">13. Innovation Labs & Incubators</div>
-                <div class="industry-description">Rapid prototyping, AI-powered products</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">14. Robotics & IoT Companies</div>
-                <div class="industry-description">Autonomous decisions, multi-robot coordination</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">15. Smart City & Urban Planning</div>
-                <div class="industry-description">Traffic management, emergency response</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">16. Telecommunications</div>
-                <div class="industry-description">Network optimization, fault detection</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">17. Energy & Utilities</div>
-                <div class="industry-description">Smart grid, predictive maintenance</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">18. Pharmaceutical & Biotech</div>
-                <div class="industry-description">Drug discovery, regulatory compliance</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">19. Legal Tech Firms</div>
-                <div class="industry-description">Document analysis, compliance checking</div>
-            </div>
-            <div class="industry-item">
-                <div class="industry-name">20. EdTech (Education Technology)</div>
-                <div class="industry-description">Personalized learning, intelligent tutoring</div>
-            </div>
+        <!-- New Navigation Section -->
+        <div class="navigation-section">
+            <h2 class="text-2xl font-semibold">🔗 Explore More</h2>
+            <p class="text-md text-gray-700 mt-4">
+                Dive deeper into the specific applications of Neuron LEGO Agents across various domains:
+            </p>
+            <p class="mt-4">
+                <a href="#" onclick="openIndustryVerticalsPage()" class="navigation-link text-xl">
+                    🌍 View All Supported Industry Verticals
+                </a>
+            </p>
         </div>
+
     </div>
+
+    <script>
+        // Placeholder function to simulate opening a new page for industry verticals.
+        // In a real web app, this would navigate to a different HTML file.
+        function openIndustryVerticalsPage() {
+            // For Canvas preview, we output the new immersive.
+            // In a live GitHub Pages site, this would be: window.location.href = 'industry_verticals.html';
+            console.log("Navigating to Supported Industry Verticals Page...");
+            // This function will trigger the model to generate the new immersive.
+            // In a real deployment, you would link to a static HTML file.
+            // For now, we'll indicate to the user what would happen.
+            alert("This link would typically navigate to a dedicated page for 'Supported Industry Verticals'. Please see the new immersive generated for that content!");
+        }
+    </script>
 </body>
 </html>
-
