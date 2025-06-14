@@ -148,33 +148,33 @@ PYTHONEOF
         
         cat >> "agents/$AGENT_NAME/main.py" << PYTHONEOF
 
-class ReliabilityAgent:
-    def __init__(self):
-        self.compliance = $compliance_list
-        self.protocols = $protocols_list
-        logger.info(f"🛡️ Reliability Agent with compliance: {self.compliance}")
-    
-    async def process(self, message):
-        if message.msg_type == "health":
-            return {
-                "status": "healthy",
-                "uptime": "99.9%",
-                "compliance": self.compliance,
-                "protocols": self.protocols,
-                "industry": "${{ inputs.industry }}",
-                "timestamp": datetime.now().isoformat()
-            }
-        elif message.msg_type == "compliance_check":
-            return {
-                "compliant": True,
-                "standards": self.compliance,
-                "protocols_active": len(self.protocols),
-                "last_audit": datetime.now().isoformat(),
-                "status": "success"
-            }
-        
-        return {"status": "error", "message": "Unknown health operation"}
-PYTHONEOF
+        class ReliabilityAgent:
+            def __init__(self):
+                self.compliance = $compliance_list
+                self.protocols = $protocols_list
+                logger.info(f"🛡️ Reliability Agent with compliance: {self.compliance}")
+            
+            async def process(self, message):
+                if message.msg_type == "health":
+                    return {
+                        "status": "healthy",
+                        "uptime": "99.9%",
+                        "compliance": self.compliance,
+                        "protocols": self.protocols,
+                        "industry": "${{ inputs.industry }}",
+                        "timestamp": datetime.now().isoformat()
+                    }
+                elif message.msg_type == "compliance_check":
+                    return {
+                        "compliant": True,
+                        "standards": self.compliance,
+                        "protocols_active": len(self.protocols),
+                        "last_audit": datetime.now().isoformat(),
+                        "status": "success"
+                    }
+                
+                return {"status": "error", "message": "Unknown health operation"}
+        PYTHONEOF
 
     - name: "Add LEGO System"
       run: |
