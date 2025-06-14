@@ -23,6 +23,8 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 [![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
 [![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
 [![IP Monitoring Simple](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml)
+[![🧱🧱🧱 Neuron LEGO Agent Builder](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml)
+[![🏪 LEGO Agent Marketplace](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml)
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
 
