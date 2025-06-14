@@ -172,7 +172,7 @@ jobs:
                 <div class="build-new">
                     <h2>🚀 Build Your Custom Agent</h2>
                     <p>Choose your industry and LEGO blocks to automatically generate a specialized agent!</p>
-                    <a href="../../actions" class="build-button">🧱 Build New Agent</a>
+                    <a href="https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml" class="build-button">🧱 Build New Agent</a>
                 </div>
 
                 <h2>🎯 Available LEGO Blocks</h2>
