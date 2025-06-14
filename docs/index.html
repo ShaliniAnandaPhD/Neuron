@@ -1,1 +1,398 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧱 Neuron LEGO Agent Marketplace</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #0d1117;
+            color: #e6edf3;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #1f2937 0%, #374151 100%);
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.8em;
+            margin-bottom: 15px;
+            background: linear-gradient(135deg, #58a6ff, #79c0ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: bold;
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            color: #8b949e;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .status-banner {
+            background: #0d1421;
+            border: 1px solid #1f6feb;
+            border-left: 4px solid #58a6ff;
+            padding: 16px 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .status-banner .title {
+            color: #58a6ff;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+        
+        .status-banner .subtitle {
+            color: #8b949e;
+            margin-top: 4px;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .metric-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #79c0ff);
+        }
+        
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: #58a6ff;
+            box-shadow: 0 12px 24px rgba(88, 166, 255, 0.1);
+        }
+        
+        .metric-number {
+            font-size: 3em;
+            font-weight: bold;
+            color: #58a6ff;
+            margin-bottom: 8px;
+            font-family: 'Monaco', monospace;
+        }
+        
+        .metric-label {
+            color: #e6edf3;
+            font-weight: 600;
+            font-size: 1.1em;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .metric-sublabel {
+            color: #8b949e;
+            font-size: 0.9em;
+            margin-top: 4px;
+        }
+        
+        .build-section {
+            background: #0d1421;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .build-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f85149, #ff7b72);
+        }
+        
+        .build-section h2 {
+            color: #e6edf3;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .build-section p {
+            color: #8b949e;
+            margin-bottom: 25px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .build-button {
+            background: linear-gradient(135deg, #238636, #2ea043);
+            color: white;
+            padding: 16px 32px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .build-button:hover {
+            background: linear-gradient(135deg, #2ea043, #46954a);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(46, 160, 67, 0.3);
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2em;
+            margin: 50px 0 30px;
+            color: #e6edf3;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 50px;
+        }
+        
+        .component-card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 28px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .component-card:hover {
+            border-color: #58a6ff;
+            transform: translateY(-6px);
+            box-shadow: 0 16px 32px rgba(88, 166, 255, 0.15);
+        }
+        
+        .component-icon {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            display: block;
+        }
+        
+        .component-title {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #e6edf3;
+            margin-bottom: 12px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .component-desc {
+            color: #8b949e;
+            line-height: 1.6;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .footer {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 50px;
+        }
+        
+        .footer h2 {
+            color: #e6edf3;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .footer p {
+            color: #8b949e;
+            margin-bottom: 15px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+        
+        .footer hr {
+            border: none;
+            height: 1px;
+            background: #30363d;
+            margin: 25px 0;
+        }
+        
+        .footer small {
+            color: #6e7681;
+        }
+        
+        /* Memory block specific styling */
+        .component-card:nth-child(1) .component-icon { color: #58a6ff; }
+        .component-card:nth-child(2) .component-icon { color: #f85149; }
+        .component-card:nth-child(3) .component-icon { color: #a5a5a5; }
+        .component-card:nth-child(4) .component-icon { color: #79c0ff; }
+        .component-card:nth-child(5) .component-icon { color: #56d364; }
+        .component-card:nth-child(6) .component-icon { color: #ffa657; }
+        
+        /* Code-like elements */
+        .code-accent {
+            font-family: 'Monaco', 'Menlo', monospace;
+            background: #161b22;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            border: 1px solid #30363d;
+        }
+        
+        /* Terminal-like prompt */
+        .terminal-prompt::before {
+            content: '$ ';
+            color: #58a6ff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="status-banner">
+            <div class="title">🚀 System Status: OPERATIONAL</div>
+            <div class="subtitle">Neuron LEGO Agent Marketplace successfully deployed and running</div>
+        </div>
+        
+        <div class="header">
+            <h1>🧱 Neuron LEGO Agent Marketplace</h1>
+            <p>Modular AI Agent Architecture for Enterprise Development</p>
+        </div>
 
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-number">0</div>
+                <div class="metric-label">Deployed Agents</div>
+                <div class="metric-sublabel">Ready for first build</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">6</div>
+                <div class="metric-label">Component Modules</div>
+                <div class="metric-sublabel">Architectural blocks</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">8+</div>
+                <div class="metric-label">Industry Verticals</div>
+                <div class="metric-sublabel">Supported domains</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-number">~5min</div>
+                <div class="metric-label">Build Time</div>
+                <div class="metric-sublabel">Idea to deployment</div>
+            </div>
+        </div>
+
+        <div class="build-section">
+            <h2>🔧 Agent Factory</h2>
+            <p>Configure and deploy specialized AI agents using modular architecture components</p>
+            <a href="../../actions" class="build-button">
+                <span>⚡</span>
+                <span>Initialize Build Process</span>
+            </a>
+        </div>
+
+        <h2 class="section-title">🏗️ Available Architecture Components</h2>
+        <div class="components-grid">
+            <div class="component-card">
+                <div class="component-icon">🧠</div>
+                <div class="component-title">Memory Subsystem</div>
+                <div class="component-desc">
+                    Episodic, semantic, and working memory modules with 
+                    <span class="code-accent">contextual retrieval</span> and learning capabilities
+                </div>
+            </div>
+            <div class="component-card">
+                <div class="component-icon">🔬</div>
+                <div class="component-title">Reasoning Engine</div>
+                <div class="component-desc">
+                    Logical inference, pattern recognition, and 
+                    <span class="code-accent">contradiction detection</span> algorithms
+                </div>
+            </div>
+            <div class="component-card">
+                <div class="component-icon">⚙️</div>
+                <div class="component-title">Coordination Layer</div>
+                <div class="component-desc">
+                    Multi-agent orchestration with 
+                    <span class="code-accent">distributed consensus</span> and workflow management
+                </div>
+            </div>
+            <div class="component-card">
+                <div class="component-icon">📡</div>
+                <div class="component-title">Perception Interface</div>
+                <div class="component-desc">
+                    Multi-modal input processing including 
+                    <span class="code-accent">NLP, vision, audio</span> signal processing
+                </div>
+            </div>
+            <div class="component-card">
+                <div class="component-icon">📤</div>
+                <div class="component-title">Response Generator</div>
+                <div class="component-desc">
+                    Adaptive output generation with 
+                    <span class="code-accent">tone calibration</span> and style matching
+                </div>
+            </div>
+            <div class="component-card">
+                <div class="component-icon">🛡️</div>
+                <div class="component-title">Reliability Stack</div>
+                <div class="component-desc">
+                    Enterprise-grade fault tolerance, 
+                    <span class="code-accent">HIPAA compliance</span>, and error recovery
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <h2>🎯 Development Environment Ready</h2>
+            <p><span class="terminal-prompt code-accent">neuron build --interactive</span></p>
+            <p><strong>Full agent lifecycle: Requirements → Architecture → Deployment → Monitoring</strong></p>
+            <hr>
+            <small>Powered by Neuron Framework | Enterprise AI Architecture Platform</small>
+        </div>
+    </div>
+</body>
+</html>
