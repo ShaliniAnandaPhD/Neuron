@@ -1430,9 +1430,10 @@ jobs:
 
             - name: Create Advanced Agent Core - Part 3
                 run: |
+                  cat >> "agents/$AGENT_NAME/main.py" << 'ENDFILE'
     
     
-    cat >> "agents/$AGENT_NAME/main.py" << 'ENDFILE'
+    
     
     class AdvancedReliabilityAgent:
         """Enhanced reliability with fault tolerance and monitoring"""
