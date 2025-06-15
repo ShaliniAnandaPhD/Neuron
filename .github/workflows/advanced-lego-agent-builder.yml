@@ -1944,8 +1944,8 @@ jobs:
         asyncio.run(main())
     ENDFILE
 
-        - name: Create Advanced Configuration Files
-  run: |
+    -   name: Create Advanced Configuration Files
+        run: |
     # Create advanced requirements.txt
     cat > "agents/$AGENT_NAME/requirements.txt" << 'EOF'
     # Advanced Neuron Agent v2.0 Requirements
