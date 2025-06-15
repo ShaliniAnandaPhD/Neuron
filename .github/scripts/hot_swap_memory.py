@@ -1,6 +1,6 @@
-
+#!/usr/bin/env python3
 """
-hot_swap_memory.py
+hot_swap_memory.py - FIXED VERSION
 Performs hot-swapping of memory agents using blue-green deployment
 Save as: .github/scripts/hot_swap_memory.py
 """
@@ -17,6 +17,18 @@ from typing import Dict, Any
 def log(message):
     """Simple logging function"""
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
+
+def set_github_output(name, value):
+    """Set GitHub Actions output using the new format"""
+    try:
+        if 'GITHUB_OUTPUT' in os.environ:
+            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                f.write(f"{name}={value}\n")
+        else:
+            # Fallback for local testing
+            print(f"OUTPUT: {name}={value}")
+    except Exception as e:
+        print(f"Warning: Could not set output {name}: {e}")
 
 class MemoryAgentSwapper:
     """Handles hot-swapping of memory agents"""
@@ -117,12 +129,12 @@ class MemoryAgentSwapper:
         """Validate system state before swap"""
         time.sleep(1)  # Simulate validation time
         
-        # Simulate validation checks
+        # Simulate validation checks with better success rate
         checks = [
-            ('Memory availability', random.random() > 0.05),
-            ('System resources', random.random() > 0.03),
-            ('Network connectivity', random.random() > 0.02),
-            ('Version compatibility', random.random() > 0.01)
+            ('Memory availability', random.random() > 0.02),  # 98% success
+            ('System resources', random.random() > 0.01),     # 99% success
+            ('Network connectivity', random.random() > 0.01), # 99% success
+            ('Version compatibility', random.random() > 0.01) # 99% success
         ]
         
         failed_checks = [check for check, passed in checks if not passed]
@@ -148,11 +160,11 @@ class MemoryAgentSwapper:
     
     def _deploy_new_version(self, version: str, environment: str) -> Dict[str, Any]:
         """Deploy new memory agent version"""
-        deployment_time = random.uniform(2, 4)  # 2-4 seconds
+        deployment_time = random.uniform(1, 2)  # 1-2 seconds for faster demo
         time.sleep(deployment_time)
         
-        # 95% success rate for deployment
-        success = random.random() > 0.05
+        # 98% success rate for deployment
+        success = random.random() > 0.02
         
         if success:
             return {
@@ -175,13 +187,13 @@ class MemoryAgentSwapper:
     
     def _blue_green_swap(self, from_version: str, to_version: str) -> Dict[str, Any]:
         """Blue-green deployment strategy"""
-        time.sleep(1)  # Simulate traffic switch
+        time.sleep(0.5)  # Faster for demo
         
         return {
             'phase': 'traffic_switch',
             'strategy': 'blue-green',
             'status': 'success',
-            'duration_ms': 1000,
+            'duration_ms': 500,
             'message': f'Traffic switched from blue ({from_version}) to green ({to_version})',
             'traffic_split': {'blue': 0, 'green': 100},
             'switch_type': 'immediate'
@@ -189,7 +201,7 @@ class MemoryAgentSwapper:
     
     def _canary_swap(self, from_version: str, to_version: str) -> Dict[str, Any]:
         """Canary deployment strategy"""
-        time.sleep(3)  # Simulate gradual rollout
+        time.sleep(1.5)  # Faster for demo
         
         # Simulate canary progression: 10% → 50% → 100%
         canary_steps = [
@@ -202,7 +214,7 @@ class MemoryAgentSwapper:
             'phase': 'traffic_switch',
             'strategy': 'canary',
             'status': 'success',
-            'duration_ms': 3000,
+            'duration_ms': 1500,
             'message': f'Canary deployment completed: {from_version} → {to_version}',
             'traffic_split': {'stable': 0, 'canary': 100},
             'canary_steps': canary_steps,
@@ -211,7 +223,7 @@ class MemoryAgentSwapper:
     
     def _rolling_swap(self, from_version: str, to_version: str) -> Dict[str, Any]:
         """Rolling update strategy"""
-        time.sleep(2)  # Simulate rolling update
+        time.sleep(1)  # Faster for demo
         
         instances_updated = random.randint(3, 6)
         
@@ -219,7 +231,7 @@ class MemoryAgentSwapper:
             'phase': 'traffic_switch',
             'strategy': 'rolling',
             'status': 'success',
-            'duration_ms': 2000,
+            'duration_ms': 1000,
             'message': f'Rolling update completed: {instances_updated} instances updated',
             'instances_updated': instances_updated,
             'update_batch_size': 1,
@@ -229,7 +241,7 @@ class MemoryAgentSwapper:
     def _post_swap_validation(self, version: str, validation_time: int) -> Dict[str, Any]:
         """Validate new version after swap"""
         # Scale down validation time for demo (but report actual time)
-        actual_sleep = min(validation_time / 10, 3)  # Max 3 seconds sleep
+        actual_sleep = min(validation_time / 20, 2)  # Max 2 seconds sleep, much faster
         time.sleep(actual_sleep)
         
         # Validation metrics
@@ -241,8 +253,8 @@ class MemoryAgentSwapper:
             'cache_hit_rate': random.uniform(0.8, 0.95)
         }
         
-        # 90% validation success rate
-        validation_success = random.random() > 0.1
+        # 95% validation success rate (higher than before)
+        validation_success = random.random() > 0.05
         
         # Calculate performance improvement
         performance_improvement = random.uniform(15, 35) if validation_success else 0
@@ -274,12 +286,12 @@ class MemoryAgentSwapper:
     
     def _cleanup_old_version(self, old_version: str) -> Dict[str, Any]:
         """Clean up old version resources"""
-        time.sleep(0.5)  # Simulate cleanup
+        time.sleep(0.3)  # Faster cleanup
         
         return {
             'phase': 'cleanup',
             'status': 'success',
-            'duration_ms': 500,
+            'duration_ms': 300,
             'message': f'Old version {old_version} cleaned up successfully',
             'resources_freed': ['containers', 'network_routes', 'config_maps'],
             'storage_freed_mb': random.randint(100, 500)
@@ -287,12 +299,12 @@ class MemoryAgentSwapper:
     
     def _rollback_to_previous(self, previous_version: str) -> Dict[str, Any]:
         """Rollback to previous version"""
-        time.sleep(1.5)  # Simulate rollback
+        time.sleep(0.8)  # Faster rollback
         
         return {
             'phase': 'rollback',
             'status': 'success',
-            'duration_ms': 1500,
+            'duration_ms': 800,
             'message': f'Successfully rolled back to {previous_version}',
             'rollback_reason': 'Validation failure',
             'traffic_restored': True
@@ -315,7 +327,7 @@ def main():
                        choices=['blue-green', 'canary', 'rolling'],
                        help='Deployment strategy')
     parser.add_argument('--environment', required=True,
-                       help='Target environment')
+                       help='Target environment (production/staging/development)')
     parser.add_argument('--validation-time', type=int, default=120,
                        help='Post-swap validation time in seconds')
     
@@ -340,12 +352,12 @@ def main():
         with open('memory_swap_results.json', 'w') as f:
             json.dump(result, f, indent=2)
         
-        # Set GitHub Actions outputs
+        # Set GitHub Actions outputs using the new format
         try:
-            print(f"::set-output name=swap_status::{result['swap_status']}")
-            print(f"::set-output name=final_version::{result.get('final_version', 'unknown')}")
-            print(f"::set-output name=swap_id::{result['swap_id']}")
-            print(f"::set-output name=total_duration::{result.get('total_duration', 0)}")
+            set_github_output('swap_status', result['swap_status'])
+            set_github_output('final_version', result.get('final_version', 'unknown'))
+            set_github_output('swap_id', result['swap_id'])
+            set_github_output('total_duration', str(result.get('total_duration', 0)))
         except Exception as e:
             log(f"Warning: Error setting GitHub outputs: {e}")
         
@@ -358,6 +370,10 @@ def main():
         
         if result['swap_status'] == 'success':
             print(f"✅ Memory agent successfully swapped to {args.to_version}")
+            # Show performance improvement if available
+            for phase in result['phases']:
+                if phase.get('phase') == 'validation' and 'performance_improvement' in phase:
+                    print(f"📈 Performance improvement: {phase['performance_improvement']:.1f}%")
         elif result['swap_status'] == 'rolled_back':
             print(f"⚠️ Swap failed, rolled back to {args.from_version}")
         else:
@@ -367,7 +383,25 @@ def main():
         print(f"\n📋 Phase Details:")
         for i, phase in enumerate(result['phases'], 1):
             status_icon = "✅" if phase['status'] == 'success' else "❌"
-            print(f"  {i}. {status_icon} {phase['phase']}: {phase.get('message', 'No details')}")
+            duration = phase.get('duration_ms', 0) / 1000
+            print(f"  {i}. {status_icon} {phase['phase'].replace('_', ' ').title()}: {phase.get('message', 'No details')} ({duration:.1f}s)")
+        
+        # Show additional details for successful swaps
+        if result['swap_status'] == 'success':
+            print(f"\n🎯 Swap Summary:")
+            print(f"  • Strategy: {args.swap_strategy}")
+            print(f"  • Environment: {args.environment}")
+            print(f"  • Total Duration: {result.get('total_duration', 0):.1f}s")
+            print(f"  • Phases: {len(result['phases'])}")
+            
+            # Find and show deployment details
+            for phase in result['phases']:
+                if phase.get('phase') == 'deployment':
+                    instances = phase.get('instances_deployed', 'unknown')
+                    print(f"  • Instances Deployed: {instances}")
+                elif phase.get('phase') == 'cleanup':
+                    freed_mb = phase.get('storage_freed_mb', 0)
+                    print(f"  • Storage Freed: {freed_mb}MB")
         
         log("Memory agent swap completed")
         return 0
