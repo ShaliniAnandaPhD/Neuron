@@ -1940,7 +1940,7 @@ jobs:
         asyncio.run(main())
     ENDFILE
 
-- name: Create Advanced Configuration Files
+        - name: Create Advanced Configuration Files
   run: |
     # Create advanced requirements.txt
     cat > "agents/$AGENT_NAME/requirements.txt" << 'EOF'
@@ -2462,3 +2462,6 @@ jobs:
     echo "   2. python test_advanced.py"
     echo "   3. ./deploy.sh"
         
+
+
+   
