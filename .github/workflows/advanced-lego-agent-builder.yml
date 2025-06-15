@@ -2237,7 +2237,7 @@ jobs:
     EOF
 
         - name: Create Advanced Deployment Script
-  run: |
+          run: |
     cat > "agents/$AGENT_NAME/deploy.sh" << 'EOF'
     #!/bin/bash
     set -e
