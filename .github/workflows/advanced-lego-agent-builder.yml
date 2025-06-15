@@ -379,11 +379,7 @@ jobs:
                  mkdir -p "agents/$AGENT_NAME"
                  echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
                  echo "✅ Created directory: $AGENT_NAME"
-            
-        
-
-    
-        
+               
     - name: Create Advanced Agent Core - Part 1
       run: |
         cat > "agents/$AGENT_NAME/main.py" << 'ENDFILE'
