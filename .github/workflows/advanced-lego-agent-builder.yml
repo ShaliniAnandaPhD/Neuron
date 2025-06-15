@@ -1423,9 +1423,9 @@ jobs:
                     "rationality_factor": rationality
                 }
         ENDFILE
-        
 
-- name: Create Advanced Agent Core - Part 3
+
+            - name: Create Advanced Agent Core - Part 3
   run: |
     cat >> "agents/$AGENT_NAME/main.py" << 'ENDFILE'
     
@@ -1940,7 +1940,7 @@ jobs:
         asyncio.run(main())
     ENDFILE
 
-    - name: Create Advanced Configuration Files
+- name: Create Advanced Configuration Files
   run: |
     # Create advanced requirements.txt
     cat > "agents/$AGENT_NAME/requirements.txt" << 'EOF'
@@ -2461,4 +2461,4 @@ jobs:
     echo "   1. cd agents/$AGENT_NAME"
     echo "   2. python test_advanced.py"
     echo "   3. ./deploy.sh"
-          
+        
