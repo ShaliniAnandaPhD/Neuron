@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 hot_swap_memory.py - FIXED VERSION
 Performs hot-swapping of memory agents using blue-green deployment
