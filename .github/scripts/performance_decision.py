@@ -1,6 +1,5 @@
-
 """
-performance_decision.py
+performance_decision.py - FIXED VERSION
 Analyzes performance metrics and makes intelligent swap decisions
 Save as: .github/scripts/performance_decision.py
 """
@@ -15,6 +14,18 @@ from typing import Dict, Any, Optional
 def log(message):
     """Simple logging function"""
     print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
+
+def set_github_output(name, value):
+    """Set GitHub Actions output using the new format"""
+    try:
+        if 'GITHUB_OUTPUT' in os.environ:
+            with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
+                f.write(f"{name}={value}\n")
+        else:
+            # Fallback for local testing
+            print(f"OUTPUT: {name}={value}")
+    except Exception as e:
+        print(f"Warning: Could not set output {name}: {e}")
 
 class PerformanceDecisionEngine:
     """Makes intelligent decisions about component swapping based on performance"""
@@ -339,14 +350,14 @@ def main():
         with open('decision_analysis.json', 'w') as f:
             json.dump(analysis, f, indent=2)
         
-        # Set GitHub Actions outputs
+        # Set GitHub Actions outputs using the new format
         try:
-            print(f"::set-output name=swap_needed::{str(analysis['swap_needed']).lower()}")
-            print(f"::set-output name=target_agent::{analysis['target_agent']}")
-            print(f"::set-output name=current_version::{analysis['current_version']}")
-            print(f"::set-output name=recommended_version::{analysis['recommended_version']}")
-            print(f"::set-output name=swap_reason::{analysis['swap_reason']}")
-            print(f"::set-output name=performance_score::{analysis['performance_score']}")
+            set_github_output('swap_needed', str(analysis['swap_needed']).lower())
+            set_github_output('target_agent', analysis['target_agent'])
+            set_github_output('current_version', analysis['current_version'])
+            set_github_output('recommended_version', analysis['recommended_version'])
+            set_github_output('swap_reason', analysis['swap_reason'])
+            set_github_output('performance_score', str(analysis['performance_score']))
         except Exception as e:
             log(f"Warning: Error setting GitHub outputs: {e}")
         
