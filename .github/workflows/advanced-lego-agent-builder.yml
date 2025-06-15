@@ -7,7 +7,7 @@ on:
         description: "Industry"
         required: true
         type: choice
-        options:
+        options: 
           - "Healthcare"
           - "Financial"
           - "Insurance"
@@ -49,7 +49,7 @@ permissions:
 jobs:
   build-advanced-agent:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -61,7 +61,7 @@ jobs:
         mkdir -p "agents/$AGENT_NAME"
         echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
         echo "AGENT_DIRECTORY=agents/$AGENT_NAME" >> $GITHUB_ENV
-
+        
         # Determine industry-specific compliance standards for README
         case "${{ inputs.industry }}" in
           "Healthcare") INDUSTRY_COMPLIANCE="HIPAA, FDA" ;;
@@ -295,7 +295,7 @@ This document summarizes the build of your custom ADVANCED Neuron Agent v2.0 wit
 3.  **Deploy the Agent:**
     To run a test deployment of your agent:
     \`./deploy.sh\`
-
+    
     *(Note: For production deployments, consider containerization (Docker, Kubernetes) and robust orchestration.)*
 
 ## Next Steps for Production
@@ -324,7 +324,7 @@ EOF_README
         git add "agents/${{ env.AGENT_DIRECTORY }}"
         git commit -m "feat: Add new advanced Neuron Agent for ${{ inputs.industry }}" || echo "No changes to commit"
         git push
-
+        
     - name: Build Summary
       run: |
         echo "ADVANCED ${{ inputs.industry }} Neuron Agent v2.0 generated successfully!"
