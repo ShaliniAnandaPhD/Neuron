@@ -363,8 +363,8 @@ jobs:
         default: "Balanced"
 
         permissions:
-  contents: read
-  actions: read
+          contents: read
+          actions: read
 
 
   jobs:
