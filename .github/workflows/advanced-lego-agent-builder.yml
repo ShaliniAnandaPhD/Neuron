@@ -1428,9 +1428,10 @@ jobs:
                 }
         ENDFILE
 
-
             - name: Create Advanced Agent Core - Part 3
-  run: |
+                run: |
+    
+    
     cat >> "agents/$AGENT_NAME/main.py" << 'ENDFILE'
     
     class AdvancedReliabilityAgent:
