@@ -43,13 +43,13 @@ on:
         default: "Balanced"
 
 permissions:
-  contents: write # Changed to write to allow creating new files
+  contents: write # Changed from read to write to allow git push
   actions: read
 
 jobs:
   build-advanced-agent:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v4
@@ -61,19 +61,27 @@ jobs:
         mkdir -p "agents/$AGENT_NAME"
         echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
         echo "AGENT_DIRECTORY=agents/$AGENT_NAME" >> $GITHUB_ENV
-
-        # Install envsubst which is part of gettext-base
-        sudo apt-get update && sudo apt-get install -y gettext-base
+        
+        # Determine industry-specific compliance standards for README
+        case "${{ inputs.industry }}" in
+          "Healthcare") INDUSTRY_COMPLIANCE="HIPAA, FDA" ;;
+          "Financial") INDUSTRY_COMPLIANCE="PCI-DSS, SOX" ;;
+          "Insurance") INDUSTRY_COMPLIANCE="NAIC, Solvency II" ;;
+          "Legal") INDUSTRY_COMPLIANCE="ABA, Legal Professional Privilege" ;;
+          "Manufacturing") INDUSTRY_COMPLIANCE="ISO-9001, OSHA" ;;
+          "Retail") INDUSTRY_COMPLIANCE="PCI-DSS, GDPR" ;;
+          *) INDUSTRY_COMPLIANCE="General Security Standards" ;;
+        esac
+        echo "INDUSTRY_COMPLIANCE_STANDARDS=$INDUSTRY_COMPLIANCE" >> $GITHUB_ENV
 
     - name: Generate Advanced Agent Code (main.py)
       run: |
-        # Copy the template and substitute variables
-        envsubst < templates/main_template.py > "${{ env.AGENT_DIRECTORY }}/main.py"
-      env:
-        INDUSTRY: ${{ inputs.industry }}
-        USE_CASE: ${{ inputs.use_case }}
-        COMPLEXITY: ${{ inputs.complexity }}
-        BEHAVIOR_PROFILE: ${{ inputs.behavior_profile }}
+        # Using sed to substitute variables in the Python template
+        sed -e "s|\${INDUSTRY}|${{ inputs.industry }}|g" \
+            -e "s|\${USE_CASE}|${{ inputs.use_case }}|g" \
+            -e "s|\${COMPLEXITY}|${{ inputs.complexity }}|g" \
+            -e "s|\${BEHAVIOR_PROFILE}|${{ inputs.behavior_profile }}|g" \
+            < templates/main_template.py > "${{ env.AGENT_DIRECTORY }}/main.py"
 
     - name: Create Test File (test_advanced.py)
       run: |
@@ -243,26 +251,33 @@ kill $AGENT_PID || true # Kill the agent process gracefully
 echo "ADVANCED Neuron Agent v2.0 deployed successfully for testing!"
 echo "For continuous deployment, consider containerization (Docker, Kubernetes)."
 EOF
-        chmod +x "${{ env.AGENT_DIRECTORY }}/deploy.sh"
 
     - name: Create README (ADVANCED_BUILD_SUMMARY.md)
       run: |
-        cat > "${{ env.AGENT_DIRECTORY }}/ADVANCED_BUILD_SUMMARY.md" << 'EOF'
+        # Define shell variables from GitHub Actions inputs/env vars
+        README_INDUSTRY="${{ inputs.industry }}"
+        README_USE_CASE="${{ inputs.use_case }}"
+        README_COMPLEXITY="${{ inputs.complexity }}"
+        README_BEHAVIOR_PROFILE="${{ inputs.behavior_profile }}"
+        README_AGENT_NAME="${{ env.AGENT_NAME }}"
+        README_COMPLIANCE_STANDARDS="${{ env.INDUSTRY_COMPLIANCE_STANDARDS }}"
+
+        cat > "${{ env.AGENT_DIRECTORY }}/ADVANCED_BUILD_SUMMARY.md" << EOF_README
 # ADVANCED Neuron Agent v2.0 Build Summary
 
 This document summarizes the build of your custom ADVANCED Neuron Agent v2.0 with enhanced capabilities.
 
 ## Agent Details
-- **Industry:** ${{ inputs.industry }}
-- **Use Case:** ${{ inputs.use_case }}
-- **Complexity Level:** ${{ inputs.complexity }}
-- **Behavior Profile:** ${{ inputs.behavior_profile }}
+- **Industry:** ${README_INDUSTRY}
+- **Use Case:** ${README_USE_CASE}
+- **Complexity Level:** ${README_COMPLEXITY}
+- **Behavior Profile:** ${README_BEHAVIOR_PROFILE}
 - **Version:** 2.0
 
 ## Key Features of Advanced Neuron Agents v2.0
 - **Advanced Memory Management:** Context-aware memory with scoring, temporal decay, and consolidation.
 - **Behavior-Driven Reasoning:** Dynamic strategy selection (analytical, creative, collaborative) influenced by agent personality.
-- **Enterprise Reliability & Compliance:** Built-in health monitoring, fault tolerance (circuit breaker), and industry-specific compliance checks (${{ inputs.industry }} standards like ${{ inputs.industry == 'Healthcare' && 'HIPAA, FDA' || inputs.industry == 'Financial' && 'PCI-DSS, SOX' || inputs.industry == 'Insurance' && 'NAIC, Solvency II' || inputs.industry == 'Legal' && 'ABA, Legal Professional Privilege' || inputs.industry == 'Manufacturing' && 'ISO-9001, OSHA' || inputs.industry == 'Retail' && 'PCI-DSS, GDPR' }}).
+- **Enterprise Reliability & Compliance:** Built-in health monitoring, fault tolerance (circuit breaker), and industry-specific compliance checks (${README_COMPLIANCE_STANDARDS}).
 - **Real-time Performance Monitoring:** Tracks messages processed, response times, and success rates.
 - **Sophisticated Architecture:** Designed for scalability, maintainability, and extensibility using LEGO-like modular components.
 - **Security & Compliance by Design:** Incorporates best practices for secure operation and regulatory adherence.
@@ -271,16 +286,16 @@ This document summarizes the build of your custom ADVANCED Neuron Agent v2.0 wit
 
 ## How to Use
 1.  **Navigate to the Agent Directory:**
-    `cd agents/${{ env.AGENT_NAME }}`
+    \`cd agents/${README_AGENT_NAME}\`
 
 2.  **Run Tests (Recommended):**
     To ensure all advanced components are functioning correctly:
-    `python3 -m pytest test_advanced.py`
+    \`python3 -m pytest test_advanced.py\`
 
 3.  **Deploy the Agent:**
     To run a test deployment of your agent:
-    `./deploy.sh`
-
+    \`./deploy.sh\`
+    
     *(Note: For production deployments, consider containerization (Docker, Kubernetes) and robust orchestration.)*
 
 ## Next Steps for Production
@@ -300,16 +315,16 @@ Your ADVANCED Neuron Agent v2.0 is ready for enterprise production!
 This represents a significant advancement over basic LEGO agents, with enterprise-grade capabilities, advanced AI features, and production-ready architecture.
 
 Ready to deploy intelligent, compliant, and scalable AI agents!
-EOF
+EOF_README
 
     - name: Commit and Push Advanced Agent
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add "agents/${{ env.AGENT_NAME }}"
+        git add "agents/${{ env.AGENT_DIRECTORY }}"
         git commit -m "feat: Add new advanced Neuron Agent for ${{ inputs.industry }}" || echo "No changes to commit"
         git push
-
+        
     - name: Build Summary
       run: |
         echo "ADVANCED ${{ inputs.industry }} Neuron Agent v2.0 generated successfully!"
