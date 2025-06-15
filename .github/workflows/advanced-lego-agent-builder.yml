@@ -2301,7 +2301,7 @@ jobs:
     
     chmod +x "agents/$AGENT_NAME/deploy.sh"
 
-- name: Generate Advanced Summary Report
+        - name: Generate Advanced Summary Report
   run: |
     echo "Generating ADVANCED build summary..."
     
@@ -2462,4 +2462,6 @@ jobs:
     echo "   2. python test_advanced.py"
     echo "   3. ./deploy.sh"
         
+
+
 
