@@ -46,6 +46,7 @@ permissions:
   contents: read
   actions: read
 
+
 jobs:
   build-advanced-agent:
     runs-on: ubuntu-latest
