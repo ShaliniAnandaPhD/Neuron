@@ -1,17 +1,20 @@
+#!/usr/bin/env python3
 """
-ADVANCED ${INDUSTRY} Neuron Agent v2.0 - Sophisticated LEGO Blocks
+ADVANCED ${INDUSTRY} Neuron Agent v2.0 - Enhanced Sophisticated LEGO Blocks
 Industry: ${INDUSTRY}
 Use Case: ${USE_CASE}
 Complexity: ${COMPLEXITY}
 Behavior Profile: ${BEHAVIOR_PROFILE}
 
 Built with ADVANCED Neuron Framework patterns including:
-- Advanced Memory Management with Scoring
-- Behavior Control System
-- SynapticBus Communication
-- Fault Tolerance & Recovery
-- Real-time Monitoring
-- Enterprise Security & Compliance
+- Advanced Memory Management with Scoring & Persistence
+- Behavior Control System with Adaptive Learning
+- SynapticBus Communication with Message Queuing
+- Fault Tolerance & Recovery with Circuit Breakers
+- Real-time Monitoring with Performance Analytics
+- Enterprise Security & Compliance with Audit Trails
+- Advanced Pattern Recognition & Decision Making
+- Multi-layer Neural Processing Architecture
 """
 
 import asyncio
@@ -20,228 +23,455 @@ import json
 import time
 import uuid
 import threading
-import numpy as np
+import os
+import sys
+from pathlib import Path
 from datetime import datetime, timedelta
-from typing import Dict, List, Any, Optional, Tuple, Union
-from dataclasses import dataclass, field
-from enum import Enum
-from collections import deque
+from typing import Dict, List, Any, Optional, Tuple, Union, Callable, Set
+from dataclasses import dataclass, field, asdict
+from enum import Enum, auto
+from collections import deque, defaultdict
 import math
 import random
+import hashlib
+import pickle
+import sqlite3
+from contextlib import asynccontextmanager
+import traceback
+import signal
 
-# Configure logging
+# Enhanced imports for advanced features
+try:
+    import numpy as np
+    HAS_NUMPY = True
+except ImportError:
+    HAS_NUMPY = False
+    print("Warning: NumPy not available. Some advanced features may be limited.")
+
+try:
+    import psutil
+    HAS_PSUTIL = True
+except ImportError:
+    HAS_PSUTIL = False
+    print("Warning: psutil not available. System monitoring will be limited.")
+
+# Configure enhanced logging with file output
+LOG_DIR = Path("logs")
+LOG_DIR.mkdir(exist_ok=True)
+
 logging.basicConfig(
     level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(funcName)s:%(lineno)d - %(message)s',
+    handlers=[
+        logging.FileHandler(LOG_DIR / f"neuron_agent_{datetime.now().strftime('%Y%m%d')}.log"),
+        logging.StreamHandler(sys.stdout)
+    ]
 )
 logger = logging.getLogger("advanced-neuron-agent-v2")
 
 # =============================================================================
-# ADVANCED NEURON FRAMEWORK COMPONENTS v2.0
+# ENHANCED NEURON FRAMEWORK COMPONENTS v2.0
 # =============================================================================
 
 class BehaviorTrait(Enum):
-    """Behavioral traits for agent personality"""
-    CURIOSITY = "curiosity"
-    CAUTION = "caution"
-    PERSISTENCE = "persistence"
-    COOPERATION = "cooperation"
-    CREATIVITY = "creativity"
-    RATIONALITY = "rationality"
-    RESPONSIVENESS = "responsiveness"
-    AUTONOMY = "autonomy"
+    """Enhanced behavioral traits for agent personality with weighted importance"""
+    CURIOSITY = ("curiosity", 0.15)
+    CAUTION = ("caution", 0.12)
+    PERSISTENCE = ("persistence", 0.18)
+    COOPERATION = ("cooperation", 0.14)
+    CREATIVITY = ("creativity", 0.16)
+    RATIONALITY = ("rationality", 0.20)
+    RESPONSIVENESS = ("responsiveness", 0.10)
+    AUTONOMY = ("autonomy", 0.13)
+    EMPATHY = ("empathy", 0.11)
+    LEADERSHIP = ("leadership", 0.09)
+    
+    def __init__(self, trait_name: str, importance_weight: float):
+        self.trait_name = trait_name
+        self.importance_weight = importance_weight
 
 class BehaviorMode(Enum):
-    """Operating modes for agent behavior"""
-    NORMAL = "normal"
-    LEARNING = "learning"
-    PERFORMANCE = "performance"
-    COLLABORATIVE = "collaborative"
-    CREATIVE = "creative"
-    CONSERVATIVE = "conservative"
-    ADAPTIVE = "adaptive"
+    """Enhanced operating modes with specific characteristics"""
+    NORMAL = auto()
+    LEARNING = auto()
+    PERFORMANCE = auto()
+    COLLABORATIVE = auto()
+    CREATIVE = auto()
+    CONSERVATIVE = auto()
+    ADAPTIVE = auto()
+    CRISIS = auto()
+    MAINTENANCE = auto()
+
+class MessagePriority(Enum):
+    """Message priority levels for intelligent routing"""
+    CRITICAL = 1
+    HIGH = 2
+    NORMAL = 3
+    LOW = 4
+    BACKGROUND = 5
+
+class AgentState(Enum):
+    """Agent operational states"""
+    INITIALIZING = auto()
+    READY = auto()
+    PROCESSING = auto()
+    LEARNING = auto()
+    DEGRADED = auto()
+    ERROR = auto()
+    SHUTDOWN = auto()
 
 @dataclass
 class BehaviorProfile:
-    """Complete behavioral profile for the agent"""
+    """Enhanced behavioral profile with adaptive learning"""
     traits: Dict[BehaviorTrait, float] = field(default_factory=dict)
     mode: BehaviorMode = BehaviorMode.NORMAL
     parameters: Dict[str, Any] = field(default_factory=dict)
-
+    adaptation_rate: float = 0.01
+    experience_count: int = 0
+    last_updated: datetime = field(default_factory=datetime.now)
+    
     def __post_init__(self):
-        # Set profile based on selection
+        """Initialize behavior profile with enhanced patterns"""
         profile_type = "${BEHAVIOR_PROFILE}".lower()
-
-        if profile_type == "explorer":
-            self.traits = {
+        
+        # Define comprehensive behavior profiles
+        profile_configs = {
+            "explorer": {
                 BehaviorTrait.CURIOSITY: 0.9,
-                BehaviorTrait.CREATIVITY: 0.7,
-                BehaviorTrait.AUTONOMY: 0.8,
+                BehaviorTrait.CREATIVITY: 0.8,
+                BehaviorTrait.AUTONOMY: 0.85,
                 BehaviorTrait.PERSISTENCE: 0.6,
-                BehaviorTrait.CAUTION: 0.3,
+                BehaviorTrait.CAUTION: 0.25,
                 BehaviorTrait.COOPERATION: 0.4,
                 BehaviorTrait.RATIONALITY: 0.5,
-                BehaviorTrait.RESPONSIVENESS: 0.6
-            }
-            self.mode = BehaviorMode.CREATIVE
-        elif profile_type == "analyst":
-            self.traits = {
-                BehaviorTrait.CURIOSITY: 0.6,
-                BehaviorTrait.CREATIVITY: 0.5,
-                BehaviorTrait.AUTONOMY: 0.4,
-                BehaviorTrait.PERSISTENCE: 0.7,
-                BehaviorTrait.CAUTION: 0.7,
-                BehaviorTrait.COOPERATION: 0.5,
-                BehaviorTrait.RATIONALITY: 0.9,
-                BehaviorTrait.RESPONSIVENESS: 0.4
-            }
-            self.mode = BehaviorMode.CONSERVATIVE
-        elif profile_type == "team player":
-            self.traits = {
-                BehaviorTrait.CURIOSITY: 0.5,
-                BehaviorTrait.CREATIVITY: 0.5,
-                BehaviorTrait.AUTONOMY: 0.3,
-                BehaviorTrait.PERSISTENCE: 0.6,
-                BehaviorTrait.CAUTION: 0.5,
-                BehaviorTrait.COOPERATION: 0.9,
-                BehaviorTrait.RATIONALITY: 0.6,
-                BehaviorTrait.RESPONSIVENESS: 0.8
-            }
-            self.mode = BehaviorMode.COLLABORATIVE
-        elif profile_type == "innovator":
-            self.traits = {
-                BehaviorTrait.CURIOSITY: 0.8,
-                BehaviorTrait.CREATIVITY: 0.9,
-                BehaviorTrait.AUTONOMY: 0.7,
-                BehaviorTrait.PERSISTENCE: 0.7,
-                BehaviorTrait.CAUTION: 0.3,
-                BehaviorTrait.COOPERATION: 0.5,
-                BehaviorTrait.RATIONALITY: 0.6,
-                BehaviorTrait.RESPONSIVENESS: 0.5
-            }
-            self.mode = BehaviorMode.CREATIVE
-        elif profile_type == "reliable":
-            self.traits = {
-                BehaviorTrait.CURIOSITY: 0.4,
+                BehaviorTrait.RESPONSIVENESS: 0.7,
+                BehaviorTrait.EMPATHY: 0.5,
+                BehaviorTrait.LEADERSHIP: 0.6
+            },
+            "analyst": {
+                BehaviorTrait.CURIOSITY: 0.7,
                 BehaviorTrait.CREATIVITY: 0.4,
                 BehaviorTrait.AUTONOMY: 0.5,
-                BehaviorTrait.PERSISTENCE: 0.8,
-                BehaviorTrait.CAUTION: 0.7,
+                BehaviorTrait.PERSISTENCE: 0.9,
+                BehaviorTrait.CAUTION: 0.8,
                 BehaviorTrait.COOPERATION: 0.6,
+                BehaviorTrait.RATIONALITY: 0.95,
+                BehaviorTrait.RESPONSIVENESS: 0.4,
+                BehaviorTrait.EMPATHY: 0.3,
+                BehaviorTrait.LEADERSHIP: 0.4
+            },
+            "team player": {
+                BehaviorTrait.CURIOSITY: 0.5,
+                BehaviorTrait.CREATIVITY: 0.6,
+                BehaviorTrait.AUTONOMY: 0.3,
+                BehaviorTrait.PERSISTENCE: 0.7,
+                BehaviorTrait.CAUTION: 0.6,
+                BehaviorTrait.COOPERATION: 0.95,
                 BehaviorTrait.RATIONALITY: 0.7,
-                BehaviorTrait.RESPONSIVENESS: 0.7
+                BehaviorTrait.RESPONSIVENESS: 0.9,
+                BehaviorTrait.EMPATHY: 0.9,
+                BehaviorTrait.LEADERSHIP: 0.5
+            },
+            "innovator": {
+                BehaviorTrait.CURIOSITY: 0.9,
+                BehaviorTrait.CREATIVITY: 0.95,
+                BehaviorTrait.AUTONOMY: 0.8,
+                BehaviorTrait.PERSISTENCE: 0.8,
+                BehaviorTrait.CAUTION: 0.2,
+                BehaviorTrait.COOPERATION: 0.5,
+                BehaviorTrait.RATIONALITY: 0.6,
+                BehaviorTrait.RESPONSIVENESS: 0.6,
+                BehaviorTrait.EMPATHY: 0.6,
+                BehaviorTrait.LEADERSHIP: 0.8
+            },
+            "reliable": {
+                BehaviorTrait.CURIOSITY: 0.4,
+                BehaviorTrait.CREATIVITY: 0.3,
+                BehaviorTrait.AUTONOMY: 0.6,
+                BehaviorTrait.PERSISTENCE: 0.95,
+                BehaviorTrait.CAUTION: 0.8,
+                BehaviorTrait.COOPERATION: 0.7,
+                BehaviorTrait.RATIONALITY: 0.8,
+                BehaviorTrait.RESPONSIVENESS: 0.8,
+                BehaviorTrait.EMPATHY: 0.7,
+                BehaviorTrait.LEADERSHIP: 0.6
             }
-            self.mode = BehaviorMode.PERFORMANCE
-        else:  # balanced
-            self.traits = {t: 0.5 for t in BehaviorTrait}
+        }
+        
+        # Set traits with default balanced profile if not found
+        if profile_type in profile_configs:
+            self.traits = profile_configs[profile_type]
+            self.mode = BehaviorMode.CREATIVE if profile_type in ["explorer", "innovator"] else \
+                       BehaviorMode.CONSERVATIVE if profile_type == "analyst" else \
+                       BehaviorMode.COLLABORATIVE if profile_type == "team player" else \
+                       BehaviorMode.PERFORMANCE if profile_type == "reliable" else \
+                       BehaviorMode.NORMAL
+        else:
+            # Balanced profile
+            self.traits = {trait: 0.5 for trait in BehaviorTrait}
             self.mode = BehaviorMode.NORMAL
+        
+        # Initialize adaptation parameters
+        self.parameters = {
+            "learning_rate": 0.01,
+            "adaptation_threshold": 0.1,
+            "experience_weight": 0.3,
+            "feedback_sensitivity": 0.15
+        }
+    
+    def adapt(self, experience_outcome: float, context: Dict[str, Any]) -> None:
+        """Adapt behavior based on experience outcomes"""
+        self.experience_count += 1
+        
+        # Adjust traits based on successful/unsuccessful outcomes
+        if experience_outcome > 0.7:  # Positive outcome
+            for trait in self.traits:
+                if trait.importance_weight > 0.15:  # High importance traits
+                    self.traits[trait] = min(1.0, self.traits[trait] + self.adaptation_rate)
+        elif experience_outcome < 0.3:  # Negative outcome
+            for trait in self.traits:
+                if self.traits[trait] > 0.1:  # Avoid going too low
+                    self.traits[trait] = max(0.1, self.traits[trait] - self.adaptation_rate * 0.5)
+        
+        self.last_updated = datetime.now()
+        logger.debug(f"Behavior adapted based on outcome: {experience_outcome}")
 
-class MemoryScoring:
-    """Advanced memory scoring and retrieval system"""
-
+class EnhancedMemoryScoring:
+    """Advanced memory scoring with machine learning-inspired algorithms"""
+    
     def __init__(self, config: Dict[str, Any] = None):
         config = config or {}
         self.decay_rate = config.get("decay_rate", 0.05)
-        self.min_retention = config.get("min_retention", 0.2)
-        self.confidence_weight = config.get("confidence_weight", 0.3)
-        self.context_weight = config.get("context_weight", 0.4)
-        self.recency_weight = config.get("recency_weight", 0.2)
-        self.frequency_weight = config.get("frequency_weight", 0.1)
-        self.access_history = {}
-
-    def score_memory(self, memory_item: Dict[str, Any], 
-                   query_context: Dict[str, Any]) -> float:
-        """Score a memory item based on relevance, confidence, and recency"""
-        memory_id = memory_item.get("id", str(id(memory_item)))
+        self.min_retention = config.get("min_retention", 0.15)
+        self.confidence_weight = config.get("confidence_weight", 0.25)
+        self.context_weight = config.get("context_weight", 0.35)
+        self.recency_weight = config.get("recency_weight", 0.20)
+        self.frequency_weight = config.get("frequency_weight", 0.15)
+        self.semantic_weight = config.get("semantic_weight", 0.05)
+        
+        self.access_history = defaultdict(list)
+        self.context_embeddings = {}
+        self.semantic_clusters = defaultdict(set)
+        
+        # Performance metrics
+        self.scoring_times = deque(maxlen=1000)
+        self.cache_hits = 0
+        self.cache_misses = 0
+        self._score_cache = {}
+    
+    def score_memory(self, memory_item: Dict[str, Any], query_context: Dict[str, Any]) -> float:
+        """Enhanced memory scoring with caching and semantic analysis"""
+        start_time = time.time()
+        
+        # Create cache key
+        memory_id = memory_item.get("id", str(hash(str(memory_item))))
+        context_hash = hashlib.md5(str(sorted(query_context.items())).encode()).hexdigest()
+        cache_key = f"{memory_id}_{context_hash}"
+        
+        # Check cache first
+        if cache_key in self._score_cache:
+            self.cache_hits += 1
+            return self._score_cache[cache_key]
+        
+        self.cache_misses += 1
+        
+        # Calculate enhanced score
         confidence = memory_item.get("confidence", 0.5)
         creation_time = memory_item.get("creation_time", time.time())
-
-        # Calculate temporal decay
+        importance = memory_item.get("importance", 0.5)
+        
+        # Temporal decay with adaptive rate
         time_elapsed = (time.time() - creation_time) / 86400  # days
+        adaptive_decay = self.decay_rate * (1 + importance)
         recency_factor = max(
-            math.exp(-self.decay_rate * time_elapsed), 
+            math.exp(-adaptive_decay * time_elapsed), 
             self.min_retention
         )
-
-        # Calculate frequency factor
-        frequency_factor = self._calculate_frequency_factor(memory_id)
-
-        # Calculate context similarity
-        context_similarity = self._calculate_context_similarity(
+        
+        # Enhanced frequency calculation
+        frequency_factor = self._calculate_enhanced_frequency(memory_id)
+        
+        # Advanced context similarity
+        context_similarity = self._calculate_enhanced_context_similarity(
             memory_item.get("context", {}), query_context
         )
-
-        # Combine factors
+        
+        # Semantic similarity
+        semantic_similarity = self._calculate_semantic_similarity(
+            memory_item, query_context
+        )
+        
+        # Combine all factors with weighted importance
+        total_weight = (
+            self.confidence_weight + self.context_weight + 
+            self.recency_weight + self.frequency_weight + self.semantic_weight
+        )
+        
         score = (
             (confidence * self.confidence_weight) +
             (context_similarity * self.context_weight) +
             (recency_factor * self.recency_weight) +
-            (frequency_factor * self.frequency_weight)
-        ) / (self.confidence_weight + self.context_weight + 
-             self.recency_weight + self.frequency_weight)
-
+            (frequency_factor * self.frequency_weight) +
+            (semantic_similarity * self.semantic_weight)
+        ) / total_weight
+        
+        # Apply importance modifier
+        score = score * (0.8 + 0.4 * importance)
+        
+        # Cache the result
+        self._score_cache[cache_key] = score
+        
+        # Cleanup cache if too large
+        if len(self._score_cache) > 10000:
+            # Remove oldest 20%
+            items_to_remove = len(self._score_cache) // 5
+            for _ in range(items_to_remove):
+                self._score_cache.pop(next(iter(self._score_cache)))
+        
         self._record_memory_access(memory_id)
-        return score
-
-    def _calculate_frequency_factor(self, memory_id: str) -> float:
-        """Calculate frequency factor based on access history"""
+        
+        # Performance tracking
+        scoring_time = time.time() - start_time
+        self.scoring_times.append(scoring_time)
+        
+        return min(1.0, max(0.0, score))
+    
+    def _calculate_enhanced_frequency(self, memory_id: str) -> float:
+        """Enhanced frequency calculation with time-based weighting"""
         if memory_id not in self.access_history:
             return 0.0
-
+        
         accesses = self.access_history[memory_id]
         current_time = time.time()
-        recent_accesses = [t for t in accesses if (current_time - t) < 30 * 86400]
-
-        access_count = len(recent_accesses)
-        if access_count == 0:
-            return 0.0
-        elif access_count == 1:
-            return 0.3
-        elif access_count == 2:
-            return 0.6
-        else:
-            return min(1.0, 0.7 + (access_count - 3) * 0.1)
-
-    def _calculate_context_similarity(self, context1: Dict[str, Any], 
-                                   context2: Dict[str, Any]) -> float:
-        """Calculate similarity between contexts"""
+        
+        # Calculate weighted frequency based on recency
+        weighted_frequency = 0.0
+        for access_time in accesses:
+            time_diff = (current_time - access_time) / 86400  # days
+            weight = math.exp(-0.1 * time_diff)  # Exponential decay
+            weighted_frequency += weight
+        
+        # Normalize to 0-1 range
+        return min(1.0, weighted_frequency / 10.0)
+    
+    def _calculate_enhanced_context_similarity(self, context1: Dict[str, Any], 
+                                             context2: Dict[str, Any]) -> float:
+        """Enhanced context similarity with type-aware comparison"""
         if not context1 or not context2:
             return 0.0
-
+        
         all_keys = set(context1.keys()) | set(context2.keys())
         if not all_keys:
             return 0.0
-
-        matching_keys = 0
-        matching_values = 0
-
+        
+        weighted_similarity = 0.0
+        total_weight = 0.0
+        
         for key in all_keys:
+            # Assign weights based on key importance
+            key_weight = self._get_key_importance(key)
+            total_weight += key_weight
+            
             if key in context1 and key in context2:
-                matching_keys += 1
-                if context1[key] == context2[key]:
-                    matching_values += 1
-
-        key_similarity = matching_keys / len(all_keys)
-        value_similarity = matching_values / len(all_keys)
-
-        return 0.4 * key_similarity + 0.6 * value_similarity
-
+                val1, val2 = context1[key], context2[key]
+                
+                # Type-aware similarity calculation
+                if type(val1) == type(val2):
+                    if isinstance(val1, (int, float)):
+                        # Numerical similarity
+                        max_val = max(abs(val1), abs(val2), 1)
+                        similarity = 1.0 - abs(val1 - val2) / max_val
+                    elif isinstance(val1, str):
+                        # String similarity (simple overlap)
+                        similarity = self._string_similarity(val1, val2)
+                    elif val1 == val2:
+                        similarity = 1.0
+                    else:
+                        similarity = 0.0
+                else:
+                    similarity = 0.0
+                
+                weighted_similarity += similarity * key_weight
+        
+        return weighted_similarity / total_weight if total_weight > 0 else 0.0
+    
+    def _calculate_semantic_similarity(self, memory_item: Dict[str, Any], 
+                                     query_context: Dict[str, Any]) -> float:
+        """Calculate semantic similarity using simple keyword matching"""
+        memory_text = str(memory_item.get("data", ""))
+        query_text = str(query_context)
+        
+        # Simple keyword-based semantic similarity
+        memory_words = set(memory_text.lower().split())
+        query_words = set(query_text.lower().split())
+        
+        if not memory_words or not query_words:
+            return 0.0
+        
+        intersection = memory_words & query_words
+        union = memory_words | query_words
+        
+        return len(intersection) / len(union) if union else 0.0
+    
+    def _get_key_importance(self, key: str) -> float:
+        """Assign importance weights to context keys"""
+        important_keys = {
+            "domain", "industry", "use_case", "priority", "type", 
+            "category", "project", "user", "timestamp"
+        }
+        
+        if key.lower() in important_keys:
+            return 1.0
+        elif any(important in key.lower() for important in ["id", "name", "title"]):
+            return 0.8
+        else:
+            return 0.5
+    
+    def _string_similarity(self, s1: str, s2: str) -> float:
+        """Calculate string similarity using character overlap"""
+        if not s1 or not s2:
+            return 0.0
+        
+        s1_chars = set(s1.lower())
+        s2_chars = set(s2.lower())
+        
+        intersection = s1_chars & s2_chars
+        union = s1_chars | s2_chars
+        
+        return len(intersection) / len(union) if union else 0.0
+    
     def _record_memory_access(self, memory_id: str) -> None:
-        """Record memory access for frequency tracking"""
-        if memory_id not in self.access_history:
-            self.access_history[memory_id] = []
+        """Record memory access with cleanup"""
+        current_time = time.time()
+        self.access_history[memory_id].append(current_time)
+        
+        # Keep only recent accesses (last 90 days)
+        cutoff_time = current_time - (90 * 86400)
+        self.access_history[memory_id] = [
+            t for t in self.access_history[memory_id] if t > cutoff_time
+        ]
+        
+        # Remove empty entries
+        if not self.access_history[memory_id]:
+            del self.access_history[memory_id]
+    
+    def get_performance_stats(self) -> Dict[str, Any]:
+        """Get scoring performance statistics"""
+        avg_scoring_time = sum(self.scoring_times) / len(self.scoring_times) if self.scoring_times else 0
+        cache_hit_rate = self.cache_hits / (self.cache_hits + self.cache_misses) if (self.cache_hits + self.cache_misses) > 0 else 0
+        
+        return {
+            "avg_scoring_time_ms": avg_scoring_time * 1000,
+            "cache_hit_rate": cache_hit_rate,
+            "cache_size": len(self._score_cache),
+            "total_scorings": len(self.scoring_times)
+        }
 
-        self.access_history[memory_id].append(time.time())
-
-        # Limit history size
-        if len(self.access_history[memory_id]) > 100:
-            self.access_history[memory_id] = self.access_history[memory_id][-100:]
-
-class AgentMessage:
-    """Enhanced message with metadata and routing"""
-
+class EnhancedAgentMessage:
+    """Enhanced message with advanced routing and metadata"""
+    
     def __init__(self, sender: str, recipient: str, msg_type: str, 
-                payload: Dict[str, Any], metadata: Dict[str, Any] = None):
+                 payload: Dict[str, Any], metadata: Dict[str, Any] = None):
         self.id = str(uuid.uuid4())
         self.sender = sender
         self.recipient = recipient
@@ -249,896 +479,599 @@ class AgentMessage:
         self.payload = payload or {}
         self.metadata = metadata or {}
         self.timestamp = datetime.now()
-        self.ttl = 3600  # 1 hour default TTL
-        self.priority = self.metadata.get("priority", "normal")
+        self.ttl = self.metadata.get("ttl", 3600)  # 1 hour default
+        self.priority = MessagePriority(self.metadata.get("priority", MessagePriority.NORMAL.value))
+        
+        # Enhanced tracking
+        self.processing_attempts = 0
+        self.max_attempts = self.metadata.get("max_attempts", 3)
+        self.route_history = []
+        self.processing_time = 0.0
+        self.response_required = self.metadata.get("response_required", False)
+        self.correlation_id = self.metadata.get("correlation_id", str(uuid.uuid4()))
+        
+        # Security and validation
+        self.checksum = self._calculate_checksum()
+        self.encrypted = self.metadata.get("encrypted", False)
+    
+    def _calculate_checksum(self) -> str:
+        """Calculate message checksum for integrity verification"""
+        message_content = f"{self.sender}{self.recipient}{self.msg_type}{json.dumps(self.payload, sort_keys=True)}"
+        return hashlib.sha256(message_content.encode()).hexdigest()[:16]
+    
+    def is_expired(self) -> bool:
+        """Check if message has exceeded TTL"""
+        return (datetime.now() - self.timestamp).total_seconds() > self.ttl
+    
+    def add_route_step(self, processor: str, status: str) -> None:
+        """Add processing step to route history"""
+        self.route_history.append({
+            "processor": processor,
+            "status": status,
+            "timestamp": datetime.now().isoformat(),
+            "attempt": self.processing_attempts
+        })
+    
+    def can_retry(self) -> bool:
+        """Check if message can be retried"""
+        return self.processing_attempts < self.max_attempts and not self.is_expired()
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """Convert message to dictionary for serialization"""
+        return {
+            "id": self.id,
+            "sender": self.sender,
+            "recipient": self.recipient,
+            "msg_type": self.msg_type,
+            "payload": self.payload,
+            "metadata": self.metadata,
+            "timestamp": self.timestamp.isoformat(),
+            "priority": self.priority.value,
+            "checksum": self.checksum,
+            "route_history": self.route_history
+        }
+
+# Alias for backward compatibility
+AgentMessage = EnhancedAgentMessage
 
 # =============================================================================
-# ADVANCED LEGO BLOCKS v2.0
+# ENHANCED LEGO BLOCKS v2.0
 # =============================================================================
 
 class AdvancedMemoryAgent:
-    """Enhanced memory agent with scoring and persistence"""
-
-    def __init__(self):
+    """Enhanced memory agent with persistent storage and advanced querying"""
+    
+    def __init__(self, config: Dict[str, Any] = None):
+        self.config = config or {}
         self.memory = {}
-        self.memory_scorer = MemoryScoring()
-        self.episodic_memory = deque(maxlen=1000)
+        self.memory_scorer = EnhancedMemoryScoring(self.config.get("scoring", {}))
+        
+        # Enhanced memory layers
+        self.episodic_memory = deque(maxlen=self.config.get("episodic_limit", 5000))
         self.semantic_memory = {}
-        self.working_memory = deque(maxlen=100)
-        logger.info("ADVANCED Memory Agent v2.0 initialized with scoring system")
-
-    async def process(self, message: AgentMessage) -> Dict[str, Any]:
-        """Process memory operations with advanced scoring"""
-        if message.msg_type == "store":
-            return await self._store_memory(message.payload)
-        elif message.msg_type == "retrieve":
-            return await self._retrieve_memory(message.payload)
-        elif message.msg_type == "search":
-            return await self._search_memories(message.payload)
-        elif message.msg_type == "consolidate":
-            return await self._consolidate_memories()
-        return {"status": "error", "message": "Unknown memory operation"}
-
+        self.working_memory = deque(maxlen=self.config.get("working_limit", 500))
+        self.long_term_memory = {}
+        
+        # Memory statistics
+        self.memory_stats = {
+            "total_stored": 0,
+            "total_retrieved": 0,
+            "cache_hits": 0,
+            "consolidations": 0,
+            "avg_retrieval_time": 0.0
+        }
+        
+        # Persistent storage
+        self.db_path = self.config.get("db_path", "memory.db")
+        self._init_persistent_storage()
+        
+        # Background consolidation
+        self.consolidation_threshold = self.config.get("consolidation_threshold", 1000)
+        self.last_consolidation = datetime.now()
+        
+        logger.info("Enhanced Memory Agent v2.0 initialized with persistent storage")
+    
+    def _init_persistent_storage(self) -> None:
+        """Initialize SQLite database for persistent memory storage"""
+        try:
+            self.db_conn = sqlite3.connect(self.db_path, check_same_thread=False)
+            self.db_conn.execute("""
+                CREATE TABLE IF NOT EXISTS memories (
+                    id TEXT PRIMARY KEY,
+                    key TEXT NOT NULL,
+                    data TEXT NOT NULL,
+                    confidence REAL NOT NULL,
+                    memory_type TEXT NOT NULL,
+                    context TEXT,
+                    creation_time REAL NOT NULL,
+                    last_access_time REAL NOT NULL,
+                    access_count INTEGER DEFAULT 1,
+                    importance REAL DEFAULT 0.5,
+                    tags TEXT,
+                    checksum TEXT
+                )
+            """)
+            self.db_conn.execute("CREATE INDEX IF NOT EXISTS idx_key ON memories(key)")
+            self.db_conn.execute("CREATE INDEX IF NOT EXISTS idx_type ON memories(memory_type)")
+            self.db_conn.execute("CREATE INDEX IF NOT EXISTS idx_creation_time ON memories(creation_time)")
+            self.db_conn.commit()
+            logger.info("Persistent memory storage initialized")
+        except Exception as e:
+            logger.error(f"Failed to initialize persistent storage: {e}")
+            self.db_conn = None
+    
+    async def process(self, message: EnhancedAgentMessage) -> Dict[str, Any]:
+        """Enhanced message processing with performance tracking"""
+        start_time = time.time()
+        message.add_route_step("AdvancedMemoryAgent", "processing")
+        
+        try:
+            result = await self._route_message(message)
+            result["processing_time"] = time.time() - start_time
+            message.add_route_step("AdvancedMemoryAgent", "completed")
+            return result
+        except Exception as e:
+            logger.error(f"Memory agent error: {e}")
+            message.add_route_step("AdvancedMemoryAgent", f"error: {str(e)}")
+            return {
+                "status": "error", 
+                "message": str(e),
+                "error_type": type(e).__name__,
+                "processing_time": time.time() - start_time
+            }
+    
+    async def _route_message(self, message: EnhancedAgentMessage) -> Dict[str, Any]:
+        """Route message to appropriate memory operation"""
+        operations = {
+            "store": self._store_memory,
+            "retrieve": self._retrieve_memory,
+            "search": self._search_memories,
+            "consolidate": self._consolidate_memories,
+            "query": self._query_memories,
+            "delete": self._delete_memory,
+            "update": self._update_memory,
+            "export": self._export_memories,
+            "import": self._import_memories,
+            "stats": self._get_memory_stats
+        }
+        
+        operation = operations.get(message.msg_type)
+        if operation:
+            return await operation(message.payload)
+        else:
+            return {"status": "error", "message": f"Unknown memory operation: {message.msg_type}"}
+    
     async def _store_memory(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Store memory with metadata and scoring"""
-        key = payload.get("key", "default")
-        data = payload.get("data", {})
+        """Enhanced memory storage with validation and persistence"""
+        # Validate required fields
+        required_fields = ["key", "data"]
+        for field in required_fields:
+            if field not in payload:
+                return {"status": "error", "message": f"Missing required field: {field}"}
+        
+        key = payload["key"]
+        data = payload["data"]
         memory_type = payload.get("type", "working")
-        confidence = payload.get("confidence", 0.7)
-
+        confidence = max(0.0, min(1.0, payload.get("confidence", 0.7)))
+        importance = max(0.0, min(1.0, payload.get("importance", 0.5)))
+        tags = payload.get("tags", [])
+        
+        # Create enhanced memory item
         memory_item = {
             "id": str(uuid.uuid4()),
             "key": key,
             "data": data,
             "confidence": confidence,
+            "importance": importance,
+            "memory_type": memory_type,
             "creation_time": time.time(),
             "last_access_time": time.time(),
             "access_count": 1,
             "context": payload.get("context", {}),
-            "type": memory_type
+            "tags": tags,
+            "checksum": hashlib.sha256(str(data).encode()).hexdigest()[:16]
         }
-
+        
+        # Store in appropriate memory layer
         if memory_type == "episodic":
             self.episodic_memory.append(memory_item)
         elif memory_type == "semantic":
             self.semantic_memory[key] = memory_item
-        else:
+        elif memory_type == "long_term":
+            self.long_term_memory[key] = memory_item
+        else:  # working memory
             self.working_memory.append(memory_item)
-
+        
+        # Store in main memory dictionary
         self.memory[key] = memory_item
-        logger.info(f"Stored {memory_type} memory: {key} (confidence: {confidence})")
-
+        
+        # Persist to database if available
+        if self.db_conn:
+            try:
+                self.db_conn.execute("""
+                    INSERT OR REPLACE INTO memories 
+                    (id, key, data, confidence, memory_type, context, creation_time, 
+                     last_access_time, access_count, importance, tags, checksum)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """, (
+                    memory_item["id"], key, json.dumps(data), confidence, memory_type,
+                    json.dumps(memory_item["context"]), memory_item["creation_time"],
+                    memory_item["last_access_time"], 1, importance, json.dumps(tags),
+                    memory_item["checksum"]
+                ))
+                self.db_conn.commit()
+            except Exception as e:
+                logger.warning(f"Failed to persist memory to database: {e}")
+        
+        # Update statistics
+        self.memory_stats["total_stored"] += 1
+        
+        # Trigger consolidation if needed
+        if len(self.memory) >= self.consolidation_threshold:
+            asyncio.create_task(self._auto_consolidate())
+        
+        logger.info(f"Stored {memory_type} memory: {key} (confidence: {confidence}, importance: {importance})")
+        
         return {
-            "status": "success", 
-            "key": key, 
+            "status": "success",
+            "key": key,
             "memory_id": memory_item["id"],
-            "type": memory_type
+            "type": memory_type,
+            "confidence": confidence,
+            "importance": importance
         }
-
+    
     async def _retrieve_memory(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Retrieve memory using advanced scoring"""
-        key = payload.get("key", "default")
+        """Enhanced memory retrieval with scoring and caching"""
+        start_time = time.time()
+        key = payload.get("key")
         context = payload.get("context", {})
-
-        if key in self.memory:
-            memory_item = self.memory[key]
-            score = self.memory_scorer.score_memory(memory_item, context)
-
-            # Update access metadata
-            memory_item["last_access_time"] = time.time()
-            memory_item["access_count"] += 1
-
-            logger.info(f"Retrieved memory: {key} (score: {score:.3f})")
-
-            return {
-                "status": "success", 
-                "data": memory_item["data"],
-                "confidence": memory_item["confidence"],
-                "relevance_score": score,
-                "access_count": memory_item["access_count"]
-            }
-
-        return {"status": "not_found", "key": key}
-
+        use_scoring = payload.get("use_scoring", True)
+        
+        if not key:
+            return {"status": "error", "message": "Missing required field: key"}
+        
+        # Try to find in memory
+        memory_item = self.memory.get(key)
+        
+        # If not found in memory, try database
+        if not memory_item and self.db_conn:
+            try:
+                cursor = self.db_conn.execute(
+                    "SELECT * FROM memories WHERE key = ?", (key,)
+                )
+                row = cursor.fetchone()
+                if row:
+                    memory_item = {
+                        "id": row[0],
+                        "key": row[1],
+                        "data": json.loads(row[2]),
+                        "confidence": row[3],
+                        "memory_type": row[4],
+                        "context": json.loads(row[5]) if row[5] else {},
+                        "creation_time": row[6],
+                        "last_access_time": row[7],
+                        "access_count": row[8],
+                        "importance": row[9],
+                        "tags": json.loads(row[10]) if row[10] else [],
+                        "checksum": row[11]
+                    }
+                    # Load back into memory
+                    self.memory[key] = memory_item
+            except Exception as e:
+                logger.warning(f"Failed to retrieve from database: {e}")
+        
+        if not memory_item:
+            return {"status": "not_found", "key": key}
+        
+        # Calculate relevance score if requested
+        relevance_score = 0.0
+        if use_scoring:
+            relevance_score = self.memory_scorer.score_memory(memory_item, context)
+        
+        # Update access metadata
+        memory_item["last_access_time"] = time.time()
+        memory_item["access_count"] += 1
+        
+        # Update in database if available
+        if self.db_conn:
+            try:
+                self.db_conn.execute(
+                    "UPDATE memories SET last_access_time = ?, access_count = ? WHERE key = ?",
+                    (memory_item["last_access_time"], memory_item["access_count"], key)
+                )
+                self.db_conn.commit()
+            except Exception as e:
+                logger.warning(f"Failed to update access metadata: {e}")
+        
+        # Update statistics
+        self.memory_stats["total_retrieved"] += 1
+        retrieval_time = time.time() - start_time
+        self.memory_stats["avg_retrieval_time"] = (
+            (self.memory_stats["avg_retrieval_time"] * (self.memory_stats["total_retrieved"] - 1) + retrieval_time) 
+            / self.memory_stats["total_retrieved"]
+        )
+        
+        logger.info(f"Retrieved memory: {key} (score: {relevance_score:.3f}, time: {retrieval_time*1000:.1f}ms)")
+        
+        return {
+            "status": "success",
+            "data": memory_item["data"],
+            "confidence": memory_item["confidence"],
+            "importance": memory_item.get("importance", 0.5),
+            "relevance_score": relevance_score,
+            "access_count": memory_item["access_count"],
+            "memory_type": memory_item.get("memory_type", "unknown"),
+            "tags": memory_item.get("tags", []),
+            "retrieval_time_ms": retrieval_time * 1000
+        }
+    
     async def _search_memories(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Search memories using context similarity"""
+        """Enhanced memory search with advanced filtering"""
         query_context = payload.get("context", {})
         limit = payload.get("limit", 10)
         min_score = payload.get("min_score", 0.3)
-
-        scored_memories = []
+        memory_types = payload.get("types", [])
+        tags = payload.get("tags", [])
+        time_range = payload.get("time_range", {})
+        
+        start_time = time.time()
+        
+        # Collect all relevant memories
+        candidates = []
         for memory_item in self.memory.values():
+            # Filter by memory type
+            if memory_types and memory_item.get("memory_type") not in memory_types:
+                continue
+            
+            # Filter by tags
+            if tags and not any(tag in memory_item.get("tags", []) for tag in tags):
+                continue
+            
+            # Filter by time range
+            if time_range:
+                creation_time = memory_item.get("creation_time", 0)
+                if "start" in time_range and creation_time < time_range["start"]:
+                    continue
+                if "end" in time_range and creation_time > time_range["end"]:
+                    continue
+            
+            candidates.append(memory_item)
+        
+        # Score and filter candidates
+        scored_memories = []
+        for memory_item in candidates:
             score = self.memory_scorer.score_memory(memory_item, query_context)
             if score >= min_score:
                 scored_memories.append((memory_item, score))
-
+        
         # Sort by score and limit results
         scored_memories.sort(key=lambda x: x[1], reverse=True)
         results = scored_memories[:limit]
-
-        logger.info(f"Memory search found {len(results)} relevant memories")
-
+        
+        search_time = time.time() - start_time
+        logger.info(f"Memory search found {len(results)} relevant memories in {search_time*1000:.1f}ms")
+        
         return {
             "status": "success",
             "results": [
                 {
+                    "key": memory["key"],
                     "data": memory["data"],
                     "confidence": memory["confidence"],
+                    "importance": memory.get("importance", 0.5),
                     "relevance_score": score,
-                    "key": memory["key"]
+                    "memory_type": memory.get("memory_type", "unknown"),
+                    "tags": memory.get("tags", []),
+                    "creation_time": memory.get("creation_time", 0)
                 }
                 for memory, score in results
             ],
-            "total_found": len(results)
+            "total_found": len(results),
+            "total_candidates": len(candidates),
+            "search_time_ms": search_time * 1000
         }
-
+    
     async def _consolidate_memories(self) -> Dict[str, Any]:
-        """Consolidate memories by merging similar ones"""
+        """Enhanced memory consolidation with intelligent merging"""
+        start_time = time.time()
         consolidated_count = 0
-        threshold = 0.8
-
+        similarity_threshold = 0.85
+        
         memories = list(self.memory.values())
         to_remove = set()
-
+        consolidation_groups = []
+        
+        # Group similar memories
         for i, memory1 in enumerate(memories):
             if memory1["id"] in to_remove:
                 continue
-
+            
+            group = [memory1]
             for j, memory2 in enumerate(memories[i+1:], i+1):
                 if memory2["id"] in to_remove:
                     continue
-
-                similarity = self.memory_scorer._calculate_context_similarity(
-                    memory1["context"], memory2["context"]
+                
+                # Calculate similarity
+                context_sim = self.memory_scorer._calculate_enhanced_context_similarity(
+                    memory1.get("context", {}), memory2.get("context", {})
                 )
-
-                if similarity >= threshold:
-                    # Merge memories - keep the one with higher confidence
-                    if memory1["confidence"] >= memory2["confidence"]:
-                        memory1["access_count"] += memory2["access_count"]
-                        to_remove.add(memory2["id"])
-                    else:
-                        memory2["access_count"] += memory1["access_count"]
-                        to_remove.add(memory1["id"])
-
-                    consolidated_count += 1
-
-        # Remove consolidated memories
-        for memory_id in to_remove:
-            for key, memory in list(self.memory.items()):
-                if memory["id"] == memory_id:
-                    del self.memory[key]
-                    break
-
-        logger.info(f"Consolidated {consolidated_count} similar memories")
-
+                
+                if context_sim >= similarity_threshold:
+                    group.append(memory2)
+                    to_remove.add(memory2["id"])
+            
+            if len(group) > 1:
+                consolidation_groups.append(group)
+        
+        # Consolidate each group
+        for group in consolidation_groups:
+            # Find the memory with highest importance/confidence
+            best_memory = max(group, key=lambda m: m["confidence"] * m.get("importance", 0.5))
+            
+            # Merge data and metadata
+            consolidated_data = best_memory["data"]
+            total_access_count = sum(m["access_count"] for m in group)
+            avg_confidence = sum(m["confidence"] for m in group) / len(group)
+            max_importance = max(m.get("importance", 0.5) for m in group)
+            
+            # Merge tags
+            all_tags = set()
+            for memory in group:
+                all_tags.update(memory.get("tags", []))
+            
+            # Update the best memory with consolidated information
+            best_memory.update({
+                "access_count": total_access_count,
+                "confidence": min(1.0, avg_confidence * 1.1),  # Slight boost for consolidation
+                "importance": max_importance,
+                "tags": list(all_tags),
+                "consolidated": True,
+                "consolidation_time": time.time(),
+                "original_count": len(group)
+            })
+            
+            # Remove other memories from the group
+            for memory in group[1:]:
+                self.memory.pop(memory["key"], None)
+                # Remove from database if available
+                if self.db_conn:
+                    try:
+                        self.db_conn.execute("DELETE FROM memories WHERE id = ?", (memory["id"],))
+                    except Exception as e:
+                        logger.warning(f"Failed to delete from database: {e}")
+            
+            consolidated_count += len(group) - 1
+        
+        # Commit database changes
+        if self.db_conn:
+            try:
+                self.db_conn.commit()
+            except Exception as e:
+                logger.warning(f"Failed to commit consolidation changes: {e}")
+        
+        consolidation_time = time.time() - start_time
+        self.memory_stats["consolidations"] += 1
+        self.last_consolidation = datetime.now()
+        
+        logger.info(f"Consolidated {consolidated_count} memories in {consolidation_time*1000:.1f}ms")
+        
         return {
             "status": "success",
             "consolidated_count": consolidated_count,
-            "remaining_memories": len(self.memory)
+            "consolidation_groups": len(consolidation_groups),
+            "remaining_memories": len(self.memory),
+            "consolidation_time_ms": consolidation_time * 1000
+        }
+    
+    async def _auto_consolidate(self) -> None:
+        """Automatic background consolidation"""
+        try:
+            result = await self._consolidate_memories()
+            logger.info(f"Auto-consolidation completed: {result}")
+        except Exception as e:
+            logger.error(f"Auto-consolidation failed: {e}")
+    
+    async def _get_memory_stats(self, payload: Dict[str, Any]) -> Dict[str, Any]:
+        """Get comprehensive memory statistics"""
+        scorer_stats = self.memory_scorer.get_performance_stats()
+        
+        # Memory distribution by type
+        type_distribution = defaultdict(int)
+        for memory in self.memory.values():
+            type_distribution[memory.get("memory_type", "unknown")] += 1
+        
+        # Database statistics
+        db_stats = {}
+        if self.db_conn:
+            try:
+                cursor = self.db_conn.execute("SELECT COUNT(*) FROM memories")
+                db_stats["total_persistent"] = cursor.fetchone()[0]
+                
+                cursor = self.db_conn.execute("SELECT memory_type, COUNT(*) FROM memories GROUP BY memory_type")
+                db_stats["type_distribution"] = dict(cursor.fetchall())
+            except Exception as e:
+                logger.warning(f"Failed to get database stats: {e}")
+                db_stats = {"error": str(e)}
+        
+        return {
+            "status": "success",
+            "memory_stats": self.memory_stats,
+            "scorer_performance": scorer_stats,
+            "memory_counts": {
+                "total_in_memory": len(self.memory),
+                "episodic": len(self.episodic_memory),
+                "semantic": len(self.semantic_memory),
+                "working": len(self.working_memory),
+                "long_term": len(self.long_term_memory)
+            },
+            "type_distribution": dict(type_distribution),
+            "database_stats": db_stats,
+            "last_consolidation": self.last_consolidation.isoformat()
         }
 
 class AdvancedReasoningAgent:
-    """Enhanced reasoning with multiple strategies"""
-
-    def __init__(self, behavior_profile: BehaviorProfile):
+    """Enhanced reasoning with sophisticated decision-making capabilities"""
+    
+    def __init__(self, behavior_profile: BehaviorProfile, config: Dict[str, Any] = None):
         self.behavior_profile = behavior_profile
-        self.reasoning_strategies = ["analytical", "creative", "collaborative"]
-        self.confidence_threshold = 0.6
-        logger.info("ADVANCED Reasoning Agent v2.0 initialized")
-
-    async def process(self, message: AgentMessage) -> Dict[str, Any]:
-        """Process reasoning requests with behavior-driven strategy selection"""
-        if message.msg_type == "analyze":
-            return await self._analyze_data(message.payload)
-        elif message.msg_type == "solve":
-            return await self._solve_problem(message.payload)
-        elif message.msg_type == "predict":
-            return await self._make_prediction(message.payload)
-        elif message.msg_type == "evaluate":
-            return await self._evaluate_options(message.payload)
-        return {"status": "error", "message": "Unknown reasoning operation"}
-
-    async def _analyze_data(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Analyze data using behavior-influenced approach"""
-        data = payload.get("data", [])
-        analysis_type = payload.get("type", "pattern")
-
-        # Select strategy based on behavior profile
-        creativity = self.behavior_profile.traits[BehaviorTrait.CREATIVITY]
-        rationality = self.behavior_profile.traits[BehaviorTrait.RATIONALITY]
-
-        if creativity > 0.7:
-            strategy = "creative"
-        elif rationality > 0.7:
-            strategy = "analytical"
-        else:
-            strategy = "balanced"
-
-        patterns = await self._detect_patterns(data, strategy)
-        insights = await self._generate_insights(patterns, strategy)
-
-        confidence = min(0.95, 0.6 + rationality * 0.3)
-
-        logger.info(f"Analyzed {len(data)} data points using {strategy} strategy")
-
-        return {
-            "status": "success",
-            "strategy_used": strategy,
-            "patterns": patterns,
-            "insights": insights,
-            "confidence": confidence,
-            "data_points_analyzed": len(data)
+        self.config = config or {}
+        self.reasoning_strategies = {
+            "analytical": self._analytical_reasoning,
+            "creative": self._creative_reasoning,
+            "collaborative": self._collaborative_reasoning,
+            "intuitive": self._intuitive_reasoning,
+            "systematic": self._systematic_reasoning
         }
-
-    async def _detect_patterns(self, data: List[Any], strategy: str) -> List[Dict[str, Any]]:
-        """Detect patterns using specified strategy"""
-        patterns = []
-
-        if strategy == "analytical":
-            patterns.extend([
-                {"type": "trend", "description": "Linear upward trend", "confidence": 0.85},
-                {"type": "outlier", "description": "Data point anomaly detected", "confidence": 0.92},
-                {"type": "correlation", "description": "Strong positive correlation", "confidence": 0.78}
-            ])
-        elif strategy == "creative":
-            patterns.extend([
-                {"type": "emergent", "description": "Unexpected cluster formation", "confidence": 0.71},
-                {"type": "cyclical", "description": "Hidden periodic behavior", "confidence": 0.68},
-                {"type": "systemic", "description": "System-wide behavioral shift", "confidence": 0.74}
-            ])
-        else:
-            patterns.extend([
-                {"type": "trend", "description": "General directional movement", "confidence": 0.80},
-                {"type": "variance", "description": "Variability pattern", "confidence": 0.75}
-            ])
-
-        return patterns
-
-    async def _generate_insights(self, patterns: List[Dict[str, Any]], 
-                               strategy: str) -> List[Dict[str, Any]]:
-        """Generate insights from detected patterns"""
-        insights = []
-
-        for pattern in patterns:
-            if strategy == "creative":
-                insight = {
-                    "type": "innovative",
-                    "description": f"Novel interpretation: {pattern['description']}",
-                    "actionable": True,
-                    "confidence": pattern["confidence"] * 0.9
-                }
-            elif strategy == "analytical":
-                insight = {
-                    "type": "systematic",
-                    "description": f"Logical conclusion: {pattern['description']}",
-                    "actionable": True,
-                    "confidence": pattern["confidence"] * 0.95
-                }
-            else:
-                insight = {
-                    "type": "practical",
-                    "description": f"Balanced view: {pattern['description']}",
-                    "actionable": True,
-                    "confidence": pattern["confidence"] * 0.85
-                }
-
-            insights.append(insight)
-
-        return insights
-
-    async def _solve_problem(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Solve problems using behavior-driven approach"""
-        problem = payload.get("problem", "")
-        constraints = payload.get("constraints", [])
-
-        persistence = self.behavior_profile.traits[BehaviorTrait.PERSISTENCE]
-        creativity = self.behavior_profile.traits[BehaviorTrait.CREATIVITY]
-
-        solutions = []
-
-        if creativity > 0.6:
-            solutions.append({
-                "approach": "creative",
-                "description": "Innovative solution using unconventional methods",
-                "feasibility": 0.7,
-                "novelty": 0.9
-            })
-
-        if persistence > 0.7:
-            solutions.append({
-                "approach": "systematic",
-                "description": "Step-by-step methodical approach",
-                "feasibility": 0.9,
-                "novelty": 0.5
-            })
-
-        solutions.append({
-            "approach": "hybrid",
-            "description": "Combined approach leveraging multiple strategies",
-            "feasibility": 0.8,
-            "novelty": 0.7
-        })
-
-        logger.info(f"Generated {len(solutions)} solution approaches for problem")
-
-        return {
-            "status": "success",
-            "problem": problem,
-            "solutions": solutions,
-            "recommended": solutions[0] if solutions else None,
-            "behavior_factors": {
-                "persistence": persistence,
-                "creativity": creativity
-            }
+        
+        # Reasoning history and learning
+        self.reasoning_history = deque(maxlen=1000)
+        self.strategy_performance = defaultdict(lambda: {"successes": 0, "failures": 0, "avg_confidence": 0.0})
+        
+        # Decision trees and pattern recognition
+        self.decision_patterns = defaultdict(list)
+        self.confidence_threshold = self.config.get("confidence_threshold", 0.6)
+        
+        # Performance metrics
+        self.reasoning_stats = {
+            "total_analyses": 0,
+            "total_decisions": 0,
+            "avg_processing_time": 0.0,
+            "strategy_distribution": defaultdict(int)
         }
-
-    async def _make_prediction(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Make predictions based on data and behavior profile"""
-        data = payload.get("data", [])
-        horizon = payload.get("horizon", "short_term")
-
-        caution = self.behavior_profile.traits[BehaviorTrait.CAUTION]
-
-        # Adjust confidence based on caution level
-        base_confidence = 0.75
-        confidence_adjustment = (0.5 - caution) * 0.3
-        final_confidence = max(0.3, min(0.95, base_confidence + confidence_adjustment))
-
-        prediction = {
-            "type": horizon,
-            "value": "Positive trend expected",
-            "confidence": final_confidence,
-            "risk_factors": ["Market volatility", "External dependencies"],
-            "recommendations": ["Monitor closely", "Prepare contingencies"]
-        }
-
-        logger.info(f"Generated {horizon} prediction with {final_confidence:.2f} confidence")
-
-        return {
-            "status": "success",
-            "prediction": prediction,
-            "caution_factor": caution,
-            "data_quality": "high" if len(data) > 10 else "limited"
-        }
-
-    async def _evaluate_options(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Evaluate multiple options using behavioral criteria"""
-        options = payload.get("options", [])
-        criteria = payload.get("criteria", ["feasibility", "impact", "risk"])
-
-        rationality = self.behavior_profile.traits[BehaviorTrait.RATIONALITY]
-
-        evaluated_options = []
-        for i, option in enumerate(options):
-            scores = {}
-            for criterion in criteria:
-                # Generate realistic scores influenced by rationality
-                base_score = 0.5 + (i * 0.1) % 0.4
-                rational_adjustment = rationality * 0.2
-                scores[criterion] = min(1.0, base_score + rational_adjustment)
-
-            total_score = sum(scores.values()) / len(scores)
-
-            evaluated_options.append({
-                "option": option,
-                "scores": scores,
-                "total_score": total_score,
-                "rank": 0  # Will be set after sorting
-            })
-
-        # Sort by total score and assign ranks
-        evaluated_options.sort(key=lambda x: x["total_score"], reverse=True)
-        for i, option in enumerate(evaluated_options):
-            option["rank"] = i + 1
-
-        logger.info(f"Evaluated {len(options)} options using {len(criteria)} criteria")
-
-        return {
-            "status": "success",
-            "evaluated_options": evaluated_options,
-            "best_option": evaluated_options[0] if evaluated_options else None,
-            "evaluation_criteria": criteria,
-            "rationality_factor": rationality
-        }
-
-class AdvancedReliabilityAgent:
-    """Enhanced reliability with fault tolerance and monitoring"""
-
-    def __init__(self):
-        self.industry = "${INDUSTRY}"
-        self.health_metrics = {
-            "uptime": 1.0,
-            "error_rate": 0.0,
-            "response_time": 0.0,
-            "memory_usage": 0.0,
-            "cpu_usage": 0.0
-        }
-        self.compliance_standards = self._get_industry_compliance()
-        self.fault_tolerance_enabled = True
-        self.circuit_breaker_open = False
-        self.error_count = 0
-        self.last_health_check = time.time()
-        logger.info(f"ADVANCED Reliability Agent v2.0 initialized for {self.industry}")
-
-    def _get_industry_compliance(self) -> List[str]:
-        """Get compliance standards based on industry"""
-        compliance_map = {
-            "Healthcare": ["HIPAA", "FDA", "HITECH", "SOC2"],
-            "Financial": ["PCI-DSS", "SOX", "GDPR", "Basel III"],
-            "Insurance": ["SOC2", "ISO-27001", "NAIC", "Solvency II"],
-            "Legal": ["ABA", "ISO-27001", "GDPR", "Legal Professional Privilege"],
-            "Manufacturing": ["ISO-9001", "ISO-14001", "OSHA", "SOC2"],
-            "Retail": ["PCI-DSS", "GDPR", "SOC2", "FTC Guidelines"]
-        }
-        return compliance_map.get(self.industry, ["SOC2", "ISO-27001"])
-
-    async def process(self, message: AgentMessage) -> Dict[str, Any]:
-        """Process reliability and health monitoring requests"""
-        try:
-            if message.msg_type == "health_check":
-                return await self._perform_health_check()
-            elif message.msg_type == "compliance_audit":
-                return await self._perform_compliance_audit()
-            elif message.msg_type == "fault_injection":
-                return await self._test_fault_tolerance(message.payload)
-            elif message.msg_type == "circuit_breaker":
-                return await self._manage_circuit_breaker(message.payload)
-            elif message.msg_type == "metrics":
-                return await self._get_metrics()
-            return {"status": "error", "message": "Unknown reliability operation"}
-        except Exception as e:
-            self.error_count += 1
-            logger.error(f"Reliability agent error: {str(e)}")
-            return {"status": "error", "message": str(e), "error_count": self.error_count}
-
-    async def _perform_health_check(self) -> Dict[str, Any]:
-        """Perform comprehensive health check"""
-        current_time = time.time()
-        uptime = current_time - self.last_health_check
-
-        # Simulate realistic health metrics
-        self.health_metrics.update({
-            "uptime": min(1.0, uptime / 86400),
-            "error_rate": min(0.1, self.error_count / 100),
-            "response_time": random.uniform(50, 200),
-            "memory_usage": random.uniform(0.2, 0.8),
-            "cpu_usage": random.uniform(0.1, 0.6)
-        })
-
-        # Calculate overall health score
-        health_score = (
-            self.health_metrics["uptime"] * 0.3 +
-            (1 - self.health_metrics["error_rate"]) * 0.3 +
-            (1 - min(1.0, self.health_metrics["response_time"] / 1000)) * 0.2 +
-            (1 - self.health_metrics["memory_usage"]) * 0.1 +
-            (1 - self.health_metrics["cpu_usage"]) * 0.1
-        )
-
-        status = "healthy" if health_score > 0.8 else "degraded" if health_score > 0.5 else "critical"
-
-        logger.info(f"Health check completed: {status} (score: {health_score:.2f})")
-
-        return {
-            "status": "success",
-            "health_status": status,
-            "health_score": health_score,
-            "metrics": self.health_metrics,
-            "compliance_standards": self.compliance_standards,
-            "last_check": datetime.now().isoformat()
-        }
-
-    async def _perform_compliance_audit(self) -> Dict[str, Any]:
-        """Perform compliance audit for industry standards"""
-        audit_results = {}
-
-        for standard in self.compliance_standards:
-            # Simulate compliance checks
-            compliance_score = random.uniform(0.85, 0.98)
-
-            audit_results[standard] = {
-                "compliant": compliance_score > 0.9,
-                "score": compliance_score,
-                "findings": [] if compliance_score > 0.95 else ["Minor documentation gap"],
-                "recommendations": [] if compliance_score > 0.9 else ["Update security protocols"]
-            }
-
-        overall_compliance = sum(r["score"] for r in audit_results.values()) / len(audit_results)
-
-        logger.info(f"Compliance audit completed: {overall_compliance:.2f} average score")
-
-        return {
-            "status": "success",
-            "overall_compliance": overall_compliance,
-            "audit_results": audit_results,
-            "industry": self.industry,
-            "audit_timestamp": datetime.now().isoformat()
-        }
-
-    async def _test_fault_tolerance(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Test fault tolerance mechanisms"""
-        fault_type = payload.get("fault_type", "network")
-        severity = payload.get("severity", "medium")
-
-        # Simulate fault injection
-        if fault_type == "network":
-            recovery_time = random.uniform(1, 5)
-            success_rate = 0.9 if severity == "low" else 0.7 if severity == "medium" else 0.5
-        elif fault_type == "memory":
-            recovery_time = random.uniform(0.5, 2)
-            success_rate = 0.95 if severity == "low" else 0.8 if severity == "medium" else 0.6
-        else:
-            recovery_time = random.uniform(2, 8)
-            success_rate = 0.85 if severity == "low" else 0.6 if severity == "medium" else 0.4
-
-        # Simulate recovery
-        await asyncio.sleep(0.1)
-
-        test_passed = random.random() < success_rate
-
-        logger.info(f"Fault tolerance test: {fault_type}/{severity} - {'PASSED' if test_passed else 'FAILED'}")
-
-        return {
-            "status": "success",
-            "test_passed": test_passed,
-            "fault_type": fault_type,
-            "severity": severity,
-            "recovery_time": recovery_time,
-            "success_rate": success_rate,
-            "recommendations": ["Implement redundancy"] if not test_passed else []
-        }
-
-    async def _manage_circuit_breaker(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Manage circuit breaker state"""
-        action = payload.get("action", "status")
-
-        if action == "open":
-            self.circuit_breaker_open = True
-            logger.warning("Circuit breaker opened")
-        elif action == "close":
-            self.circuit_breaker_open = False
-            self.error_count = 0
-            logger.info("Circuit breaker closed")
-        elif action == "reset":
-            self.circuit_breaker_open = False
-            self.error_count = 0
-            logger.info("Circuit breaker reset")
-
-        return {
-            "status": "success",
-            "circuit_breaker_open": self.circuit_breaker_open,
-            "error_count": self.error_count,
-            "action_performed": action
-        }
-
-    async def _get_metrics(self) -> Dict[str, Any]:
-        """Get current reliability metrics"""
-        return {
-            "status": "success",
-            "metrics": self.health_metrics,
-            "error_count": self.error_count,
-            "circuit_breaker_open": self.circuit_breaker_open,
-            "compliance_standards": self.compliance_standards,
-            "industry": self.industry
-        }
-
-# =============================================================================
-# MAIN ADVANCED AGENT ORCHESTRATOR v2.0
-# =============================================================================
-
-class AdvancedNeuronAgent:
-    """Main advanced agent orchestrator with sophisticated capabilities"""
-
-    def __init__(self):
-        self.agent_id = f"advanced-neuron-{uuid.uuid4().hex[:8]}"
-        self.industry = "${INDUSTRY}"
-        self.use_case = "${USE_CASE}"
-        self.complexity = "${COMPLEXITY}"
-        self.version = "2.0"
-
-        # Initialize behavior profile
-        self.behavior_profile = BehaviorProfile()
-
-        # Initialize ADVANCED LEGO blocks
-        self.memory_agent = AdvancedMemoryAgent()
-        self.reasoning_agent = AdvancedReasoningAgent(self.behavior_profile)
-        self.reliability_agent = AdvancedReliabilityAgent()
-
-        # Agent state
-        self.is_running = False
-        self.message_queue = asyncio.Queue()
-        self.performance_metrics = {
-            "messages_processed": 0,
-            "avg_response_time": 0.0,
-            "success_rate": 1.0,
-            "start_time": time.time()
-        }
-
-        logger.info(f"ADVANCED Neuron Agent v{self.version} initialized for {self.industry}")
-        logger.info(f"Use case: {self.use_case}")
-        logger.info(f"Complexity: {self.complexity}")
-        logger.info(f"Behavior profile: {self.behavior_profile.mode.value}")
-
-    async def start(self):
-        """Start the advanced agent"""
-        self.is_running = True
-        self.performance_metrics["start_time"] = time.time()
-        logger.info(f"ADVANCED Agent {self.agent_id} v{self.version} started")
-
-        # Start background tasks
-        asyncio.create_task(self._health_monitor())
-        asyncio.create_task(self._message_processor())
-
-        return {
-            "status": "started",
-            "agent_id": self.agent_id,
-            "version": self.version,
-            "timestamp": datetime.now().isoformat()
-        }
-
-    async def stop(self):
-        """Stop the advanced agent"""
-        self.is_running = False
-        logger.info(f"ADVANCED Agent {self.agent_id} stopped")
-
-        return {
-            "status": "stopped",
-            "agent_id": self.agent_id,
-            "version": self.version,
-            "uptime": time.time() - self.performance_metrics["start_time"],
-            "messages_processed": self.performance_metrics["messages_processed"]
-        }
-
-    async def process_message(self, message: AgentMessage) -> Dict[str, Any]:
-        """Process incoming message with advanced routing"""
+        
+        logger.info("Enhanced Reasoning Agent v2.0 initialized with advanced decision-making")
+    
+    async def process(self, message: EnhancedAgentMessage) -> Dict[str, Any]:
+        """Enhanced reasoning message processing"""
         start_time = time.time()
-
+        message.add_route_step("AdvancedReasoningAgent", "processing")
+        
         try:
-            # Route message to appropriate advanced agent
-            if message.msg_type.startswith("memory_"):
-                result = await self.memory_agent.process(message)
-            elif message.msg_type.startswith("reasoning_"):
-                result = await self.reasoning_agent.process(message)
-            elif message.msg_type.startswith("reliability_"):
-                result = await self.reliability_agent.process(message)
-            else:
-                result = await self._handle_general_message(message)
-
+            result = await self._route_reasoning(message)
+            
             # Update performance metrics
             processing_time = time.time() - start_time
-            self._update_performance_metrics(processing_time, True)
-
+            self.reasoning_stats["avg_processing_time"] = (
+                (self.reasoning_stats["avg_processing_time"] * self.reasoning_stats["total_analyses"] + processing_time)
+                / (self.reasoning_stats["total_analyses"] + 1)
+            )
+            self.reasoning_stats["total_analyses"] += 1
+            
             result["processing_time"] = processing_time
-            result["agent_id"] = self.agent_id
-            result["agent_version"] = self.version
-
+            message.add_route_step("AdvancedReasoningAgent", "completed")
+            
+            # Learn from the reasoning process
+            await self._learn_from_reasoning(message.msg_type, result, processing_time)
+            
             return result
-
+            
         except Exception as e:
-            processing_time = time.time() - start_time
-            self._update_performance_metrics(processing_time, False)
-
-            logger.error(f"Error processing message: {str(e)}")
+            logger.error(f"Reasoning agent error: {e}")
+            message.add_route_step("AdvancedReasoningAgent", f"error: {str(e)}")
             return {
                 "status": "error",
                 "message": str(e),
-                "processing_time": processing_time,
-                "agent_id": self.agent_id,
-                "agent_version": self.version
+                "error_type": type(e).__name__,
+                "processing_time": time.time() - start_time
             }
-
-    async def _handle_general_message(self, message: AgentMessage) -> Dict[str, Any]:
-        """Handle general messages with advanced features"""
-        if message.msg_type == "status":
-            return await self._get_status()
-        elif message.msg_type == "capabilities":
-            return await self._get_capabilities()
-        elif message.msg_type == "configure":
-            return await self._configure(message.payload)
-        else:
-            return {"status": "error", "message": f"Unknown message type: {message.msg_type}"}
-
-    async def _get_status(self) -> Dict[str, Any]:
-        """Get advanced agent status"""
-        uptime = time.time() - self.performance_metrics["start_time"]
-
-        return {
-            "status": "success",
-            "agent_id": self.agent_id,
-            "version": self.version,
-            "industry": self.industry,
-            "use_case": self.use_case,
-            "complexity": self.complexity,
-            "is_running": self.is_running,
-            "uptime": uptime,
-            "behavior_mode": self.behavior_profile.mode.value,
-            "performance_metrics": self.performance_metrics,
-            "advanced_features": ["memory_scoring", "behavior_driven_reasoning", "enterprise_compliance"]
-        }
-
-    async def _get_capabilities(self) -> Dict[str, Any]:
-        """Get advanced agent capabilities"""
-        capabilities = {
-            "memory_operations": ["store", "retrieve", "search", "consolidate"],
-            "reasoning_operations": ["analyze", "solve", "predict", "evaluate"],
-            "reliability_operations": ["health_check", "compliance_audit", "fault_injection"],
-            "behavior_traits": list(self.behavior_profile.traits.keys()),
-            "compliance_standards": self.reliability_agent.compliance_standards,
-            "industry_specialization": self.industry,
-            "advanced_features": {
-                "memory_scoring": "Context-aware memory with temporal decay",
-                "behavior_driven_reasoning": "Dynamic strategy selection based on personality",
-                "enterprise_compliance": "Industry-specific regulatory compliance",
-                "fault_tolerance": "Circuit breakers and graceful degradation",
-                "real_time_monitoring": "Continuous health and performance tracking"
-            }
-        }
-
-        return {
-            "status": "success",
-            "agent_id": self.agent_id,
-            "version": self.version,
-            "capabilities": capabilities
-        }
-
-    async def _configure(self, payload: Dict[str, Any]) -> Dict[str, Any]:
-        """Configure advanced agent settings"""
-        updated_settings = []
-
-        if "behavior_mode" in payload:
-            try:
-                new_mode = BehaviorMode(payload["behavior_mode"])
-                self.behavior_profile.mode = new_mode
-                updated_settings.append("behavior_mode")
-            except ValueError:
-                pass
-
-        if "behavior_traits" in payload:
-            for trait, value in payload["behavior_traits"].items():
-                try:
-                    trait_enum = BehaviorTrait(trait)
-                    if 0.0 <= value <= 1.0:
-                        self.behavior_profile.traits[trait_enum] = value
-                        updated_settings.append(f"trait_{trait}")
-                except ValueError:
-                    pass
-
-        logger.info(f"ADVANCED Configuration updated: {updated_settings}")
-
-        return {
-            "status": "success",
-            "updated_settings": updated_settings,
-            "current_behavior_mode": self.behavior_profile.mode.value,
-            "current_traits": {t.value: v for t, v in self.behavior_profile.traits.items()},
-            "agent_version": self.version
-        }
-
-    def _update_performance_metrics(self, processing_time: float, success: bool):
-        """Update advanced performance metrics"""
-        self.performance_metrics["messages_processed"] += 1
-
-        # Update average response time
-        current_avg = self.performance_metrics["avg_response_time"]
-        message_count = self.performance_metrics["messages_processed"]
-        new_avg = ((current_avg * (message_count - 1)) + processing_time) / message_count
-        self.performance_metrics["avg_response_time"] = new_avg
-
-        # Update success rate
-        if success:
-            current_rate = self.performance_metrics["success_rate"]
-            new_rate = ((current_rate * (message_count - 1)) + 1.0) / message_count
-            self.performance_metrics["success_rate"] = new_rate
-        else:
-            current_rate = self.performance_metrics["success_rate"]
-            new_rate = ((current_rate * (message_count - 1)) + 0.0) / message_count
-            self.performance_metrics["success_rate"] = new_rate
-
-    async def _health_monitor(self):
-        """Advanced background health monitoring"""
-        while self.is_running:
-            try:
-                health_message = AgentMessage(
-                    sender="health_monitor",
-                    recipient=self.agent_id,
-                    msg_type="reliability_health_check",
-                    payload={}
-                )
-                await self.reliability_agent.process(health_message)
-                await asyncio.sleep(30)
-            except Exception as e:
-                logger.error(f"Health monitor error: {str(e)}")
-                await asyncio.sleep(60)
-
-    async def _message_processor(self):
-        """Advanced background message processor"""
-        while self.is_running:
-            try:
-                if not self.message_queue.empty():
-                    message = await self.message_queue.get()
-                    await self.process_message(message)
-                else:
-                    await asyncio.sleep(0.1)
-            except Exception as e:
-                logger.error(f"Message processor error: {str(e)}")
-                await asyncio.sleep(1)
-
-# =============================================================================
-# MAIN EXECUTION
-# =============================================================================
-
-async def main():
-    """Main execution function for Advanced Neuron Agent v2.0"""
-    print("ADVANCED Neuron Agent v2.0 Starting...")
-    print(f"Industry: ${INDUSTRY}")
-    print(f"Use Case: ${USE_CASE}")
-    print(f"Complexity: ${COMPLEXITY}")
-    print(f"Behavior Profile: ${BEHAVIOR_PROFILE}")
-    print("Enhanced with Advanced LEGO Blocks!")
-    print()
-
-    # Create and start advanced agent
-    agent = AdvancedNeuronAgent()
-    await agent.start()
-
-    # Demo advanced operations
-    print("Running ADVANCED demonstration operations...")
-
-    # Test advanced memory operations
-    memory_msg = AgentMessage(
-        sender="demo",
-        recipient=agent.agent_id,
-        msg_type="memory_store",
-        payload={
-            "key": "advanced_demo_memory",
-            "data": {"content": "This is an ADVANCED demo memory", "importance": "critical"},
-            "type": "semantic",
-            "confidence": 0.95,
-            "context": {"domain": "${INDUSTRY}", "use_case": "${USE_CASE}", "version": "2.0"}
-        }
-    )
-    result = await agent.process_message(memory_msg)
-    print(f"ADVANCED Memory storage: {result['status']}")
-
-    # Test advanced reasoning operations
-    reasoning_msg = AgentMessage(
-        sender="demo",
-        recipient=agent.agent_id,
-        msg_type="reasoning_analyze",
-        payload={
-            "data": [1, 2, 3, 5, 8, 13, 21, 34, 55, 89],
-            "type": "advanced_pattern_analysis"
-        }
-    )
-    result = await agent.process_message(reasoning_msg)
-    print(f"ADVANCED Reasoning analysis: {result['status']}, Strategy: {result.get('strategy_used')}")
-
-    # Test advanced reliability operations
-    reliability_msg = AgentMessage(
-        sender="demo",
-        recipient=agent.agent_id,
-        msg_type="reliability_health_check",
-        payload={}
-    )
-    result = await agent.process_message(reliability_msg)
-    print(f"ADVANCED Health check: {result['health_status']}, Score: {result.get('health_score'):.2f}")
-
-    # Test configuration
-    config_msg = AgentMessage(
-        sender="demo",
-        recipient=agent.agent_id,
-        msg_type="configure",
-        payload={
-            "behavior_mode": "performance",
-            "behavior_traits": {"persistence": 0.9, "creativity": 0.2}
-        }
-    )
-    result = await agent.process_message(config_msg)
-    print(f"ADVANCED Configuration update: {result['status']}, New mode: {result.get('current_behavior_mode')}")
-
-    print("\nADVANCED Neuron Agent v2.0 Demonstration Complete.")
-
-    # Stop the agent
-    await agent.stop()
-
-if __name__ == "__main__":
-    asyncio.run(main())
