@@ -1,3 +1,4 @@
+# .github/scripts/validate_performance.py
 
 """
 validate_performance.py
@@ -45,328 +46,362 @@ class PerformanceValidator:
         log("Performance validator initialized")
     
     def validate_performance(self, component: str, expected_version: str, baseline_file: str, duration: int) -> Dict[str, Any]:
-        """Validate performance against baseline and criteria"""
+        """Performs comprehensive validation for the specified component"""
+        log(f"Starting validation for {component} (expected version: {expected_version}) for {duration} seconds.")
         
-        validation_result = {
-            'validation_id': f"val-{component}-{int(time.time())}",
-            'start_time': datetime.now().isoformat(),
+        baseline_metrics = self._load_baseline_metrics(baseline_file)
+        if not baseline_metrics:
+            return {'status': 'failed', 'message': 'Failed to load baseline metrics.'}
+
+        validation_results = {
             'component': component,
             'expected_version': expected_version,
-            'duration': duration,
-            'validation_status': 'in_progress',
+            'status': 'in_progress',
             'checks': []
         }
+
+        # Simulate monitoring over time
+        for i in range(duration // 10): # Check every 10 seconds
+            time.sleep(10)
+            log(f"  Simulating monitoring... ({ (i + 1) * 10 }/{duration}s)")
+            
+            # Simulate current metrics for comparison
+            current_metrics = self._simulate_current_metrics(component)
+
+            # Perform various checks
+            resource_check = self._check_resource_utilization(component, expected_version, baseline_metrics)
+            validation_results['checks'].append(resource_check)
+
+            performance_check = self._check_performance_metrics(component, current_metrics, baseline_metrics)
+            validation_results['checks'].append(performance_check)
+            
+            sla_check = self._check_sla_compliance(component, current_metrics)
+            validation_results['checks'].append(sla_check)
+
+            if not resource_check['compliant'] or not performance_check['compliant'] or not sla_check['compliant']:
+                log(f"  Validation issues detected for {component} at {datetime.now().strftime('%H:%M:%S')}")
+                validation_results['status'] = 'failed'
+                validation_results['message'] = f"Validation failed due to issues with {resource_check['status']}, {performance_check['status']}, or {sla_check['status']}."
+                return validation_results
+
+        # Final overall assessment
+        all_checks_passed = all(c['status'] == 'passed' for c in validation_results['checks'])
         
-        try:
-            log(f"Starting performance validation for {component}")
-            log(f"Expected version: {expected_version}")
-            log(f"Duration: {duration} seconds")
-            
-            # Load baseline metrics
-            baseline_metrics = self._load_baseline_metrics(baseline_file)
-            
-            # Run validation checks
-            checks = [
-                ('version_verification', self._verify_version),
-                ('performance_metrics', self._check_performance_metrics),
-                ('stability_check', self._check_stability),
-                ('sla_compliance', self._check_sla_compliance),
-                ('resource_utilization', self._check_resource_utilization)
-            ]
-            
-            all_passed = True
-            performance_improvements = {}
-            
-            for check_name, check_function in checks:
-                log(f"Running {check_name.replace('_', ' ').title()}...")
-                
-                # Simulate check time
-                time.sleep(duration / len(checks) / 10)  # Scale down for demo
-                
-                check_result = check_function(component, expected_version, baseline_metrics)
-                validation_result['checks'].append(check_result)
-                
-                if check_result['status'] == 'passed':
-                    log(f"✅ {check_result['message']}")
-                    if 'improvements' in check_result:
-                        performance_improvements.update(check_result['improvements'])
-                else:
-                    log(f"❌ {check_result['message']}")
-                    all_passed = False
-            
-            # Calculate overall validation result
-            if all_passed:
-                validation_result['validation_status'] = 'passed'
-                validation_result['overall_improvement'] = self._calculate_overall_improvement(performance_improvements)
-                validation_result['performance_improvements'] = performance_improvements
-                validation_result['meets_criteria'] = True
-            else:
-                validation_result['validation_status'] = 'failed'
-                validation_result['overall_improvement'] = 0
-                validation_result['performance_improvements'] = {}
-                validation_result['meets_criteria'] = False
-            
-        except Exception as e:
-            log(f"❌ Validation error: {e}")
-            validation_result['validation_status'] = 'error'
-            validation_result['error'] = str(e)
+        if all_checks_passed:
+            validation_results['status'] = 'passed'
+            validation_results['message'] = f"✅ {component} performance validated successfully for version {expected_version}."
+            log(f"✅ Validation for {component} passed.")
+        else:
+            validation_results['status'] = 'failed'
+            validation_results['message'] = f"❌ {component} performance validation failed after swap to version {expected_version}."
+            log(f"❌ Validation for {component} failed.")
         
-        validation_result['end_time'] = datetime.now().isoformat()
-        return validation_result
-    
-    def _load_baseline_metrics(self, baseline_file: str) -> Dict[str, Any]:
-        """Load baseline metrics from file"""
+        return validation_results
+
+    def _load_baseline_metrics(self, baseline_file: str) -> Optional[Dict[str, Any]]:
+        """Load baseline metrics from a JSON file."""
         try:
-            if os.path.exists(baseline_file):
-                with open(baseline_file, 'r') as f:
-                    return json.load(f)
-            else:
-                log(f"⚠️ Baseline file {baseline_file} not found, using defaults")
-                return self._generate_default_baseline()
+            with open(baseline_file, 'r') as f:
+                metrics = json.load(f)
+                log(f"Loaded baseline metrics from {baseline_file}")
+                return metrics
+        except FileNotFoundError:
+            log(f"ERROR: Baseline metrics file not found at {baseline_file}")
+            return None
         except json.JSONDecodeError:
-            log(f"⚠️ Invalid JSON in {baseline_file}, using defaults")
-            return self._generate_default_baseline()
-    
-    def _generate_default_baseline(self) -> Dict[str, Any]:
-        """Generate default baseline metrics"""
-        return {
-            'memory_agent': {
-                'response_time_ms': 400,
-                'error_rate': 0.03,
-                'cache_hit_rate': 0.80,
-                'memory_usage': 0.70,
-                'cpu_usage': 0.65
-            },
-            'reasoning_agent': {
-                'response_time_ms': 900,
-                'error_rate': 0.02,
-                'decision_accuracy': 0.88,
-                'cpu_usage': 0.70,
-                'memory_usage': 0.60
-            },
-            'communication_system': {
-                'message_throughput': 1000,
-                'avg_latency_ms': 50,
-                'message_loss_rate': 0.0008,
-                'queue_depth': 30,
-                'connection_pool_usage': 0.65
-            }
-        }
-    
-    def _verify_version(self, component: str, expected_version: str, baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
-        """Verify that the correct version is deployed"""
-        # Simulate version check
-        version_match = random.random() > 0.05  # 95% success rate
-        
-        if version_match:
+            log(f"ERROR: Invalid JSON in baseline metrics file {baseline_file}")
+            return None
+        except Exception as e:
+            log(f"ERROR: An error occurred loading baseline metrics: {e}")
+            return None
+
+    def _simulate_current_metrics(self, component: str) -> Dict[str, float]:
+        """Simulate current live metrics for a component."""
+        log(f"  Simulating current metrics for {component}...")
+        if component == 'memory':
             return {
-                'check': 'version_verification',
-                'status': 'passed',
-                'message': f'Version {expected_version} verified for {component}',
-                'deployed_version': expected_version,
-                'verification_method': 'api_endpoint'
+                'cpu_usage': random.uniform(0.2, 0.6),
+                'memory_usage': random.uniform(0.3, 0.7),
+                'response_time_ms': random.uniform(150, 300),
+                'cache_hit_rate': random.uniform(0.80, 0.95),
+                'error_rate': random.uniform(0.005, 0.03)
             }
-        else:
+        elif component == 'reasoning':
             return {
-                'check': 'version_verification',
-                'status': 'failed',
-                'message': f'Version mismatch for {component}',
-                'expected_version': expected_version,
-                'deployed_version': 'v1.0-standard'
+                'cpu_usage': random.uniform(0.3, 0.7),
+                'memory_usage': random.uniform(0.4, 0.8),
+                'response_time_ms': random.uniform(400, 700),
+                'decision_accuracy': random.uniform(0.88, 0.98),
+                'error_rate': random.uniform(0.001, 0.02)
             }
-    
-    def _check_performance_metrics(self, component: str, expected_version: str, baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
-        """Check performance metrics against baseline"""
+        elif component == 'communication':
+            return {
+                'throughput': random.uniform(500, 1000),
+                'latency_ms': random.uniform(5, 20),
+                'message_loss_rate': random.uniform(0.00005, 0.0005),
+                'queue_depth': random.uniform(10, 40)
+            }
+        return {}
+
+    def _check_performance_metrics(self, component: str, current_metrics: Dict[str, float], baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
+        """Check if current performance metrics meet improvement criteria."""
+        log(f"  Checking performance metrics for {component}...")
         criteria = self.validation_criteria.get(component, {})
-        component_key = f'{component}_agent' if component != 'communication' else 'communication_system'
-        baseline = baseline_metrics.get(component_key, {})
+        baseline = baseline_metrics.get(f'{component}_agent' if component != 'communication' else 'communication_system', {})
         
-        # Simulate current metrics (improved from baseline)
-        current_metrics = self._simulate_current_metrics(component, baseline)
-        improvements = {}
-        
+        issues = []
+        status = 'passed'
+        message = f"{component} performance within expected range."
+
         if component == 'memory':
-            # Check response time improvement
-            baseline_rt = baseline.get('response_time_ms', 400)
-            current_rt = current_metrics['response_time_ms']
-            rt_improvement = ((baseline_rt - current_rt) / baseline_rt) * 100
-            improvements['response_time'] = rt_improvement
-            
-            # Check cache hit rate
-            cache_improvement = (current_metrics['cache_hit_rate'] - baseline.get('cache_hit_rate', 0.8)) * 100
-            improvements['cache_hit_rate'] = cache_improvement
-            
+            # Response time improvement
+            if 'response_time_ms' in current_metrics and 'response_time_ms' in baseline:
+                baseline_rt = baseline['response_time_ms']
+                current_rt = current_metrics['response_time_ms']
+                if baseline_rt > 0 and current_rt < baseline_rt * (1 - criteria.get('response_time_improvement', 0)/100):
+                    log(f"    Response time improved for {component}")
+                else:
+                    issues.append('response_time')
+                    status = 'failed'
+                    log(f"    Response time for {component} did not improve as expected. Baseline: {baseline_rt:.2f}ms, Current: {current_rt:.2f}ms")
+
+            # Error rate check
+            if current_metrics.get('error_rate', 0) > criteria.get('error_rate_max', 1.0):
+                issues.append('error_rate')
+                status = 'failed'
+                log(f"    Error rate for {component} is too high: {current_metrics.get('error_rate', 0):.4f}")
+
+            # Cache hit rate check
+            if current_metrics.get('cache_hit_rate', 0) < criteria.get('cache_hit_rate_min', 0):
+                issues.append('cache_hit_rate')
+                status = 'failed'
+                log(f"    Cache hit rate for {component} is too low: {current_metrics.get('cache_hit_rate', 0):.2f}")
+
         elif component == 'reasoning':
-            # Check response time and accuracy
-            baseline_rt = baseline.get('response_time_ms', 900)
-            current_rt = current_metrics['response_time_ms']
-            rt_improvement = ((baseline_rt - current_rt) / baseline_rt) * 100
-            improvements['response_time'] = rt_improvement
-            
-            accuracy_improvement = (current_metrics['decision_accuracy'] - baseline.get('decision_accuracy', 0.88)) * 100
-            improvements['accuracy'] = accuracy_improvement
-            
+            # Response time improvement
+            if 'response_time_ms' in current_metrics and 'response_time_ms' in baseline:
+                baseline_rt = baseline['response_time_ms']
+                current_rt = current_metrics['response_time_ms']
+                if baseline_rt > 0 and current_rt < baseline_rt * (1 - criteria.get('response_time_improvement', 0)/100):
+                    log(f"    Response time improved for {component}")
+                else:
+                    issues.append('response_time')
+                    status = 'failed'
+                    log(f"    Response time for {component} did not improve as expected. Baseline: {baseline_rt:.2f}ms, Current: {current_rt:.2f}ms")
+
+            # Accuracy check
+            if current_metrics.get('decision_accuracy', 0) < criteria.get('accuracy_min', 0):
+                issues.append('accuracy')
+                status = 'failed'
+                log(f"    Decision accuracy for {component} is too low: {current_metrics.get('decision_accuracy', 0):.2f}")
+
+            # Error rate check
+            if current_metrics.get('error_rate', 0) > criteria.get('error_rate_max', 1.0):
+                issues.append('error_rate')
+                status = 'failed'
+                log(f"    Error rate for {component} is too high: {current_metrics.get('error_rate', 0):.4f}")
+
         elif component == 'communication':
-            # Check throughput and latency
-            baseline_throughput = baseline.get('message_throughput', 1000)
-            current_throughput = current_metrics['message_throughput']
-            throughput_improvement = ((current_throughput - baseline_throughput) / baseline_throughput) * 100
-            improvements['throughput'] = throughput_improvement
-            
-            baseline_latency = baseline.get('avg_latency_ms', 50)
-            current_latency = current_metrics['avg_latency_ms']
-            latency_improvement = ((baseline_latency - current_latency) / baseline_latency) * 100
-            improvements['latency'] = latency_improvement
+            # Throughput improvement
+            if 'throughput' in current_metrics and 'throughput' in baseline:
+                baseline_tp = baseline['throughput']
+                current_tp = current_metrics['throughput']
+                if current_tp > baseline_tp * (1 + criteria.get('throughput_improvement', 0)/100):
+                    log(f"    Throughput improved for {component}")
+                else:
+                    issues.append('throughput')
+                    status = 'failed'
+                    log(f"    Throughput for {component} did not improve as expected. Baseline: {baseline_tp:.2f}, Current: {current_tp:.2f}")
+
+            # Latency improvement
+            if 'latency_ms' in current_metrics and 'latency_ms' in baseline:
+                baseline_lat = baseline['latency_ms']
+                current_lat = current_metrics['latency_ms']
+                if baseline_lat > 0 and current_lat < baseline_lat * (1 - criteria.get('latency_improvement', 0)/100):
+                    log(f"    Latency improved for {component}")
+                else:
+                    issues.append('latency')
+                    status = 'failed'
+                    log(f"    Latency for {component} did not improve as expected. Baseline: {baseline_lat:.2f}ms, Current: {current_lat:.2f}ms")
+
+            # Message loss rate check
+            if current_metrics.get('message_loss_rate', 0) > criteria.get('message_loss_rate_max', 1.0):
+                issues.append('message_loss_rate')
+                status = 'failed'
+                log(f"    Message loss rate for {component} is too high: {current_metrics.get('message_loss_rate', 0):.6f}")
+
+        if issues:
+            message = f"{component} performance issues: " + ", ".join(issues)
         
-        # Check if improvements meet criteria
-        meets_criteria = self._check_improvement_criteria(component, improvements, criteria)
-        
-        if meets_criteria:
-            return {
-                'check': 'performance_metrics',
-                'status': 'passed',
-                'message': f'Performance improvements verified for {component}',
-                'current_metrics': current_metrics,
-                'improvements': improvements,
-                'meets_criteria': True
-            }
-        else:
-            return {
-                'check': 'performance_metrics',
-                'status': 'failed',
-                'message': f'Performance improvements insufficient for {component}',
-                'current_metrics': current_metrics,
-                'improvements': improvements,
-                'meets_criteria': False
-            }
-    
-    def _simulate_current_metrics(self, component: str, baseline: Dict[str, Any]) -> Dict[str, Any]:
-        """Simulate current metrics with improvements"""
-        if component == 'memory':
-            return {
-                'response_time_ms': baseline.get('response_time_ms', 400) * random.uniform(0.7, 0.9),
-                'error_rate': baseline.get('error_rate', 0.03) * random.uniform(0.5, 0.8),
-                'cache_hit_rate': min(0.95, baseline.get('cache_hit_rate', 0.8) * random.uniform(1.05, 1.15)),
-                'memory_usage': baseline.get('memory_usage', 0.7) * random.uniform(0.8, 0.95),
-                'cpu_usage': baseline.get('cpu_usage', 0.65) * random.uniform(0.8, 0.95)
-            }
-        elif component == 'reasoning':
-            return {
-                'response_time_ms': baseline.get('response_time_ms', 900) * random.uniform(0.7, 0.9),
-                'error_rate': baseline.get('error_rate', 0.02) * random.uniform(0.5, 0.8),
-                'decision_accuracy': min(0.98, baseline.get('decision_accuracy', 0.88) * random.uniform(1.02, 1.08)),
-                'cpu_usage': baseline.get('cpu_usage', 0.7) * random.uniform(0.8, 0.95),
-                'memory_usage': baseline.get('memory_usage', 0.6) * random.uniform(0.8, 0.95)
-            }
-        else:  # communication
-            return {
-                'message_throughput': baseline.get('message_throughput', 1000) * random.uniform(1.1, 1.4),
-                'avg_latency_ms': baseline.get('avg_latency_ms', 50) * random.uniform(0.6, 0.8),
-                'message_loss_rate': baseline.get('message_loss_rate', 0.0008) * random.uniform(0.3, 0.7),
-                'queue_depth': baseline.get('queue_depth', 30) * random.uniform(0.6, 0.9),
-                'connection_pool_usage': baseline.get('connection_pool_usage', 0.65) * random.uniform(0.8, 0.95)
-            }
-    
-    def _check_improvement_criteria(self, component: str, improvements: Dict[str, float], criteria: Dict[str, Any]) -> bool:
-        """Check if improvements meet required criteria"""
-        if component == 'memory':
-            required_rt_improvement = criteria.get('response_time_improvement', 10)
-            return improvements.get('response_time', 0) >= required_rt_improvement
-        elif component == 'reasoning':
-            required_rt_improvement = criteria.get('response_time_improvement', 15)
-            return improvements.get('response_time', 0) >= required_rt_improvement
-        elif component == 'communication':
-            required_throughput = criteria.get('throughput_improvement', 20)
-            return improvements.get('throughput', 0) >= required_throughput
-        
-        return True
-    
-    def _check_stability(self, component: str, expected_version: str, baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
-        """Check system stability after swap"""
-        # Simulate stability metrics
-        stability_metrics = {
-            'uptime_percentage': random.uniform(99.5, 99.9),
-            'error_frequency': random.uniform(0, 3),  # errors per hour
-            'restart_count': random.randint(0, 1),
-            'memory_leaks_detected': random.random() > 0.95,
-            'cpu_spikes': random.randint(0, 2)
+        return {
+            'check': 'performance_metrics',
+            'status': status,
+            'message': message,
+            'compliant': status == 'passed',
+            'issues': issues,
+            'current_metrics': current_metrics
         }
-        
-        # Check stability criteria
-        stable = (
-            stability_metrics['uptime_percentage'] > 99.0 and
-            stability_metrics['error_frequency'] < 5 and
-            stability_metrics['restart_count'] < 3 and
-            not stability_metrics['memory_leaks_detected']
-        )
-        
-        if stable:
-            return {
-                'check': 'stability_check',
-                'status': 'passed',
-                'message': f'{component} shows good stability after swap',
-                'stability_metrics': stability_metrics,
-                'stable': True
-            }
-        else:
-            return {
-                'check': 'stability_check',
-                'status': 'failed',
-                'message': f'{component} shows stability issues after swap',
-                'stability_metrics': stability_metrics,
-                'stable': False
-            }
     
-    def _check_sla_compliance(self, component: str, expected_version: str, baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
-        """Check SLA compliance"""
-        # Simulate SLA metrics
-        sla_metrics = {
-            'availability': random.uniform(99.0, 99.9),
-            'response_time_p95': random.uniform(200, 800),
-            'error_rate': random.uniform(0.001, 0.05),
-            'throughput': random.uniform(800, 1500)
-        }
+    def _check_sla_compliance(self, component: str, current_metrics: Dict[str, float]) -> Dict[str, Any]:
+        """Check if the component's performance complies with defined SLAs."""
+        log(f"  Checking SLA compliance for {component}...")
         
-        # Define SLA thresholds
+        # Example SLA thresholds (these would typically come from configuration)
         sla_thresholds = {
-            'availability_min': 99.0,
-            'response_time_p95_max': 1000,
-            'error_rate_max': 0.05,
-            'throughput_min': 500
+            'memory': {
+                'availability_min': 0.999,
+                'response_time_p95_max': 400, # ms
+                'error_rate_max': 0.01,
+                'throughput_min': 400 # req/s
+            },
+            'reasoning': {
+                'availability_min': 0.995,
+                'response_time_p95_max': 900, # ms
+                'error_rate_max': 0.02,
+                'accuracy_min': 0.90
+            },
+            'communication': {
+                'availability_min': 0.9999,
+                'latency_p99_max': 30, # ms
+                'message_loss_rate_max': 0.0001,
+                'throughput_min': 800 # messages/s
+            }
+        }
+
+        component_slas = sla_thresholds.get(component, {})
+        
+        # Simulate SLA metrics (these would typically be observed from live systems)
+        sla_metrics = {
+            'availability': random.uniform(0.99, 0.9999),
+            'response_time_p95': current_metrics.get('response_time_ms', 0) * random.uniform(1.1, 1.3), # P95 is higher than avg
+            'error_rate': current_metrics.get('error_rate', 0),
+            'throughput': current_metrics.get('throughput', 0),
+            'latency_p99': current_metrics.get('latency_ms', 0) * random.uniform(1.2, 1.5),
+            'accuracy': current_metrics.get('decision_accuracy', 0)
         }
         
-        # Check compliance
-        compliant = (
-            sla_metrics['availability'] >= sla_thresholds['availability_min'] and
-            sla_metrics['response_time_p95'] <= sla_thresholds['response_time_p95_max'] and
-            sla_metrics['error_rate'] <= sla_thresholds['error_rate_max'] and
-            sla_metrics['throughput'] >= sla_thresholds['throughput_min']
-        )
-        
-        if compliant:
-            return {
-                'check': 'sla_compliance',
-                'status': 'passed',
-                'message': f'{component} meets all SLA requirements',
-                'sla_metrics': sla_metrics,
-                'sla_thresholds': sla_thresholds,
-                'compliant': True
-            }
-        else:
-            return {
-                'check': 'sla_compliance',
-                'status': 'failed',
-                'message': f'{component} violates SLA requirements',
-                'sla_metrics': sla_metrics,
-                'sla_thresholds': sla_thresholds,
-                'compliant': False
-            }
+        compliant = True
+        violated_metrics = []
+
+        if component == 'memory':
+            if sla_metrics['availability'] < component_slas.get('availability_min', 0): compliant = False; violated_metrics.append('availability')
+            if sla_metrics['response_time_p95'] > component_slas.get('response_time_p95_max', float('inf')): compliant = False; violated_metrics.append('response_time_p95')
+            if sla_metrics['error_rate'] > component_slas.get('error_rate_max', float('inf')): compliant = False; violated_metrics.append('error_rate')
+            if sla_metrics['throughput'] < component_slas.get('throughput_min', 0): compliant = False; violated_metrics.append('throughput')
+        elif component == 'reasoning':
+            if sla_metrics['availability'] < component_slas.get('availability_min', 0): compliant = False; violated_metrics.append('availability')
+            if sla_metrics['response_time_p95'] > component_slas.get('response_time_p95_max', float('inf')): compliant = False; violated_metrics.append('response_time_p95')
+            if sla_metrics['error_rate'] > component_slas.get('error_rate_max', float('inf')): compliant = False; violated_metrics.append('error_rate')
+            if sla_metrics['accuracy'] < component_slas.get('accuracy_min', 0): compliant = False; violated_metrics.append('accuracy')
+        elif component == 'communication':
+            if sla_metrics['availability'] < component_slas.get('availability_min', 0): compliant = False; violated_metrics.append('availability')
+            if sla_metrics['latency_p99'] > component_slas.get('latency_p99_max', float('inf')): compliant = False; violated_metrics.append('latency_p99')
+            if sla_metrics['message_loss_rate'] > component_slas.get('message_loss_rate_max', float('inf')): compliant = False; violated_metrics.append('message_loss_rate')
+            if sla_metrics['throughput'] < component_slas.get('throughput_min', 0): compliant = False; violated_metrics.append('throughput')
+
+        return {
+            'check': 'sla_compliance',
+            'status': 'passed' if compliant else 'failed',
+            'message': f"{component} {'meets' if compliant else 'violates'} SLA requirements. {'Violated: ' + ', '.join(violated_metrics) if not compliant else ''}",
+            'sla_metrics': sla_metrics,
+            'sla_thresholds': component_slas,
+            'compliant': compliant
+        }
     
     def _check_resource_utilization(self, component: str, expected_version: str, baseline_metrics: Dict[str, Any]) -> Dict[str, Any]:
         """Check resource utilization efficiency"""
+        log(f"  Checking resource utilization for {component}...")
         # Simulate resource metrics
         resource_metrics = {
             'cpu_usage': random.uniform(0.3, 0.8),
             'memory_usage': random.uniform(0.4, 0.7),
             'disk_io': random.uniform(0.1, 0.4),
-            'network_io': random.
+            'network_bandwidth': random.uniform(50, 200)
+        }
+        
+        # Define acceptable ranges (example values)
+        acceptable_ranges = {
+            'memory': {
+                'cpu_usage': (0.2, 0.7),
+                'memory_usage': (0.3, 0.8),
+                'disk_io': (0.05, 0.5),
+                'network_bandwidth': (20, 250)
+            },
+            'reasoning': {
+                'cpu_usage': (0.3, 0.85),
+                'memory_usage': (0.4, 0.9),
+                'disk_io': (0.1, 0.6),
+                'network_bandwidth': (30, 300)
+            },
+            'communication': {
+                'cpu_usage': (0.1, 0.5),
+                'memory_usage': (0.2, 0.6),
+                'disk_io': (0.02, 0.3),
+                'network_bandwidth': (100, 500)
+            }
+        }
+
+        component_ranges = acceptable_ranges.get(component, {})
+        
+        compliant = True
+        issues = []
+        for metric, value in resource_metrics.items():
+            if metric in component_ranges:
+                min_val, max_val = component_ranges[metric]
+                if not (min_val <= value <= max_val):
+                    compliant = False
+                    issues.append(f"{metric} ({value:.2f} out of range {min_val}-{max_val})")
+        
+        status = 'passed' if compliant else 'failed'
+        message = f"{component} resource utilization is {'optimal' if compliant else 'suboptimal'}. {'Issues: ' + ', '.join(issues) if issues else ''}"
+        
+        return {
+            'check': 'resource_utilization',
+            'status': status,
+            'message': message,
+            'resource_metrics': resource_metrics,
+            'compliant': compliant
+        }
+
+def main():
+    parser = argparse.ArgumentParser(description="Validate performance after component swap.")
+    parser.add_argument('--component', required=True, help='Component to validate (e.g., memory, reasoning, communication)')
+    parser.add_argument('--expected-version', required=True, help='Expected version after swap')
+    parser.add_argument('--baseline-metrics', required=True, help='Path to baseline metrics JSON file')
+    parser.add_argument('--validation-duration', type=int, default=60, help='Duration for performance validation in seconds')
+    
+    args = parser.parse_args()
+    
+    validator = PerformanceValidator()
+    results = validator.validate_performance(
+        args.component,
+        args.expected_version,
+        args.baseline_metrics,
+        args.validation_duration
+    )
+    
+    # Save results to a file for artifact upload
+    output_filename = f"{args.component}_validation_results.json"
+    with open(output_filename, 'w') as f:
+        json.dump(results, f, indent=2)
+    
+    log(f"Validation results saved to {output_filename}")
+    
+    # Set GitHub Actions outputs
+    # Using '::set-output' is deprecated, should use GITHUB_OUTPUT environment file.
+    # For compatibility, this might still work in some runners, but the new way is preferred.
+    # The workflow YAML would need to capture these as outputs if they are defined as such.
+    # For a simple pass/fail, you can just exit with 0 or 1.
+    print(f"validation_passed={results['status'] == 'passed'}")
+    print(f"validation_status={results['status']}")
+    print(f"validation_message={results['message']}")
+    
+    if results['status'] == 'passed':
+        log(f"✅ Validation for {args.component} SUCCEEDED.")
+        sys.exit(0)
+    else:
+        log(f"❌ Validation for {args.component} FAILED. Reason: {results['message']}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
