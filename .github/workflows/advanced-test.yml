@@ -1,4 +1,4 @@
-name: "🧱⚡ Advanced Neuron LEGO Agent Builder v2.0"
+name: "⚡ Advanced Neuron LEGO Agent Builder v2.0"
 
 on:
   workflow_dispatch:
