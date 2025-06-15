@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+
 """
 simulate_metrics.py
 Simulates realistic performance metrics for different agents and environments
