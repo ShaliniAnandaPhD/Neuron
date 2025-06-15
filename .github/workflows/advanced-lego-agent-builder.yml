@@ -373,13 +373,15 @@ jobs:
     
 
     steps:
-    - name: Setup Environment
-      run: |
-        echo "🧱⚡ Building Advanced ${{ inputs.industry }} Neuron Agent"
-        AGENT_NAME="neuron-${{ inputs.industry }}-agent-$(date +%Y%m%d-%H%M%S)"
-        mkdir -p "agents/$AGENT_NAME"
-        echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
-        echo "✅ Created directory: $AGENT_NAME"
+    -    name: Setup Environment
+         run: |
+            echo "🧱⚡ Building Advanced ${{ inputs.industry }} Neuron Agent"
+            AGENT_NAME="neuron-${{ inputs.industry }}-agent-$(date +%Y%m%d-%H%M%S)"
+            mkdir -p "agents/$AGENT_NAME"
+            echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
+            echo "✅ Created directory: $AGENT_NAME"
+            
+       
         
     - name: Create Advanced Agent Core - Part 1
       run: |
