@@ -13,7 +13,7 @@ import random
 import sys
 import os
 from datetime import datetime
-from typing import Dict, Any
+from typing import Dict, Any, Optional # Added Optional here
 
 def log(message):
     """Simple logging function"""
