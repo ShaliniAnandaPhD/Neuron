@@ -366,12 +366,11 @@ jobs:
           contents: read
           actions: read
 
+        jobs:
+          build:
+            runs-on: ubuntu-latest
 
-  jobs:
-    build:
-      runs-on: ubuntu-latest
-
-      steps:
+             steps:
       - name: Setup Environment
         run: |
             echo "🧱⚡ Building Advanced ${{ inputs.industry }} Neuron Agent"
@@ -379,11 +378,8 @@ jobs:
             mkdir -p "agents/$AGENT_NAME"
             echo "AGENT_NAME=$AGENT_NAME" >> $GITHUB_ENV
             echo "✅ Created directory: $AGENT_NAME"
-      
-    
 
-            
-       
+    
         
     - name: Create Advanced Agent Core - Part 1
       run: |
