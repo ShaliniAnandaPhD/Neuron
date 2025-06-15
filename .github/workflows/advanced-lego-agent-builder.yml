@@ -215,6 +215,42 @@ jobs:
             print(f"Test agent_configuration passed. New mode: {config_result['current_behavior_mode']}")
 
             await agent.stop()
+
+        @pytest.mark.asyncio
+        async def test_industry_compliance():
+            agent = AdvancedNeuronAgent()
+            await agent.start()
+            audit_msg = AgentMessage(
+                sender="test",
+                recipient=agent.agent_id,
+                msg_type="reliability_compliance_audit",
+                payload={}
+            )
+            audit_result = await agent.process_message(audit_msg)
+            assert audit_result["status"] == "success"
+            assert "overall_compliance" in audit_result
+            assert "audit_results" in audit_result
+            print(f"Test industry_compliance passed. Overall compliance: {audit_result['overall_compliance']:.2f}")
+            await agent.stop()
+
+        @pytest.mark.asyncio
+        async def test_performance_metrics():
+            agent = AdvancedNeuronAgent()
+            await agent.start()
+            for _ in range(5):
+                msg = AgentMessage("test", agent.agent_id, "status", {})
+                await agent.process_message(msg)
+            
+            status_msg = AgentMessage("test", agent.agent_id, "status", {})
+            status_result = await agent.process_message(status_msg)
+            assert status_result["performance_metrics"]["messages_processed"] >= 5
+            assert status_result["performance_metrics"]["avg_response_time"] > 0
+            print(f"Test performance_metrics passed. Messages processed: {status_result['performance_metrics']['messages_processed']}")
+            await agent.stop()
+
+        if __name__ == "__main__":
+            # This allows running tests directly if pytest is installed
+            sys.exit(pytest.main(["-v", os.path.abspath(__file__)]))
 EOF
 
     - name: Create Deployment Script (deploy.sh)
@@ -241,10 +277,14 @@ EOF
 
         # Install dependencies
         echo "Installing Python dependencies..."
-        pip3 install aiohttp asyncio pytest numpy # Add any other necessary dependencies
+        # Note: You should have a requirements.txt file or list all dependencies here.
+        # For simplicity, explicitly listing common ones needed by the agent:
+        pip3 install aiohttp asyncio pytest numpy pydantic psutil cryptography python-dateutil
 
         echo "Running agent for a brief period as a test deployment..."
         # Execute the agent, potentially in a background process for a real deployment
+        # For a full demonstration, you might want to run this in a Docker container
+        # or as a long-running service.
         python3 main.py &
         AGENT_PID=$!
         echo "Agent started with PID: $AGENT_PID"
