@@ -280,7 +280,6 @@ jobs:
         with:
           name: swap-summary-${{ github.run_id }}
           path: swap_summary.md
-        if-no-files-found: warn
 
       - name: Final Status
         run: |
