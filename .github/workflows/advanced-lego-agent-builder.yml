@@ -320,8 +320,8 @@ jobs:
         
         name: "🧱⚡ Advanced Neuron LEGO Agent Builder"
 
-on:
-  workflow_dispatch:
+        on:
+            workflow_dispatch:
     inputs:
       industry:
         description: "Industry"
@@ -362,14 +362,16 @@ on:
           - "Reliable"
         default: "Balanced"
 
-permissions:
+        permissions:
   contents: read
   actions: read
 
-jobs:
+
+  jobs:
   build:
     runs-on: ubuntu-latest
     
+
     steps:
     - name: Setup Environment
       run: |
