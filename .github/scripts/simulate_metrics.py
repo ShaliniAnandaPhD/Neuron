@@ -12,6 +12,7 @@ import argparse
 import sys
 import os
 from datetime import datetime
+from typing import Dict, Any, Optional # Added Dict here
 
 def log(message):
     """Simple logging function"""
