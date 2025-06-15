@@ -2306,7 +2306,7 @@ jobs:
     chmod +x "agents/$AGENT_NAME/deploy.sh"
 
         - name: Generate Advanced Summary Report
-  run: |
+          run: |
     echo "Generating ADVANCED build summary..."
     
     cat > "agents/$AGENT_NAME/ADVANCED_BUILD_SUMMARY.md" << 'EOF'
