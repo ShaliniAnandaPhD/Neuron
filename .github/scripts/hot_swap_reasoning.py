@@ -10,7 +10,13 @@ import json
 import time
 import random
 import sys
+import os
 from datetime import datetime
+from typing import Dict, Any
+
+def log(message):
+    """Simple logging function"""
+    print(f"[{datetime.now().strftime('%H:%M:%S')}] {message}")
 
 class ReasoningStrategySwapper:
     """Handles hot-swapping of reasoning strategies"""
@@ -21,8 +27,9 @@ class ReasoningStrategySwapper:
             'blue-green': self._blue_green_deployment,
             'rolling': self._rolling_deployment
         }
+        log("Reasoning strategy swapper initialized")
     
-    def perform_strategy_swap(self, strategy_from, strategy_to, deployment_type, traffic_split, canary_duration):
+    def perform_strategy_swap(self, strategy_from: str, strategy_to: str, deployment_type: str, traffic_split: int, canary_duration: int) -> Dict[str, Any]:
         """Perform reasoning strategy hot swap"""
         
         swap_result = {
@@ -38,11 +45,11 @@ class ReasoningStrategySwapper:
         }
         
         try:
-            print(f"🤖 Starting reasoning strategy swap: {strategy_from} → {strategy_to}")
-            print(f"📋 Deployment: {deployment_type}, Traffic: {traffic_split}%, Duration: {canary_duration}s")
+            log(f"Starting reasoning strategy swap: {strategy_from} → {strategy_to}")
+            log(f"Deployment: {deployment_type}, Traffic: {traffic_split}%, Duration: {canary_duration}s")
             
             # Phase 1: Strategy validation
-            print(f"\n🔍 Phase 1: Strategy compatibility validation")
+            log("🔍 Phase 1: Strategy compatibility validation")
             validation = self._validate_strategy_compatibility(strategy_from, strategy_to)
             swap_result['phases'].append(validation)
             
@@ -50,7 +57,7 @@ class ReasoningStrategySwapper:
                 raise Exception(f"Strategy validation failed: {validation['message']}")
             
             # Phase 2: Deploy new strategy
-            print(f"🚀 Phase 2: Deploying reasoning strategy {strategy_to}")
+            log(f"🚀 Phase 2: Deploying reasoning strategy {strategy_to}")
             deployment = self._deploy_reasoning_strategy(strategy_to)
             swap_result['phases'].append(deployment)
             
@@ -58,7 +65,7 @@ class ReasoningStrategySwapper:
                 raise Exception(f"Strategy deployment failed: {deployment['message']}")
             
             # Phase 3: Traffic management (deployment-type specific)
-            print(f"🔄 Phase 3: Managing traffic using {deployment_type} deployment")
+            log(f"🔄 Phase 3: Managing traffic using {deployment_type} deployment")
             traffic_management = self.deployment_strategies[deployment_type](
                 strategy_from, strategy_to, traffic_split, canary_duration
             )
@@ -68,13 +75,13 @@ class ReasoningStrategySwapper:
                 raise Exception(f"Traffic management failed: {traffic_management['message']}")
             
             # Phase 4: Performance validation
-            print(f"✅ Phase 4: Validating new strategy performance")
+            log("✅ Phase 4: Validating new strategy performance")
             performance_validation = self._validate_strategy_performance(strategy_to, canary_duration)
             swap_result['phases'].append(performance_validation)
             
             if performance_validation['status'] == 'success':
                 # Phase 5: Finalize swap
-                print(f"🎯 Phase 5: Finalizing strategy swap")
+                log("🎯 Phase 5: Finalizing strategy swap")
                 finalization = self._finalize_strategy_swap(strategy_from, strategy_to)
                 swap_result['phases'].append(finalization)
                 
@@ -83,7 +90,7 @@ class ReasoningStrategySwapper:
                 
             else:
                 # Rollback on validation failure
-                print(f"🔙 Performance validation failed - rolling back")
+                log("🔙 Performance validation failed - rolling back")
                 rollback = self._rollback_strategy(strategy_from)
                 swap_result['phases'].append(rollback)
                 
@@ -91,7 +98,7 @@ class ReasoningStrategySwapper:
                 swap_result['final_strategy'] = strategy_from
             
         except Exception as e:
-            print(f"❌ Strategy swap failed: {e}")
+            log(f"❌ Strategy swap failed: {e}")
             swap_result['swap_status'] = 'failed'
             swap_result['error'] = str(e)
             
@@ -108,7 +115,7 @@ class ReasoningStrategySwapper:
         
         return swap_result
     
-    def _validate_strategy_compatibility(self, from_strategy, to_strategy):
+    def _validate_strategy_compatibility(self, from_strategy: str, to_strategy: str) -> Dict[str, Any]:
         """Validate compatibility between reasoning strategies"""
         time.sleep(0.5)  # Simulate validation time
         
@@ -155,7 +162,7 @@ class ReasoningStrategySwapper:
                 'blocking_issues': compatibility_issues
             }
     
-    def _deploy_reasoning_strategy(self, strategy):
+    def _deploy_reasoning_strategy(self, strategy: str) -> Dict[str, Any]:
         """Deploy new reasoning strategy"""
         deployment_time = random.uniform(1, 3)  # 1-3 seconds
         time.sleep(deployment_time)
@@ -212,7 +219,7 @@ class ReasoningStrategySwapper:
                 'error_code': random.choice(['CONFIG_ERROR', 'RESOURCE_LIMIT', 'TIMEOUT'])
             }
     
-    def _canary_deployment(self, from_strategy, to_strategy, traffic_split, duration):
+    def _canary_deployment(self, from_strategy: str, to_strategy: str, traffic_split: int, duration: int) -> Dict[str, Any]:
         """Canary deployment for reasoning strategy"""
         time.sleep(min(3, duration / 60))  # Scale down for demo
         
@@ -258,13 +265,13 @@ class ReasoningStrategySwapper:
                 'deployment_type': 'canary',
                 'status': 'failed',
                 'duration_ms': duration * 1000,
-                'message': f'Canary deployment failed due to poor health scores',
+                'message': 'Canary deployment failed due to poor health scores',
                 'canary_health': canary_health,
                 'avg_health_score': avg_health,
                 'failure_reason': 'Health score below threshold'
             }
     
-    def _blue_green_deployment(self, from_strategy, to_strategy, traffic_split, duration):
+    def _blue_green_deployment(self, from_strategy: str, to_strategy: str, traffic_split: int, duration: int) -> Dict[str, Any]:
         """Blue-green deployment for reasoning strategy"""
         time.sleep(1)  # Simulate deployment time
         
@@ -278,7 +285,7 @@ class ReasoningStrategySwapper:
             'switch_type': 'immediate'
         }
     
-    def _rolling_deployment(self, from_strategy, to_strategy, traffic_split, duration):
+    def _rolling_deployment(self, from_strategy: str, to_strategy: str, traffic_split: int, duration: int) -> Dict[str, Any]:
         """Rolling deployment for reasoning strategy"""
         time.sleep(2)  # Simulate rolling update
         
@@ -295,7 +302,7 @@ class ReasoningStrategySwapper:
             'strategy_updated_to': to_strategy
         }
     
-    def _validate_strategy_performance(self, strategy, duration):
+    def _validate_strategy_performance(self, strategy: str, duration: int) -> Dict[str, Any]:
         """Validate performance of new reasoning strategy"""
         validation_time = min(duration / 10, 3)  # Scale down for demo
         time.sleep(validation_time)
@@ -365,7 +372,7 @@ class ReasoningStrategySwapper:
                 'validation_issues': validation_issues
             }
     
-    def _finalize_strategy_swap(self, old_strategy, new_strategy):
+    def _finalize_strategy_swap(self, old_strategy: str, new_strategy: str) -> Dict[str, Any]:
         """Finalize the strategy swap"""
         time.sleep(0.5)  # Simulate finalization
         
@@ -379,7 +386,7 @@ class ReasoningStrategySwapper:
             'configuration_updated': True
         }
     
-    def _rollback_strategy(self, original_strategy):
+    def _rollback_strategy(self, original_strategy: str) -> Dict[str, Any]:
         """Rollback to original strategy"""
         time.sleep(1)  # Simulate rollback
         
@@ -392,7 +399,7 @@ class ReasoningStrategySwapper:
             'traffic_restored': True
         }
     
-    def _get_mitigation_strategies(self, compatibility_issues):
+    def _get_mitigation_strategies(self, compatibility_issues: list) -> list:
         """Get mitigation strategies for compatibility issues"""
         mitigations = {
             'accuracy_degradation_risk': 'Implement accuracy monitoring and fallback mechanisms',
@@ -402,14 +409,14 @@ class ReasoningStrategySwapper:
         
         return [mitigations.get(issue, 'Monitor and adjust gradually') for issue in compatibility_issues]
     
-    def _calculate_duration(self, start_time, end_time):
+    def _calculate_duration(self, start_time: str, end_time: str) -> float:
         """Calculate total duration"""
-        from datetime import datetime
         start = datetime.fromisoformat(start_time)
         end = datetime.fromisoformat(end_time)
         return (end - start).total_seconds()
 
 def main():
+    """Main entry point"""
     parser = argparse.ArgumentParser(description='Perform reasoning strategy hot swap')
     parser.add_argument('--strategy-from', required=True,
                        choices=['analytical', 'fast', 'creative', 'reliable'],
@@ -428,6 +435,10 @@ def main():
     args = parser.parse_args()
     
     try:
+        log(f"Starting reasoning strategy hot swap")
+        log(f"From: {args.strategy_from} → To: {args.strategy_to}")
+        log(f"Deployment: {args.deployment_type}, Traffic: {args.traffic_split}%")
+        
         # Perform the strategy swap
         swapper = ReasoningStrategySwapper()
         result = swapper.perform_strategy_swap(
@@ -443,9 +454,12 @@ def main():
             json.dump(result, f, indent=2)
         
         # Set GitHub Actions outputs
-        print(f"::set-output name=swap_status::{result['swap_status']}")
-        print(f"::set-output name=final_strategy::{result.get('final_strategy', 'unknown')}")
-        print(f"::set-output name=swap_id::{result['swap_id']}")
+        try:
+            print(f"::set-output name=swap_status::{result['swap_status']}")
+            print(f"::set-output name=final_strategy::{result.get('final_strategy', 'unknown')}")
+            print(f"::set-output name=swap_id::{result['swap_id']}")
+        except Exception as e:
+            log(f"Warning: Error setting GitHub outputs: {e}")
         
         # Display results summary
         print(f"\n🤖 Reasoning Strategy Swap Results:")
@@ -467,9 +481,13 @@ def main():
             status_icon = "✅" if phase['status'] == 'success' else "❌"
             print(f"  {i}. {status_icon} {phase['phase'].replace('_', ' ').title()}: {phase.get('message', 'No details')}")
         
+        log("Reasoning strategy swap completed")
+        return 0
+        
     except Exception as e:
+        log(f"Fatal error: {e}")
         print(f"❌ Error during reasoning strategy swap: {e}")
-        sys.exit(1)
+        return 1
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
