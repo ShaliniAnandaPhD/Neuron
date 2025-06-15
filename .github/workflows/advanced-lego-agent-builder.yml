@@ -2072,7 +2072,7 @@ jobs:
     EOF
 
         - name: Create Advanced Test Suite
-  run: |
+          run: |
     cat > "agents/$AGENT_NAME/test_advanced.py" << 'EOF'
     #!/usr/bin/env python3
     """
