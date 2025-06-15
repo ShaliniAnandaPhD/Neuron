@@ -2067,7 +2067,7 @@ jobs:
     MIT License - See LICENSE file for details
     EOF
 
-- name: Create Advanced Test Suite
+        - name: Create Advanced Test Suite
   run: |
     cat > "agents/$AGENT_NAME/test_advanced.py" << 'EOF'
     #!/usr/bin/env python3
@@ -2465,3 +2465,7 @@ jobs:
 
 
    
+
+
+    
+
