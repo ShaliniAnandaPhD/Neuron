@@ -316,7 +316,9 @@ jobs:
                 self.timestamp = datetime.now()
                 self.ttl = 3600  # 1 hour default TTL
                 self.priority = self.metadata.get("priority", "normal")
-        ENDFILEname: "🧱⚡ Advanced Neuron LEGO Agent Builder"
+        ENDFILE
+        
+        name: "🧱⚡ Advanced Neuron LEGO Agent Builder"
 
 on:
   workflow_dispatch:
