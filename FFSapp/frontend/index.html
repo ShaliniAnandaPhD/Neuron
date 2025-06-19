@@ -1,0 +1,1285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Neuron - Live Demo</title>
+    <style>
+        /* Base styles and resets */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        html, body {
+            height: 100%;
+            min-height: 100vh; /* Ensure full viewport height */
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #e2e8f0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            overflow-x: hidden; /* Prevent horizontal scrolling */
+            overflow-y: auto; /* Allow vertical scrolling on the entire page */
+            line-height: 1.6; /* Improved readability */
+            touch-action: manipulation; /* Improves touch responsiveness for some browsers */
+        }
+
+        /* Main Container Layout */
+        .demo-container {
+            display: grid;
+            grid-template-columns: 350px 1fr 320px;
+            grid-template-rows: auto 1fr; /* Header takes auto height, content takes remaining */
+            min-height: 100vh;
+            gap: 1.5rem; /* Increased gap for more breathing room */
+            padding: 1.5rem; /* Increased overall padding */
+        }
+        
+        /* Header Styling */
+        .header {
+            grid-column: 1 / -1;
+            background: rgba(15, 23, 42, 0.9); /* Slightly more opaque for prominence */
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 1.25rem 2.5rem; /* Increased padding */
+            backdrop-filter: blur(20px);
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            align-items: flex-start; /* Align all children to the start */
+            flex-wrap: wrap; 
+            position: relative; 
+            z-index: 100; 
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Added subtle shadow */
+        }
+
+        .header-section { /* General styling for header rows */
+            display: flex;
+            align-items: center;
+            width: 100%; /* Take full width of header */
+            flex-wrap: wrap;
+        }
+
+        .header-top {
+            justify-content: flex-start;
+            margin-bottom: 0.5rem; /* Space between logo and status bar */
+        }
+
+        .header-middle {
+            justify-content: flex-start;
+            margin-bottom: 1rem; /* Space between status bar and buttons */
+        }
+
+        .header-bottom {
+            justify-content: flex-start;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 2rem; /* Slightly larger logo text */
+            font-weight: 800;
+            background: linear-gradient(135deg, #10b981, #3b82f6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .brain-icon {
+            font-size: 2.2rem; /* Slightly larger icon */
+            animation: pulse 2s infinite;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 0.75rem; /* More space between control buttons */
+            flex-wrap: wrap;
+            justify-content: flex-start; /* Align buttons to the left within their row */
+            margin-top: 0; 
+        }
+        
+        .control-btn {
+            padding: 0.6rem 1.2rem; /* Increased button size */
+            background: rgba(59, 130, 246, 0.2);
+            border: 1px solid #3b82f6;
+            color: #3b82f6;
+            border-radius: 10px; /* Slightly more rounded */
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease-in-out; /* Smoother transition */
+            box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1); /* Subtle button shadow */
+        }
+        
+        .control-btn:hover {
+            background: rgba(59, 130, 246, 0.4); /* Darker hover */
+            transform: translateY(-2px); /* More pronounced lift */
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+        }
+        
+        .status-bar {
+            display: flex;
+            gap: 1.5rem; /* Reduced gap to fit more items inline */
+            font-size: 0.95rem; /* Slightly larger font */
+            flex-wrap: wrap; /* Allow wrapping of status items */
+            margin-top: 0; /* No extra margin here, handled by header-middle */
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 0.6rem; /* More space for dot and text */
+        }
+        
+        .status-dot {
+            width: 11px; /* Slightly larger dot */
+            height: 11px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: pulse 2s infinite;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.6); /* Stronger glow */
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(1.1); }
+        }
+        
+        /* Panel Base Styling */
+        .left-panel, .right-panel, .center-panel {
+            background: rgba(30, 41, 59, 0.75); /* Slightly darker, more opaque */
+            border: 1px solid #334155;
+            border-radius: 16px;
+            padding: 2rem; /* Increased panel padding */
+            backdrop-filter: blur(20px);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); /* Consistent panel shadow */
+            position: relative;
+            z-index: 1; 
+        }
+
+        .left-panel, .right-panel {
+            overflow-y: auto;
+        }
+
+        .center-panel {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .panel-title {
+            font-size: 1.4rem; /* Larger title */
+            font-weight: 700;
+            margin-bottom: 1.8rem; /* More space below title */
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem; 
+            border-bottom: 2px solid rgba(59, 130, 246, 0.25); /* Stronger border */
+            padding-bottom: 0.6rem;
+        }
+
+        .panel-subtitle {
+            font-size: 1.15rem; /* Slightly larger subtitle */
+            font-weight: 600;
+            margin-top: 2rem; /* More space above subtitle */
+            margin-bottom: 1rem;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            border-bottom: 1px solid rgba(59, 130, 246, 0.15); /* Stronger border */
+            padding-bottom: 0.5rem;
+        }
+
+        /* Data Stream Overview Specific Styling */
+        #data-stream-overview {
+            margin-bottom: 2rem; /* Add space below this section */
+        }
+        
+        /* New animation for data stream activity */
+        .data-stream-item {
+            font-size: 0.95rem; /* Consistent font size */
+            margin-bottom: 0.5rem;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 0.3rem; /* Small padding for the line effect */
+            border-bottom: 1px dashed rgba(148, 163, 184, 0.1);
+        }
+
+        .data-stream-item:last-child {
+            border-bottom: none;
+        }
+
+        .data-stream-item .status-dot {
+            animation: dataFlowPulse 1.5s infinite ease-in-out; /* Unique pulse for data streams */
+            background: #3b82f6; /* Blue for data flow */
+            box-shadow: 0 0 8px rgba(59, 130, 246, 0.5);
+        }
+        
+        @keyframes dataFlowPulse {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.2); opacity: 1; }
+        }
+
+        /* Chat Area Styling */
+        .chat-area {
+            flex: 1;
+            padding: 1.5rem; /* Inner padding for chat area */
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem; /* More space between messages */
+            overflow-y: auto;
+        }
+        
+        .message {
+            padding: 1.1rem 1.6rem; /* Slightly larger messages */
+            border-radius: 14px; /* More rounded corners */
+            max-width: 85%; /* Slightly wider max width */
+            animation: slideIn 0.3s ease-out;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15); /* Subtle message shadow */
+        }
+        
+        .message.user {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            align-self: flex-end;
+            color: white;
+        }
+        
+        .message.ai {
+            background: rgba(16, 185, 129, 0.12); /* Slightly more visible */
+            border: 1px solid #10b981;
+            align-self: flex-start;
+        }
+        
+        .message-header {
+            font-size: 0.85rem; /* Slightly larger header */
+            opacity: 0.7;
+            margin-bottom: 0.6rem; /* More space below header */
+        }
+        
+        .message-content {
+            font-size: 1.05rem; /* Slightly larger content font */
+            line-height: 1.5;
+        }
+        
+        .thinking-indicator {
+            display: none;
+            align-items: center;
+            gap: 0.6rem; /* More space for dots and text */
+            padding: 1.1rem 1.6rem;
+            background: rgba(16, 185, 129, 0.07); /* Slightly more visible */
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 14px;
+            align-self: flex-start;
+            max-width: 80%;
+        }
+        
+        .typing-dots {
+            display: flex;
+            gap: 5px; /* More space between dots */
+        }
+        
+        .typing-dot {
+            width: 7px; /* Slightly larger dots */
+            height: 7px;
+            border-radius: 50%;
+            background: #10b981;
+            animation: typing 1.4s infinite;
+        }
+        
+        .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+        
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+            30% { transform: translateY(-8px); opacity: 1; }
+        }
+        
+        .chat-input {
+            padding: 1.5rem;
+            border-top: 1px solid #334155;
+            flex-shrink: 0; 
+            position: relative; 
+            z-index: 10; 
+        }
+        
+        .input-container {
+            display: flex;
+            gap: 0.75rem; /* More space in input container */
+            align-items: flex-end;
+        }
+        
+        .chat-textarea {
+            flex: 1;
+            background: rgba(71, 85, 105, 0.4); /* Slightly more opaque */
+            border: 1px solid #475569;
+            border-radius: 14px; /* More rounded */
+            padding: 0.9rem 1.2rem; /* Increased padding */
+            color: #e2e8f0;
+            resize: none;
+            min-height: 48px; /* Slightly taller */
+            max-height: 150px; /* Allow more vertical growth */
+            font-family: inherit;
+            font-size: 1rem;
+        }
+        
+        .chat-textarea:focus {
+            outline: none;
+            border-color: #10b981;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15); /* Stronger focus ring */
+        }
+        
+        .send-btn {
+            padding: 0.9rem 1.8rem; /* Larger send button */
+            background: linear-gradient(135deg, #10b981, #059669);
+            border: none;
+            border-radius: 14px; /* More rounded */
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+        }
+        
+        .send-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.4);
+        }
+        
+        .quick-actions {
+            display: flex;
+            gap: 0.6rem; /* More space between quick actions */
+            margin-bottom: 1.2rem; /* More space below quick actions */
+            flex-wrap: wrap;
+        }
+        
+        .quick-action {
+            padding: 0.5rem 1rem; /* Slightly larger quick actions */
+            background: rgba(71, 85, 105, 0.4); /* Slightly more opaque */
+            border: 1px solid #475569;
+            border-radius: 25px; /* More pill-shaped */
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .quick-action:hover {
+            background: rgba(16, 185, 129, 0.25); /* Darker hover */
+            border-color: #10b981;
+            color: #10b981;
+            transform: translateY(-1px);
+        }
+        
+        /* Alert Card Styling */
+        .alert-card {
+            background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+            border-radius: 12px;
+            padding: 1.8rem; /* More padding */
+            margin-bottom: 1.5rem; /* More margin */
+            border-left: 5px solid #fca5a5; /* Thicker border */
+            animation: alertSlide 0.5s ease-out;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .alert-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 3px; /* Thicker shimmer */
+            background: linear-gradient(90deg, transparent, #fca5a5, transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        @keyframes alertSlide {
+            from {
+                opacity: 0;
+                transform: translateX(-30px); /* More pronounced slide */
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .alert-header {
+            font-weight: 700;
+            font-size: 1.3rem; /* Larger header */
+            margin-bottom: 0.9rem; /* More space below header */
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+        }
+        
+        .alert-body {
+            font-size: 1.05rem; /* Slightly larger body font */
+            opacity: 0.95;
+            margin-bottom: 1.8rem; /* More space below body */
+            line-height: 1.6;
+        }
+        
+        .alert-actions {
+            display: flex;
+            gap: 0.9rem; /* More space between buttons */
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 0.7rem 1.4rem; /* Larger buttons */
+            border: none;
+            border-radius: 10px; /* More rounded */
+            font-size: 0.95rem; /* Slightly larger font */
+            cursor: pointer;
+            transition: all 0.2s ease-in-out;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(71, 85, 105, 0.9); /* Darker secondary */
+            color: #e2e8f0;
+            border: 1px solid #475569;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(71, 85, 105, 1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Leverage Card Styling */
+        .leverage-card {
+            background: rgba(16, 185, 129, 0.1); /* Slightly more visible */
+            border: 1px solid rgba(16, 185, 129, 0.35); /* Stronger border */
+            border-radius: 12px;
+            padding: 1.8rem; /* More padding */
+            margin-bottom: 1.5rem; /* More margin */
+            transition: all 0.3s ease-in-out;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+        }
+        
+        .leverage-card:hover {
+            transform: translateY(-4px); /* More pronounced lift */
+            box-shadow: 0 12px 35px rgba(16, 185, 129, 0.25);
+            border-color: #10b981;
+        }
+        
+        .player-name {
+            font-weight: 700;
+            font-size: 1.3rem; /* Larger player name */
+            color: #10b981;
+            margin-bottom: 1.2rem; /* More space */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .confidence-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 0.4rem 1rem; /* Larger badge */
+            border-radius: 25px; /* More pill-shaped */
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .player-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem; /* More space between stats */
+            font-size: 0.95rem; /* Slightly larger font */
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0; /* More padding */
+            border-bottom: 1px solid rgba(16, 185, 129, 0.15); /* Stronger border */
+        }
+        
+        .stat-value {
+            font-weight: 700;
+            color: #f1f5f9;
+        }
+        
+        /* Portfolio Overview Styling */
+        .portfolio-overview {
+            background: rgba(71, 85, 105, 0.3); /* Slightly more opaque */
+            border-radius: 12px;
+            padding: 2rem; /* More padding */
+            margin-bottom: 1.5rem; /* More margin */
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2); /* Inner shadow */
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem; /* More space */
+            margin-bottom: 2rem; /* More space */
+        }
+        
+        .portfolio-stat {
+            text-align: center;
+        }
+        
+        .portfolio-stat-label {
+            color: #94a3b8;
+            font-size: 0.9rem; /* Slightly larger */
+            margin-bottom: 0.6rem; /* More space */
+        }
+        
+        .portfolio-stat-value {
+            font-size: 2.2rem; /* Larger value */
+            font-weight: 800;
+            color: #f1f5f9;
+            transition: transform 0.2s ease-out, color 0.2s ease-out; 
+        }
+        
+        /* Highlight animation for stats */
+        .stat-highlight {
+            animation: statPulse 0.5s ease-out;
+            color: #10b981 !important; 
+        }
+
+        @keyframes statPulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .backend-status-card {
+            background: rgba(71, 85, 105, 0.3); /* Slightly more opaque */
+            border-radius: 12px;
+            padding: 2rem; /* More padding */
+            margin-top: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid #475569;
+            box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.2); /* Inner shadow */
+        }
+
+        /* Agent Status Monitor Specific Styling */
+        .agent-metrics-grid-layout { /* Defines grid columns for both header and rows */
+            display: grid;
+            /* Explicitly set column widths for the 7 columns to ensure proper alignment */
+            grid-template-columns: 1.5fr 0.8fr 0.6fr 0.6fr 1fr 0.6fr 1.2fr; /* Agent, State, Tasks, Errors, Avg Time, Perf, Last Activity */
+            gap: 0.5rem; /* Gap between columns */
+        }
+
+        .agent-metrics-header {
+            font-weight: 700;
+            color: #e2e8f0;
+            border-bottom: 2px solid rgba(59, 130, 246, 0.25);
+            padding-bottom: 0.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .agent-metrics-row {
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px dashed rgba(148, 163, 184, 0.25);
+            color: #94a3b8;
+            font-weight: 600;
+        }
+
+        .agent-metrics-row:last-child {
+            border-bottom: none;
+        }
+
+        .agent-metrics-grid-layout .grid-item {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .agent-metrics-grid-layout .grid-item.align-right {
+            justify-content: flex-end;
+        }
+        
+        .agent-metrics-grid-layout .grid-item.status-dot-container {
+            justify-content: center;
+        }
+
+        .agent-status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background-color: #ef4444;
+            margin-right: 0.3rem;
+            flex-shrink: 0;
+        }
+
+        .agent-status-dot.active {
+            background-color: #10b981;
+            animation: servicePulse 1.8s infinite ease-in-out;
+            box-shadow: 0 0 8px rgba(16, 185, 129, 0.5);
+        }
+
+        @keyframes servicePulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
+        }
+
+        .system-health {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px dashed rgba(148, 163, 184, 0.25);
+            font-size: 0.9rem;
+            color: #e2e8f0;
+        }
+
+        .system-health-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+        }
+
+        .edge-display {
+            background: linear-gradient(135deg, #10b981, #059669);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            color: white;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .demo-trigger {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: rgba(16, 185, 129, 0.9);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            z-index: 1000;
+            transition: all 0.2s;
+        }
+        
+        .demo-trigger:hover {
+            background: #10b981;
+            transform: scale(1.05);
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .highlight-box {
+            background: linear-gradient(135deg, #7c3aed, #6366f1);
+            border-radius: 12px;
+            padding: 1.8rem;
+            margin: 1.5rem 0;
+            color: white;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+        
+        .value-highlight {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0.6rem 0;
+        }
+        
+        .scrollbar-hide {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        @media (max-width: 1200px) {
+            .demo-container {
+                grid-template-columns: 1fr 1fr; 
+                grid-template-rows: auto auto 1fr; 
+                padding: 1rem;
+                gap: 1rem;
+            }
+            .header {
+                padding: 1rem 1.5rem;
+                flex-direction: column; 
+                align-items: flex-start;
+                gap: 0.75rem;
+            }
+            .header-top, .header-middle, .header-bottom {
+                width: 100%;
+                justify-content: flex-start;
+            }
+            .status-bar {
+                margin-top: 0;
+                gap: 1rem;
+            }
+            .demo-controls {
+                margin-top: 0.75rem;
+                justify-content: center;
+            }
+            .left-panel, .center-panel, .right-panel {
+                padding: 1.5rem;
+            }
+            .left-panel {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+            }
+            .center-panel {
+                grid-column: 2 / 3;
+                grid-row: 2 / 3;
+            }
+            .right-panel {
+                grid-column: 1 / -1; 
+                grid-row: 3 / 4;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .demo-container {
+                grid-template-columns: 1fr; 
+                grid-template-rows: auto auto auto auto; 
+                padding: 0.5rem;
+                gap: 0.5rem;
+            }
+            .header {
+                padding: 0.75rem 1rem;
+                gap: 0.5rem;
+            }
+            .logo {
+                font-size: 1.5rem;
+            }
+            .brain-icon {
+                font-size: 1.7rem;
+            }
+            .status-bar {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            .demo-controls {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .left-panel, .center-panel, .right-panel {
+                grid-column: 1 / -1; 
+                padding: 1rem;
+            }
+            .panel-title {
+                font-size: 1.1rem;
+                margin-bottom: 1rem;
+            }
+            .message {
+                max-width: 95%;
+                padding: 0.8rem 1rem;
+            }
+            .chat-input {
+                padding: 1rem;
+            }
+            .quick-actions {
+                justify-content: center;
+            }
+            .input-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .send-btn {
+                width: 100%;
+                margin-top: 0.5rem;
+            }
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+            }
+            .backend-status-card {
+                padding: 1.5rem;
+            }
+            .agent-metrics-grid-layout {
+                grid-template-columns: minmax(60px, 1.2fr) minmax(35px, 0.7fr) minmax(30px, 0.5fr) minmax(30px, 0.5fr) minmax(40px, 0.8fr) minmax(30px, 0.5fr) minmax(60px, 1fr);
+                font-size: 0.65rem;
+                gap: 0.1rem;
+            }
+            .agent-metrics-grid-layout .grid-item {
+                white-space: normal;
+                overflow: visible;
+                text-overflow: clip;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-container">
+        <div class="header">
+            <div class="header-section header-top">
+                <div class="logo">
+                    <span class="brain-icon">🧠</span>
+                    Fantasy Football Neuron
+                </div>
+            </div>
+            <div class="header-section header-middle">
+                <div class="status-bar">
+                    <div class="status-item">
+                        <div class="status-dot"></div>
+                        <span>Live Analysis Active</span>
+                    </div>
+                    <div class="status-item">
+                        <span>Portfolio Edge: <strong style="color: #10b981;" id="portfolio-edge">+15.7%</strong></span>
+                    </div>
+                    <div class="status-item">
+                        <span>ROI: <strong style="color: #10b981;" id="portfolio-roi">+$2,847</strong></span>
+                    </div>
+                    <div class="status-item">
+                        <span>Active Agents: <strong id="active-agents">4</strong></span> <!-- Hardcoded to 4 for clarity -->
+                    </div>
+                    <div class="status-item">
+                        <span>Data Throughput: <strong id="data-throughput">12.5 MB/s</strong></span>
+                    </div>
+                </div>
+            </div>
+            <div class="header-section header-bottom">
+                <div class="demo-controls">
+                    <button class="control-btn" onclick="triggerBreakingNews()">🚨 Breaking News</button>
+                    <button class="control-btn" onclick="showWeatherAlert()">🌪️ Weather Alert</button>
+                    <button class="control-btn" onclick="addLeveragePlay()">📈 New Leverage</button>
+                    <button class="control-btn" onclick="explainHowToPlayBetter()">💡 How to Play Better</button>
+                    <button class="control-btn" onclick="resetDemo()">🔄 Reset</button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="left-panel scrollbar-hide">
+            <div class="panel-title">
+                🚨 Live Intelligence Feed
+            </div>
+            
+            <div id="alerts-container">
+                <!-- Alerts will be added here dynamically -->
+            </div>
+
+            <div class="panel-subtitle">
+                📡 Data Stream Overview
+            </div>
+            <div id="data-stream-overview">
+                <div class="data-stream-item"><span class="status-dot active"></span> Injury Feeds: <span style="color: #10b981;">Online</span></div>
+                <div class="data-stream-item"><span class="status-dot active"></span> Weather APIs: <span style="color: #10b981;">Online</span></div>
+                <div class="data-stream-item"><span class="status-dot active"></span> Player Stats: <span style="color: #10b981;">Online</span></div>
+                <div class="data-stream-item"><span class="status-dot active"></span> Betting Markets: <span style="color: #10b981;">Online</span></div>
+                <div class="data-stream-item"><span class="status-dot active"></span> News Aggregators: <span style="color: #10b981;">Online</span></div>
+            </div>
+
+            <div class="panel-subtitle">
+                📊 Portfolio Overview
+            </div>
+            <div class="portfolio-overview">
+                <div class="portfolio-grid">
+                    <div class="portfolio-stat">
+                        <div class="portfolio-stat-label">Total Value</div>
+                        <div class="portfolio-stat-value" id="total-value">$18,000</div>
+                    </div>
+                    <div class="portfolio-stat">
+                        <div class="portfolio-stat-label">Expected Points</div>
+                        <div class="portfolio-stat-value" id="expected-points">125.5</div>
+                    </div>
+                    <div class="portfolio-stat">
+                        <div class="portfolio-stat-label">Projected Rank</div>
+                        <div class="portfolio-stat-value" id="projected-rank">Top 10%</div>
+                    </div>
+                    <div class="portfolio-stat">
+                        <div class="portfolio-stat-label">Live Adjustments</div>
+                        <div class="portfolio-stat-value" id="live-adjustments">+3</div>
+                    </div>
+                </div>
+                <div class="highlight-box">
+                    <span>Overall Portfolio Edge:</span>
+                    <div class="value-highlight" id="overall-edge">+15.7%</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="center-panel">
+            <div class="panel-title">
+                💬 AI Assistant Chat
+            </div>
+            <div class="chat-area scrollbar-hide" id="chat-area">
+                <div class="message ai">
+                    <div class="message-header">Fantasy Neuron</div>
+                    <div class="message-content">Hello! Ask me about player stats, injury updates, or optimal lineups.</div>
+                </div>
+                <div class="thinking-indicator" id="thinking-indicator">
+                    <div class="typing-dots">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                    AI is thinking...
+                </div>
+            </div>
+            <div class="chat-input">
+                <div class="quick-actions">
+                    <button class="quick-action" onclick="sendQuickAction('Who should I start at WR this week?')">Who should I start at WR this week?</button>
+                    <button class="quick-action" onclick="sendQuickAction('Give me the latest injury report.')">Give me the latest injury report.</button>
+                    <button class="quick-action" onclick="sendQuickAction('Analyze my current lineup.')">Analyze my current lineup.</button>
+                </div>
+                <div class="input-container">
+                    <textarea id="chat-textarea" class="chat-textarea" placeholder="Ask Fantasy Neuron a question..." rows="1"></textarea>
+                    <button class="send-btn" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-panel scrollbar-hide">
+            <div class="panel-title">
+                🚀 Live Leverage Plays
+            </div>
+            <div id="leverage-plays-container">
+                <!-- Leverage plays will be added here dynamically -->
+                <div class="leverage-card">
+                    <div class="player-name">
+                        Tyreek Hill <span class="confidence-badge">High Confidence</span>
+                    </div>
+                    <div class="player-stats">
+                        <div class="stat-item"><span>Current Ownership:</span> <span class="stat-value">8%</span></div>
+                        <div class="stat-item"><span>Projected Points:</span> <span class="stat-value">22.5</span></div>
+                        <div class="stat-item"><span>Leverage Score:</span> <span class="stat-value">92</span></div>
+                        <div class="stat-item"><span>Matchup Grade:</span> <span class="stat-value">A+</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel-subtitle">
+                🛠️ Agent Status Monitor
+            </div>
+            <div class="backend-status-card">
+                <div class="agent-metrics-grid-layout agent-metrics-header">
+                    <div class="grid-item">Agent</div>
+                    <div class="grid-item">State</div>
+                    <div class="grid-item">Tasks</div>
+                    <div class="grid-item">Errors</div>
+                    <div class="grid-item">Avg Time (ms)</div>
+                    <div class="grid-item">Perf</div>
+                    <div class="grid-item">Last Activity</div>
+                </div>
+                <div id="agent-status-rows">
+                    <div class="agent-metrics-grid-layout agent-metrics-row">
+                        <div class="grid-item">DataAgent</div>
+                        <div class="grid-item status-dot-container"><div class="agent-status-dot active"></div> Active</div>
+                        <div class="grid-item align-right">1245</div>
+                        <div class="grid-item align-right">0</div>
+                        <div class="grid-item align-right">250</div>
+                        <div class="grid-item">Excellent</div>
+                        <div class="grid-item">Just now</div>
+                    </div>
+                    <div class="agent-metrics-grid-layout agent-metrics-row">
+                        <div class="grid-item">LiveAnalysis</div>
+                        <div class="grid-item status-dot-container"><div class="agent-status-dot active"></div> Active</div>
+                        <div class="grid-item align-right">890</div>
+                        <div class="grid-item align-right">1</div>
+                        <div class="grid-item align-right">380</div>
+                        <div class="grid-item">Good</div>
+                        <div class="grid-item">5s ago</div>
+                    </div>
+                    <div class="agent-metrics-grid-layout agent-metrics-row">
+                        <div class="grid-item">PivotAgent</div>
+                        <div class="grid-item status-dot-container"><div class="agent-status-dot active"></div> Active</div>
+                        <div class="grid-item align-right">32</div>
+                        <div class="grid-item align-right">0</div>
+                        <div class="grid-item align-right">150</div>
+                        <div class="grid-item">Excellent</div>
+                        <div class="grid-item">10s ago</div>
+                    </div>
+                    <div class="agent-metrics-grid-layout agent-metrics-row">
+                        <div class="grid-item">LeverageAgent</div>
+                        <div class="grid-item status-dot-container"><div class="agent-status-dot active"></div> Active</div>
+                        <div class="grid-item align-right">210</div>
+                        <div class="grid-item align-right">0</div>
+                        <div class="grid-item align-right">410</div>
+                        <div class="grid-item">Good</div>
+                        <div class="grid-item">15s ago</div>
+                    </div>
+                </div>
+                <div class="system-health">
+                    <div class="system-health-item"><span>CPU Utilization:</span> <span>35%</span></div>
+                    <div class="system-health-item"><span>Memory Usage:</span> <span>6.2 GB</span></div>
+                    <div class="system-health-item"><span>Network Latency:</span> <span>28 ms</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden audio element for narration -->
+    <audio id="gemini-narrator" preload="auto"></audio>
+
+    <script>
+        // Get the audio element
+        const narratorAudio = document.getElementById('gemini-narrator');
+
+        /**
+         * Sends text to the backend for narration and plays the received audio.
+         * You MUST have a backend server running that handles the '/api/narrate' endpoint
+         * and calls a Text-to-Speech API (like Gemini's) to generate the audio.
+         * The backend should return the audio as a blob or a direct stream.
+         * @param {string} textToNarrate - The text content to be narrated.
+         */
+        async function narrateText(textToNarrate) {
+            try {
+                // IMPORTANT: This URL points to your Flask backend server
+                const response = await fetch('http://127.0.0.1:5000/api/narrate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ text: textToNarrate })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Assuming your backend returns the audio as a blob
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                // Set the audio source and play
+                narratorAudio.src = audioUrl;
+                narratorAudio.play().catch(e => console.error("Error playing audio:", e));
+
+                // Clean up the URL object after the audio has finished playing
+                // This prevents memory leaks for dynamically created audio URLs
+                narratorAudio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                };
+
+            } catch (error) {
+                console.error("Failed to narrate text:", error);
+                // Optionally provide a visual cue to the user that narration failed
+            }
+        }
+
+        // --- Existing and Modified JavaScript Functions ---
+
+        /**
+         * Adds an AI message to the chat area and triggers narration.
+         * @param {string} header - The header for the AI message (e.g., "Fantasy Neuron").
+         * @param {string} content - The main content of the AI message.
+         */
+        function addAIMessage(header, content) {
+            const chatArea = document.getElementById('chat-area');
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'message ai';
+            aiMessage.innerHTML = `
+                <div class="message-header">${header}</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatArea.appendChild(aiMessage);
+            chatArea.scrollTop = chatArea.scrollHeight;
+            
+            // Narrate the AI message content
+            narrateText(content);
+        }
+
+        /**
+         * Adds a user message to the chat area.
+         * @param {string} content - The content of the user message.
+         */
+        function addUserMessage(content) {
+            const chatArea = document.getElementById('chat-area');
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user';
+            userMessage.innerHTML = `
+                <div class="message-header">You</div>
+                <div class="message-content">${content}</div>
+            `;
+            chatArea.appendChild(userMessage);
+            chatArea.scrollTop = chatArea.scrollHeight;
+        }
+
+        /**
+         * Shows the "AI is thinking..." indicator.
+         */
+        function showThinkingIndicator() {
+            document.getElementById('thinking-indicator').style.display = 'flex';
+        }
+
+        /**
+         * Hides the "AI is thinking..." indicator.
+         */
+        function hideThinkingIndicator() {
+            document.getElementById('thinking-indicator').style.display = 'none';
+        }
+
+        /**
+         * Handles sending a message from the chat input.
+         * Simulates an AI response and triggers narration for it.
+         */
+        async function sendMessage() {
+            const textarea = document.getElementById('chat-textarea');
+            const message = textarea.value.trim();
+            if (message) {
+                addUserMessage(message);
+                textarea.value = '';
+                showThinkingIndicator();
+
+                // Simulate AI response after a delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                hideThinkingIndicator();
+                
+                // Example AI response. In a real app, this would come from a backend call
+                // to a Gemini text generation model based on the user's message.
+                const aiResponse = `Understood. For your starting WR this week, consider Ja'Marr Chase. His target share has increased, and he has a favorable matchup against the Bengals secondary. He is projected for 22.5 points.`;
+                addAIMessage('Fantasy Neuron', aiResponse);
+            }
+        }
+
+        /**
+         * Sends a predefined quick action message to the chat.
+         * @param {string} actionText - The text of the quick action.
+         */
+        function sendQuickAction(actionText) {
+            document.getElementById('chat-textarea').value = actionText;
+            sendMessage();
+        }
+
+        // Auto-resize textarea based on content
+        document.getElementById('chat-textarea').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+
+        // --- Alert Functions (Modified for Narration) ---
+
+        /**
+         * Adds an alert card to the intelligence feed and triggers narration for its content.
+         * @param {string} type - The type of alert (e.g., 'news', 'weather').
+         * @param {string} header - The header/title of the alert.
+         * @param {string} body - The main body content of the alert.
+         * @param {Array<Object>} actions - An array of action buttons for the alert.
+         */
+        function addAlert(type, header, body, actions = []) {
+            const alertsContainer = document.getElementById('alerts-container');
+            const alertCard = document.createElement('div');
+            alertCard.className = `alert-card alert-${type}`; // You might have different styles for types
+            let actionButtonsHtml = actions.map(action => 
+                `<button class="btn ${action.type === 'primary' ? 'btn-primary' : 'btn-secondary'}" 
+                         onclick="${action.onclick}">${action.text}</button>`
+            ).join('');
+
+            alertCard.innerHTML = `
+                <div class="alert-header">
+                    ${type === 'news' ? '📰 Breaking News' : type === 'weather' ? '🌪️ Weather Alert' : '🔔 Alert'}
+                </div>
+                <div class="alert-body">${body}</div>
+                <div class="alert-actions">${actionButtonsHtml}</div>
+            `;
+            alertsContainer.prepend(alertCard); // Add to top
+
+            // Narrate the alert body for the user
+            narrateText(`${header}. ${body}`); 
+        }
+
+        /**
+         * Triggers a breaking news alert and its narration.
+         */
+        function triggerBreakingNews() {
+            const newsHeadline = "Travis Kelce suffers minor ankle sprain during practice, status questionable for Sunday.";
+            const newsBody = "Sources close to the team report Travis Kelce experienced a minor ankle sprain today. While initially painful, early assessments suggest it's not severe. His status for Sunday's game is now questionable, pending further evaluation.";
+            
+            addAlert('news', newsHeadline, newsBody, [
+                { text: 'View Player Profile', type: 'secondary', onclick: 'console.log("View Kelce Profile")' },
+                { text: 'Suggest Pivot', type: 'primary', onclick: 'sendQuickAction("Suggest a pivot for Travis Kelce")' }
+            ]);
+        }
+
+        /**
+         * Triggers a weather alert and its narration.
+         */
+        function showWeatherAlert() {
+            const weatherHeadline = "High winds and rain expected for Chiefs-Chargers game.";
+            const weatherBody = "Forecasts indicate significant high winds and heavy rain for Sunday's Chiefs vs. Chargers game. This weather could severely impact passing games and favor run-heavy offenses and strong defensive lines.";
+            
+            addAlert('weather', weatherHeadline, weatherBody, [
+                { text: 'Analyze Impact', type: 'primary', onclick: 'sendQuickAction("Analyze weather impact on Chiefs-Chargers game")' }
+            ]);
+        }
+
+        // --- New Function for "How to Play Better" (with Narration) ---
+        /**
+         * Triggers an explanation on how to play better and narrates it.
+         */
+        function explainHowToPlayBetter() {
+            const explanationText = `To enhance your fantasy football strategy, focus on three key areas: First, consistently monitor injury reports and snap counts to identify emerging opportunities. Second, leverage betting market insights to understand public perception and find undervalued players. Third, utilize the system's real-time analysis to make rapid, data-driven decisions during live games, turning chaos into a competitive edge. Remember, calculated risk often leads to significant gains.`;
+            
+            // Display a short message in the chat that the explanation is coming
+            addAIMessage('Fantasy Neuron', "Here's how you can play better:"); 
+            // Narrate the detailed explanation
+            narrateText(explanationText); 
+        }
+
+        // --- Other existing functions ---
+
+        /**
+         * Adds a new leverage play card to the right panel.
+         */
+        function addLeveragePlay() {
+            const leveragePlaysContainer = document.getElementById('leverage-plays-container');
+            const newPlayers = [ // Changed variable name to newPlayers to avoid confusion
+                { name: "Cooper Kupp", currentOwnership: "12%", projectedPoints: "20.1", leverageScore: "88", matchupGrade: "B+" },
+                { name: "Breece Hall", currentOwnership: "9%", projectedPoints: "18.7", leverageScore: "95", matchupGrade: "A-" },
+                { name: "Amon-Ra St. Brown", currentOwnership: "7%", projectedPoints: "21.3", leverageScore: "90", matchupGrade: "A" }
+            ];
+            const randomPlayer = newPlayers[Math.floor(Math.random() * newPlayers.length)];
+
+            const leverageCard = document.createElement('div');
+            leverageCard.className = 'leverage-card';
+            leverageCard.innerHTML = `
+                <div class="player-name">
+                    ${randomPlayer.name} <span class="confidence-badge">High Confidence</span>
+                </div>
+                <div class="player-stats">
+                    <div class="stat-item"><span>Current Ownership:</span> <span class="stat-value">${randomPlayer.currentOwnership}</span></div>
+                    <div class="stat-item"><span>Projected Points:</span> <span class="stat-value">${randomPlayer.projectedPoints}</span></div>
+                    <div class="stat-item"><span>Leverage Score:</span> <span class="stat-value">${randomPlayer.leverageScore}</span></div>
+                    <div class="stat-item"><span>Matchup Grade:</span> <span class="stat-value">${randomPlayer.matchupGrade}</span></div>
+                </div>
+            `;
+            leveragePlaysContainer.prepend(leverageCard); // Add to top
+
+            // You could also narrate the new leverage play details if desired
+            // narrateText(`New leverage play identified: ${randomPlayer.name} with ${randomPlayer.currentOwnership} ownership and ${randomPlayer.projectedPoints} projected points. Leverage score ${randomPlayer.leverageScore}.`);
+        }
+
+        /**
+         * Resets the demo by reloading the page.
+         */
+        function resetDemo() {
+            location.reload();
+        }
+
+    </script>
+</body>
+</html>
