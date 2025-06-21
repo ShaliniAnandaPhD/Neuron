@@ -1,0 +1,37 @@
+{
+  "agent_config": {
+    "industry": "Healthcare",
+    "use_case": "Patient Data Management",
+    "complexity": "Enterprise (9 blocks)",
+    "behavior_profile": "Innovator",
+    "version": "2.0"
+  },
+  "memory_config": {
+    "episodic_limit": 1000,
+    "consolidation_threshold": 500,
+    "scoring_weights": {
+      "confidence": 0.3,
+      "recency": 0.3,
+      "frequency": 0.2,
+      "context": 0.2
+    }
+  },
+  "reasoning_config": {
+    "confidence_threshold": 0.6,
+    "strategy_weights": {
+      "creative": 0.2,
+      "analytical": 0.3,
+      "systematic": 0.3,
+      "collaborative": 0.2
+    }
+  },
+  "reliability_config": {
+    "health_check_interval": 30,
+    "compliance_standards": "HIPAA, FDA",
+    "alert_thresholds": {
+      "critical": 0.3,
+      "warning": 0.6,
+      "info": 0.8
+    }
+  }
+}
