@@ -43,19 +43,21 @@ jobs:
         id: build
         run: |
           TIMESTAMP=$(date +%Y%m%d-%H%M%S)
-          OUTPUT_DIR="models/neuron_agent_${TIMESTAMP}"
-          echo "output_dir=${OUTPUT_DIR}" >> $GITHUB_OUTPUT
+          AGENT_NAME="neuron_agent_${TIMESTAMP}"
+          OUTPUT_PATH="models/${AGENT_NAME}"
+          echo "artifact_name=${AGENT_NAME}" >> $GITHUB_OUTPUT
+          echo "output_path=${OUTPUT_PATH}" >> $GITHUB_OUTPUT
           
-          # The --output_dir now uses a relative path, which is safer.
           python scripts/build_and_tune.py \
             --config ${{ github.event.inputs.agent_config }} \
             --data_dir data/healthcare/ \
-            --output_dir ${OUTPUT_DIR}
+            --output_dir ${OUTPUT_PATH}
 
       - name: '📤 Upload Agent System Artifact'
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.build.outputs.output_dir }}
-          path: ${{ steps.build.outputs.output_dir }}
+          name: ${{ steps.build.outputs.artifact_name }} # Use the clean name for the artifact
+          path: ${{ steps.build.outputs.output_path }}   # Use the full path to find the files
           if-no-files-found: error
+
 
