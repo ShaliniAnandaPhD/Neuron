@@ -1,6 +1,7 @@
 # scripts/agent/main_agent.py
 
 import os
+import sys
 import yaml
 import importlib
 import torch
@@ -10,10 +11,19 @@ from torch.optim import AdamW
 from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_scheduler
 from tqdm.auto import tqdm
 
+# --- Path Correction ---
+# Add the project root to the Python path to allow sibling imports (e.g., from 'tools')
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+if project_root not in sys.path:
+    sys.path.insert(0, project_root)
+# ---------------------
+
 # --- Helper function to dynamically import classes ---
 def _import_class(module_path, class_name):
     """Imports a class dynamically from a given module path."""
-    module = importlib.import_module(module_path)
+    # We now use 'scripts.' prefix as we've added the root to the path
+    full_module_path = f"scripts.{module_path}"
+    module = importlib.import_module(full_module_path)
     return getattr(module, class_name)
 
 # --- Dataset Class for training ---
@@ -61,20 +71,17 @@ class NeuronAgent:
         """Fine-tunes the agent's core model."""
         print("\n🚀 Starting fine-tuning loop...")
         
-        # Prepare data loader
         train_params = self.config['training_params']
         train_path = os.path.join(data_dir, 'train.csv')
         train_df = pd.read_csv(train_path)
         train_dataset = NeuronDataset(train_df['text'].tolist(), train_df['label'].tolist(), self.tokenizer)
         train_dataloader = DataLoader(train_dataset, batch_size=train_params['batch_size'], shuffle=True)
         
-        # Optimizer and scheduler
         optimizer = AdamW(self.model.parameters(), lr=train_params['learning_rate'])
         num_epochs = train_params['num_epochs']
         num_training_steps = len(train_dataloader) * num_epochs
         lr_scheduler = get_scheduler("linear", optimizer, 0, num_training_steps)
         
-        # Training loop
         progress_bar = tqdm(range(num_training_steps))
         self.model.train()
         for epoch in range(num_epochs):
@@ -101,11 +108,7 @@ class NeuronAgent:
         print("✅ Agent system saved successfully.")
 
     def process_request(self, text: str):
-        """
-        A high-level method to process input.
-        This is a placeholder for more complex orchestration logic.
-        """
-        # For now, just use the base model to classify
+        """A high-level method to process input."""
         self.model.eval()
         with torch.no_grad():
             inputs = self.tokenizer(text, return_tensors="pt").to(self.device)
@@ -114,4 +117,5 @@ class NeuronAgent:
         
         self.memory.store_interaction(text, f"Classified as {prediction}")
         return f"Input text classified as label: {prediction}"
+
 
