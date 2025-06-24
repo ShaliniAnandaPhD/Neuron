@@ -1,0 +1,180 @@
+name: 'Neuron Fine-Tuning Workflow'
+
+on:
+  workflow_dispatch:
+    inputs:
+      use_case:
+        description: 'Select use case'
+        required: true
+        type: choice
+        options:
+          - healthcare
+          # - finance
+          # - legal
+      base_model:
+        description: 'Hugging Face base model'
+        required: true
+        type: string
+        default: 'distilbert-base-uncased'
+
+jobs:
+  #============================================================================
+  # JOB 1: SETUP - Prepares the environment and sets dynamic paths
+  #============================================================================
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      use_case: ${{ github.event.inputs.use_case }}
+      config_path: ${{ steps.set_paths.outputs.config_path }}
+      data_path: ${{ steps.set_paths.outputs.data_path }}
+      model_dir_name: ${{ steps.set_paths.outputs.model_dir_name }}
+      compliance_script: ${{ steps.set_paths.outputs.compliance_script }}
+
+    steps:
+      - name: 'Set Use-Case Specific Paths and Names'
+        id: set_paths
+        run: |
+          USE_CASE=${{ github.event.inputs.use_case }}
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          
+          echo "config_path=configs/${USE_CASE}_config.yml" >> $GITHUB_OUTPUT
+          echo "data_path=data/${USE_CASE}/" >> $GITHUB_OUTPUT
+          echo "model_dir_name=neuron_model_${USE_CASE}_${TIMESTAMP}" >> $GITHUB_OUTPUT
+
+          if [ "$USE_CASE" == "healthcare" ]; then
+            echo "compliance_script=compliance_rules/hipaa_rules.py" >> $GITHUB_OUTPUT
+          else
+            # Add other cases here
+            echo "compliance_script=compliance_rules/default_rules.py" >> $GITHUB_OUTPUT
+          fi
+
+  #============================================================================
+  # JOB 2: RUN FINE-TUNING
+  #============================================================================
+  run_finetuning:
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'Set up Python Environment'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - name: 'Install Dependencies'
+        run: pip install -r requirements.txt
+      - name: 'Run Supervised Fine-Tuning Script'
+        run: |
+          python scripts/finetune.py \
+            --config ${{ needs.setup.outputs.config_path }} \
+            --data_dir ${{ needs.setup.outputs.data_path }} \
+            --output_model_dir models/${{ needs.setup.outputs.model_dir_name }} \
+            --base_model_name ${{ github.event.inputs.base_model }}
+      - name: 'Upload Fine-Tuned Model Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.model_dir_name }}
+          path: models/${{ needs.setup.outputs.model_dir_name }}
+          if-no-files-found: error
+
+  #============================================================================
+  # JOB 3: EVALUATE MODEL
+  #============================================================================
+  evaluate_model:
+    needs: [setup, run_finetuning]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'Set up Python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - name: 'Install Dependencies'
+        run: pip install -r requirements.txt
+      - name: 'Download Final Model Artifact'
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.model_dir_name }}
+          path: models/${{ needs.setup.outputs.model_dir_name }}
+      - name: 'Run Evaluation Script'
+        run: |
+          mkdir -p reports
+          python scripts/evaluate.py \
+            --model_dir models/${{ needs.setup.outputs.model_dir_name }} \
+            --test_data_path ${{ needs.setup.outputs.data_path }}test.csv \
+            --output_report_path reports/evaluation_report.json
+      - name: 'Upload Evaluation Report Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: evaluation-report
+          path: reports/evaluation_report.json
+
+  #============================================================================
+  # JOB 4: VALIDATE COMPLIANCE
+  #============================================================================
+  validate_compliance:
+    needs: [setup, run_finetuning]
+    runs-on: ubuntu-latest
+    steps:
+      - name: 'Checkout Repository'
+        uses: actions/checkout@v4
+      - name: 'Set up Python'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - name: 'Install Dependencies'
+        run: pip install -r requirements.txt
+      - name: 'Download Final Model Artifact'
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ needs.setup.outputs.model_dir_name }}
+          path: models/${{ needs.setup.outputs.model_dir_name }}
+      - name: 'Run Compliance Validation Script'
+        run: |
+          mkdir -p reports
+          python scripts/validate_compliance.py \
+            --model_dir models/${{ needs.setup.outputs.model_dir_name }} \
+            --rules_script ${{ needs.setup.outputs.compliance_script }} \
+            --output_report_path reports/compliance_report.json
+      - name: 'Upload Compliance Report Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: compliance-report
+          path: reports/compliance_report.json
+
+  #============================================================================
+  # JOB 5: CREATE RELEASE
+  #============================================================================
+  create_release:
+    if: success() # Only run on success
+    needs: [setup, evaluate_model, validate_compliance]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: 'Download all artifacts'
+        uses: actions/download-artifact@v4
+        with:
+          path: release_assets/
+      - name: 'List files for debugging'
+        run: ls -R release_assets
+      - name: 'Create GitHub Release'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v1.0-${{ needs.setup.outputs.use_case }}-${{ github.run_number }}"
+          name: "Neuron Model for ${{ needs.setup.outputs.use_case }} Run ${{ github.run_number }}"
+          body: |
+            This release contains the fine-tuned Neuron model for the **${{ needs.setup.outputs.use_case }}** use case.
+
+            **Base Model**: `${{ github.event.inputs.base_model }}`
+            
+            **Artifacts included:**
+            - Final tuned model (in `${{ needs.setup.outputs.model_dir_name }}.zip`)
+            - `evaluation_report.json`
+            - `compliance_report.json`
+          files: |
+            release_assets/**/*
