@@ -1,0 +1,20 @@
+# ⚕️ Configuration for the Healthcare Use Case
+use_case: "healthcare"
+
+# 🧠 Defines the model architecture details
+model_architecture:
+  # The number of distinct classes for classification (0: Non-Adverse, 1: Adverse-Event)
+  num_classes: 2 
+
+# ⚙️ Defines the parameters for the training process
+training_params:
+  learning_rate: 0.00005 # 5e-5 is a common starting point for fine-tuning
+  num_epochs: 3
+  batch_size: 16
+
+# 🕵️ Defines which specialized agents to activate during inference
+# (This is for your application logic, the fine-tuning script just logs it for now)
+agents:
+  - "CaseAnalyzer"
+  - "SafetyMonitor"
+  - "HIPAAComplianceAgent"
