@@ -17,6 +17,10 @@ memory_system:
   class_name: "SimpleMemory"
 
 # 🛠️ Defines the specific tools to load into the agent's toolbelt
+# Each item now specifies the module (filename) and the class to import.
 tools_to_load:
-  - "PIIDetectionTool"
-  - "BiasCheckTool"
+  - module: pii_detector
+    class: PIIDetectionTool
+  - module: bias_checker
+    class: BiasCheckTool
+
