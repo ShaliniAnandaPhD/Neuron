@@ -3,7 +3,16 @@
 import argparse
 import yaml
 import os
-from agent.main_agent import NeuronAgent
+import sys
+
+# --- Path Correction ---
+# Add the project's root directory to the Python path.
+# This allows us to import modules from the 'agent' and 'tools' packages.
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+sys.path.insert(0, project_root)
+# ---------------------
+
+from scripts.agent.main_agent import NeuronAgent
 
 def main():
     """
@@ -34,3 +43,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
