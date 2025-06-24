@@ -1,0 +1,10 @@
+    patient_id,encounter_id,timestamp,department,text,label
+    "PID-101","EID-501","2025-06-25T10:00:00Z","General Medicine","The patient's overall condition has significantly improved since admission for pneumonia. Afebrile for 48 hours, tolerating oral antibiotics well. Plan for discharge tomorrow.",0
+    "PID-102","EID-502","2025-06-25T11:15:00Z","Nephrology","Patient developed acute renal failure (Creatinine increase from 1.1 to 3.5) following the administration of IV gentamicin. Discontinued medication and initiated fluid resuscitation.",1
+    "PID-103","EID-503","2025-06-25T13:00:00Z","Emergency","A mild headache was reported by the patient after the lumbar puncture. It resolved completely with caffeine and Tylenol. No signs of post-LP cerebral spinal fluid leak.",0
+    "PID-104","EID-504","2025-06-25T14:30:00Z","Nursing","A medication error was identified during chart review. Patient received 10mg of morphine instead of the prescribed 5mg. Patient is currently lethargic with respiratory rate of 8. Naloxone administered.",1
+    "PID-105","EID-505","2025-06-26T09:00:00Z","Surgery","Post-op check on the skin graft shows it is healing properly with good vascularization. The patient is comfortable and reports minimal pain at the donor site.",0
+    "PID-106","EID-506","2025-06-26T11:00:00Z","Rheumatology","Patient experienced severe, debilitating joint pain and swelling in both knees, an unlisted side effect of the new biologic agent. Treatment paused immediately.",1
+    "PID-107","EID-507","2025-06-26T15:20:00Z","Hematology","Unexpected drop in platelet count to 25,000/uL observed after starting heparin infusion. Suspected Heparin-Induced Thrombocytopenia (HIT). All heparin products stopped.",1
+    "PID-108","EID-508","2025-06-27T08:45:00Z","Oncology","Follow-up appointment for chemotherapy shows continued progress. Tumor markers are decreasing and the patient is tolerating treatment with manageable side effects.",0
+    
