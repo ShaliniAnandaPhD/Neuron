@@ -59,12 +59,15 @@ class NeuronAgent:
         MemoryClass = _import_class('agent.memory', memory_config['class_name'])
         self.memory = MemoryClass()
         
-        # Load tools into the toolbelt
+        # Load tools into the toolbelt using the new explicit config
         self.toolbelt = {}
         print("\n🔧 Loading tools into agent's toolbelt...")
-        for tool_name in self.config.get('tools_to_load', []):
-            ToolClass = _import_class(f'tools.{tool_name.lower()}', tool_name)
-            self.toolbelt[tool_name] = ToolClass()
+        for tool_config in self.config.get('tools_to_load', []):
+            module_name = tool_config['module']
+            class_name = tool_config['class']
+            print(f"   -> Loading class '{class_name}' from module '{module_name}'")
+            ToolClass = _import_class(f'tools.{module_name}', class_name)
+            self.toolbelt[class_name] = ToolClass()
         print("✅ Toolbelt is ready.")
 
     def fine_tune(self, data_dir: str):
@@ -117,5 +120,6 @@ class NeuronAgent:
         
         self.memory.store_interaction(text, f"Classified as {prediction}")
         return f"Input text classified as label: {prediction}"
+
 
 
