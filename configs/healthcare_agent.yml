@@ -1,0 +1,22 @@
+# ⚕️ Configuration for the Healthcare Agent System
+use_case: "healthcare"
+
+# 🧠 Defines the base model that will be the agent's core intelligence
+model_architecture:
+  base_model_name: "distilbert-base-uncased"
+  num_classes: 2
+
+# ⚙️ Defines the parameters for the fine-tuning process
+training_params:
+  learning_rate: 0.00005
+  num_epochs: 3
+  batch_size: 16
+
+# 🧠 Defines the memory system the agent should use
+memory_system:
+  class_name: "SimpleMemory"
+
+# 🛠️ Defines the specific tools to load into the agent's toolbelt
+tools_to_load:
+  - "PIIDetectionTool"
+  - "BiasCheckTool"
