@@ -1,0 +1,58 @@
+name: '🔬 Neuron Agent Factory'
+
+on:
+  workflow_dispatch:
+    inputs:
+      agent_config:
+        description: '🤖 Agent configuration to build'
+        required: true
+        type: string
+        default: 'configs/healthcare_agent.yml'
+      base_model:
+        description: '🧠 Hugging Face base model'
+        required: true
+        type: choice
+        options:
+          - distilbert-base-uncased
+          - bert-base-uncased
+          - roberta-base
+          - google/electra-small-discriminator
+        default: 'distilbert-base-uncased'
+
+jobs:
+  #============================================================================
+  # BUILD, TUNE, AND VALIDATE AGENT
+  #============================================================================
+  build_and_validate:
+    name: '🛠️ Build, Tune & Validate'
+    runs-on: ubuntu-latest
+    steps:
+      - name: '➡️ Checkout Repository'
+        uses: actions/checkout@v4
+
+      - name: '🐍 Set up Python Environment'
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: '⬇️ Install Dependencies'
+        run: pip install -r requirements.txt
+      
+      - name: '🏗️ Build and Tune the Agent'
+        id: build
+        run: |
+          TIMESTAMP=$(date +%Y%m%d-%H%M%S)
+          OUTPUT_DIR="models/neuron_agent_${TIMESTAMP}"
+          echo "output_dir=${OUTPUT_DIR}" >> $GITHUB_OUTPUT
+          python scripts/build_and_tune.py \
+            --config ${{ github.event.inputs.agent_config }} \
+            --data_dir data/healthcare/ \
+            --output_dir ${{ env.GITHUB_WORKSPACE }}/${OUTPUT_DIR}
+
+      - name: '📤 Upload Agent System Artifact'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.output_dir }}
+          path: ${{ steps.build.outputs.output_dir }}
+          if-no-files-found: error
