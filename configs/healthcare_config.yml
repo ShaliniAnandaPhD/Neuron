@@ -12,9 +12,8 @@ training_params:
   num_epochs: 3
   batch_size: 16
 
-# 🕵️ Defines which specialized agents to activate during inference
-# (This is for your application logic, the fine-tuning script just logs it for now)
+# 🕵️ Defines which specialized agents to build and include in the system.
+# The names here must match the class names in the finetune.py script.
 agents:
   - "CaseAnalyzer"
   - "SafetyMonitor"
-  - "HIPAAComplianceAgent"
