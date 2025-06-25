@@ -1,0 +1,137 @@
+# 🧠 Neuron Memory Test Workflow 🧪
+# This workflow tests the robustness, reliability, and data integrity of the Neuron memory system.
+
+name: 'Neuron Memory CI'
+
+on:
+  push:
+    paths:
+      - 'neuron/memory/**' # Triggers on pushes to memory-related modules
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+
+jobs:
+  test-memory-operations:
+    name: '🧪 Test Core Memory Operations'
+    runs-on: ubuntu-latest
+    steps:
+      - name: '⬇️ Check out repository'
+        uses: actions/checkout@v3
+
+      - name: '🐍 Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: '⚙️ Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+          # Assuming you have a requirements.txt for your project
+          # pip install -r requirements.txt
+          # For this example, we'll just use standard libraries
+
+      - name: '➕ Test: neuron memory add'
+        id: test_add
+        run: |
+          echo "Simulating: neuron memory add --type episodic --content 'Test entry 1'"
+          python test_neuron_memory.py add "episodic" "Test entry 1"
+          echo "Simulating: neuron memory add --type semantic --content 'Test entry 2'"
+          python test_neuron_memory.py add "semantic" "Test entry 2"
+
+      - name: '🔍 Test: neuron memory view'
+        id: test_view
+        run: |
+          echo "Simulating: neuron memory view --type episodic"
+          python test_neuron_memory.py view "episodic" "Test entry 1"
+          echo "Simulating: neuron memory view --type semantic"
+          python test_neuron_memory.py view "semantic" "Test entry 2"
+
+  test-persistence:
+    name: '💾 Test Memory Persistence'
+    runs-on: ubuntu-latest
+    needs: test-memory-operations
+    steps:
+      - name: '⬇️ Check out repository'
+        uses: actions/checkout@v3
+
+      - name: '🐍 Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: '⚙️ Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: '➕ Add memory before restart'
+        run: |
+           python test_neuron_memory.py add "episodic" "Data before restart"
+
+      - name: '🔄 Simulate Agent Restart'
+        run: |
+          echo "Simulating a restart..."
+          # In a real scenario, this might involve restarting a service or container.
+          # Here, we'll just proceed to the next step, assuming the data persists in a file.
+
+      - name: '🔎 Verify memory after restart'
+        run: |
+          python test_neuron_memory.py view "episodic" "Data before restart"
+
+  test-data-integrity:
+    name: '🛡️ Test Data Integrity'
+    runs-on: ubuntu-latest
+    needs: test-persistence
+    steps:
+      - name: '⬇️ Check out repository'
+        uses: actions/checkout@v3
+
+      - name: '🐍 Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: '⚙️ Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: '🧮 Test: Data Integrity and Hash Comparison'
+        run: |
+          python test_neuron_memory.py integrity_check
+
+  test-clear-memory:
+    name: '🗑️ Test: neuron memory clear'
+    runs-on: ubuntu-latest
+    needs: test-data-integrity
+    steps:
+      - name: '⬇️ Check out repository'
+        uses: actions/checkout@v3
+
+      - name: '🐍 Set up Python'
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: '⚙️ Install dependencies'
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: '➕ Add memory to be cleared'
+        run: |
+           python test_neuron_memory.py add "working" "This should be cleared"
+
+      - name: '🧹 Clear working memory'
+        run: |
+          python test_neuron_memory.py clear "working"
+
+      - name: '✅ Verify memory is cleared'
+        run: |
+          python test_neuron_memory.py verify_clear "working"
+
+  test-summary:
+    name: '📊 Test Summary'
+    runs-on: ubuntu-latest
+    needs: [test-memory-operations, test-persistence, test-data-integrity, test-clear-memory]
+    steps:
+        - name: '📜 All tests passed'
+          run: |
+            echo "✅ All memory tests completed successfully!"
