@@ -1,0 +1,101 @@
+# filename: .github/workflows/test_memory_agent.yml
+# Path: .github/workflows/test_memory_agent.yml
+
+name: Memory Agent CI/CD 🧠✨🚀 - Flawless LEGO Block Testing! 🛠️✅
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events to the main branch 🟢➡️
+  push:
+    branches: [ main ]
+    paths:
+      - 'memory_agent.py'
+      - 'test_memory_agent.py'
+      - 'requirements.txt' # Including the all-important dependency list! 📜
+  pull_request:
+    branches: [ main ]
+    paths:
+      - 'memory_agent.py'
+      - 'test_memory_agent.py'
+      - 'requirements.txt'
+  # Allows you to run this workflow manually from the Actions tab ✋▶️
+  workflow_dispatch:
+
+  # Schedule the workflow to run daily at a specific time (e.g., 00:00 UTC) ⏰🗓️
+  schedule:
+    - cron: '0 0 * * *' # Every single day at midnight UTC! 🌃
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel 🚀➡️⚙️
+jobs:
+  # This job runs linters and tests for the MemoryAgent across multiple Python versions 🐍🧪✨
+  build-and-test:
+    # Use a matrix strategy for ultimate compatibility checks! 🧩
+    strategy:
+      matrix:
+        python-version: ["3.8", "3.9", "3.10"] # Testing on various Python flavors! 🍎🍊🍋
+
+    # The type of runner that the job will run on - a fresh environment every time! ☁️🖥️
+    runs-on: ubuntu-latest
+
+    # Steps represent a sequence of tasks that will be executed as part of the job 👇
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your workflow can access it.
+      # This is essential to get your code onto the runner. 📁➡️🏃‍♂️
+      - name: Checkout repository Code Base! 📥
+        uses: actions/checkout@v4
+
+      # Sets up Python environment on the runner for the current matrix version.
+      # A clean Python setup, ready for action! 🌟
+      - name: Set up Python ${{ matrix.python-version }} Environment 🏗️
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Caches Python dependencies to speed up subsequent runs.
+      # Smart caching for faster builds! 🚀💨
+      - name: Cache Python dependencies for Speed ⚡
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-python-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
+          restore-keys: |
+            ${{ runner.os }}-python-${{ matrix.python-version }}-
+
+      # Installs all dependencies from requirements.txt.
+      # Getting everything ready to run! 🛠️📦
+      - name: Install All Project Dependencies 📥
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Runs Flake8 for code style and quality checks.
+      # Keeping our code sparkling clean! ✨🧼
+      - name: Run Flake8 Code Linter 🧐
+        run: |
+          flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+          # exit-zero treats all errors as warnings. The GitHub editor is 1-indexed for columns too.
+          flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+
+      # Runs the pytest tests with coverage and generates an HTML report.
+      # The main event: comprehensive testing! ✅💯
+      - name: Execute Pytest Tests with Coverage & HTML Report 🏆📄
+        run: |
+          pytest -v --cov=memory_agent --cov-report=xml --html=report.html --self-contained-html test_memory_agent.py
+
+      # Uploads the coverage report artifact.
+      # Sharing the results of our code coverage analysis! 📈
+      - name: Upload Coverage Report Artifact 📤📊
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-py${{ matrix.python-version }}
+          path: coverage.xml
+          if-no-files-found: ignore
+
+      # Uploads the HTML test report artifact.
+      # A beautiful, detailed report for your viewing pleasure! 🖼️
+      - name: Upload HTML Test Report Artifact 📤📜
+        uses: actions/upload-artifact@v4
+        with:
+          name: html-test-report-py${{ matrix.python-version }}
+          path: report.html
+          if-no-files-found: ignore
