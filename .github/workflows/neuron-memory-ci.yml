@@ -6,7 +6,13 @@ name: 'Neuron Memory CI'
 on:
   push:
     paths:
-      - 'neuron/memory/**' # Triggers on pushes to memory-related modules
+      - 'neuron/memory/**'
+      - 'test_neuron_memory.py'
+      - '.github/workflows/neuron-memory-ci.yml'
+  pull_request:
+    paths:
+      - 'neuron/memory/**'
+      - 'test_neuron_memory.py'
   schedule:
     - cron: '0 0 * * *' # Runs daily at midnight UTC
 
@@ -16,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: '⬇️ Check out repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: '🐍 Set up Python'
         uses: actions/setup-python@v4
@@ -26,25 +32,35 @@ jobs:
       - name: '⚙️ Install dependencies'
         run: |
           python -m pip install --upgrade pip
-          # Assuming you have a requirements.txt for your project
+          # Add your actual dependencies here
           # pip install -r requirements.txt
-          # For this example, we'll just use standard libraries
+
+      - name: '✅ Verify test script exists'
+        run: |
+          if [ ! -f "test_neuron_memory.py" ]; then
+            echo "❌ test_neuron_memory.py not found"
+            exit 1
+          fi
+          echo "✅ test_neuron_memory.py found"
 
       - name: '➕ Test: neuron memory add'
-        id: test_add
         run: |
-          echo "Simulating: neuron memory add --type episodic --content 'Test entry 1'"
+          echo "Testing memory add operations..."
           python test_neuron_memory.py add "episodic" "Test entry 1"
-          echo "Simulating: neuron memory add --type semantic --content 'Test entry 2'"
           python test_neuron_memory.py add "semantic" "Test entry 2"
 
       - name: '🔍 Test: neuron memory view'
-        id: test_view
         run: |
-          echo "Simulating: neuron memory view --type episodic"
+          echo "Testing memory view operations..."
           python test_neuron_memory.py view "episodic" "Test entry 1"
-          echo "Simulating: neuron memory view --type semantic"
           python test_neuron_memory.py view "semantic" "Test entry 2"
+
+      - name: '📤 Upload memory state'
+        uses: actions/upload-artifact@v3
+        with:
+          name: memory-state
+          path: mock_memory.json
+          if-no-files-found: warn
 
   test-persistence:
     name: '💾 Test Memory Persistence'
@@ -52,26 +68,27 @@ jobs:
     needs: test-memory-operations
     steps:
       - name: '⬇️ Check out repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: '🐍 Set up Python'
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: '⚙️ Install dependencies'
-        run: |
-          python -m pip install --upgrade pip
+      - name: '📥 Download memory state'
+        uses: actions/download-artifact@v3
+        with:
+          name: memory-state
 
       - name: '➕ Add memory before restart'
         run: |
-           python test_neuron_memory.py add "episodic" "Data before restart"
+          python test_neuron_memory.py add "episodic" "Data before restart"
 
       - name: '🔄 Simulate Agent Restart'
         run: |
           echo "Simulating a restart..."
-          # In a real scenario, this might involve restarting a service or container.
-          # Here, we'll just proceed to the next step, assuming the data persists in a file.
+          echo "Memory file contents:"
+          cat mock_memory.json || echo "No memory file found"
 
       - name: '🔎 Verify memory after restart'
         run: |
@@ -83,19 +100,17 @@ jobs:
     needs: test-persistence
     steps:
       - name: '⬇️ Check out repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: '🐍 Set up Python'
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: '⚙️ Install dependencies'
-        run: |
-          python -m pip install --upgrade pip
-
       - name: '🧮 Test: Data Integrity and Hash Comparison'
         run: |
+          # Add some test data first
+          python test_neuron_memory.py add "episodic" "Integrity test data"
           python test_neuron_memory.py integrity_check
 
   test-clear-memory:
@@ -104,20 +119,16 @@ jobs:
     needs: test-data-integrity
     steps:
       - name: '⬇️ Check out repository'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: '🐍 Set up Python'
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
 
-      - name: '⚙️ Install dependencies'
-        run: |
-          python -m pip install --upgrade pip
-
       - name: '➕ Add memory to be cleared'
         run: |
-           python test_neuron_memory.py add "working" "This should be cleared"
+          python test_neuron_memory.py add "working" "This should be cleared"
 
       - name: '🧹 Clear working memory'
         run: |
@@ -131,7 +142,22 @@ jobs:
     name: '📊 Test Summary'
     runs-on: ubuntu-latest
     needs: [test-memory-operations, test-persistence, test-data-integrity, test-clear-memory]
+    if: always()
     steps:
-        - name: '📜 All tests passed'
-          run: |
+      - name: '📜 Check test results'
+        run: |
+          echo "=== Test Summary ==="
+          echo "Memory Operations: ${{ needs.test-memory-operations.result }}"
+          echo "Persistence: ${{ needs.test-persistence.result }}"
+          echo "Data Integrity: ${{ needs.test-data-integrity.result }}"
+          echo "Clear Memory: ${{ needs.test-clear-memory.result }}"
+          
+          if [[ "${{ needs.test-memory-operations.result }}" == "success" && 
+                "${{ needs.test-persistence.result }}" == "success" && 
+                "${{ needs.test-data-integrity.result }}" == "success" && 
+                "${{ needs.test-clear-memory.result }}" == "success" ]]; then
             echo "✅ All memory tests completed successfully!"
+          else
+            echo "❌ Some tests failed!"
+            exit 1
+          fi
