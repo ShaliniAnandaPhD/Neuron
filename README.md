@@ -25,6 +25,12 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 [![IP Monitoring Simple](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml)
 [![🧱🧱🧱 Neuron LEGO Agent Builder](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml)
 [![🏪 LEGO Agent Marketplace](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml)
+[![🎭 Politeness Phrase Detection](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml)
+[![🚀 Performance-Based Auto-Swapping System](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/performance-auto-swap.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/performance-auto-swap.yml)
+[![📝 Neuron Log Writer](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml)
+[![🔬 Neuron Fine-Tuning Workflow](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/finetune.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/finetune.yml)
+[![🔬 Neuron Agent Factory](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/agent_factory.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/agent_factory.yml)
+[![🧠 Intent Phrase Scan (Safe)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml)
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
 
