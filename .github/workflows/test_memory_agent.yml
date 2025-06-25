@@ -82,7 +82,7 @@ jobs:
       # The main event: comprehensive testing! ✅💯
       - name: Execute Pytest Tests with Coverage & HTML Report 🏆📄
         run: |
-          pytest -v --cov=memory_agent --cov-report=xml --html=report.html --self-contained-html test_memory_agent.py
+          python -m pytest -v --cov=memory_agent --cov-report=xml --html=report.html --self-contained-html test_memory_agent.py
 
       # Uploads the coverage report artifact.
       # Sharing the results of our code coverage analysis! 📈
@@ -101,4 +101,5 @@ jobs:
           name: html-test-report-py${{ matrix.python-version }}
           path: report.html
           if-no-files-found: ignore
+
 
