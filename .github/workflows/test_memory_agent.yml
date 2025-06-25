@@ -11,12 +11,14 @@ on:
     paths:
       - 'memory_agent.py'
       - 'test_memory_agent.py'
+      - '**/test_*.py' # Also trigger for any test file in any subdirectory
       - 'requirements.txt'
   pull_request:
     branches: [ main ]
     paths:
       - 'memory_agent.py'
       - 'test_memory_agent.py'
+      - '**/test_*.py'
       - 'requirements.txt'
   # Allows you to run this workflow manually from the Actions tab ✋▶️
   workflow_dispatch:
@@ -57,7 +59,7 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-python-${{ matrix.python-version }}-${{ hashFiles('requirements.txt') }}
+          key: ${{ runner.os }}-python-${{ matrix.python-version }}-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-python-${{ matrix.python-version }}-
 
@@ -80,10 +82,11 @@ jobs:
           pip install flake8
           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
 
-      # Runs the pytest tests with coverage and generates an HTML report.
+      # Runs pytest using automatic test discovery.
+      # Pytest will automatically find any file named 'test_*.py' or '*_test.py'
       - name: Execute Pytest Tests with Coverage & HTML Report 🏆📄
         run: |
-          python -m pytest -v --cov=memory_agent --cov-report=xml --html=report.html --self-contained-html test_memory_agent.py
+          python -m pytest -v --cov=memory_agent --cov-report=xml --html=report.html --self-contained-html
 
       # Uploads the coverage report artifact.
       - name: Upload Coverage Report Artifact 📤📊
@@ -100,3 +103,4 @@ jobs:
           name: html-test-report-py${{ matrix.python-version }}
           path: report.html
           if-no-files-found: ignore
+
