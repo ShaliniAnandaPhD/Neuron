@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fantasy Football Neuron</title>
+    
+    <!-- 1. Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- 2. React Libraries -->
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <!-- 3. Babel to compile JSX in the browser -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        /* A little extra style for a better look */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- 4. Your React Application Code -->
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // --- ICONS (SVG paths for use in React) ---
+        const icons = {
+          brainCircuit: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 0 0-10 10c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.08 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.94 0-1.1.39-1.99 1.03-2.69a3.6 3.6 0 0 1 .1-2.64s.84-.27 2.75 1.02a9.58 9.58 0 0 1 5 0c1.91-1.3 2.75-1.02 2.75-1.02.55 1.37.2 2.4.1 2.64.64.7 1.03 1.6 1.03 2.69 0 3.84-2.34 4.68-4.57 4.93.36.31.68.92.68 1.85v2.72c0 .27.16.59.67.5A10 10 0 0 0 12 2z" /><path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M12 4a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M12 24a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M4 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M20 12a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M17.66 17.66a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M6.34 17.66a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M17.66 6.34a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /><path d="M6.34 6.34a2 2 0 1 0 0-4 2 2 0 0 0 0 4z" /></svg>,
+          zap: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>,
+          cloudy: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><path d="M22 10a3 3 0 0 0-3-3h-2.207a5.502 5.502 0 0 0-10.702.5"/></svg>,
+          trendingUp: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>,
+          refreshCw: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M3 12a9 9 0 0 1 9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M3 21v-5h5"/></svg>,
+          alertTriangle: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>,
+          checkCircle: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
+          barChart: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="20" x2="12" y2="10"/><line x1="18" y1="20" x2="18" y2="4"/><line x1="6" y1="20" x2="6" y2="16"/></svg>,
+          server: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><line x1="6" y1="6" x2="6.01" y2="6"/><line x1="6" y1="18" x2="6.01" y2="18"/></svg>,
+          send: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
+          sparkles: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.9 4.2-4.2 1.9 4.2 1.9 1.9 4.2 1.9-4.2 4.2-1.9-4.2-1.9L12 3z"/><path d="M5 13l-1 2-2 1 2 1 1 2 1-2 2-1-2-1-1-2z"/><path d="m21 13-1 2-2 1 2 1 1 2 1-2 2-1-2-1-1-2z"/></svg>,
+          target: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
+          gauge: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0"/><path d="M12 12m-1 0a1 1 0 1 0 2 0a1 1 0 1 0 -2 0"/><path d="M13.41 10.59l4.24-4.24"/><path d="M7 12h-2"/><path d="M19 12h-2"/></svg>,
+          lineChart: <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>,
+        };
+
+        const scenarios = {
+            1: {
+                id: 1,
+                title: "Late-Swap Opportunity",
+                header: { status: "Live Analysis Active", edge: "+11.2%", roi: "+$1,981", activeAgents: 5, throughput: "17.9 MB/s" },
+                controls: ["Breaking News", "Injury Pivot", "New Leverage", "Reset"],
+                feed: { icon: icons.zap, title: "BREAKING: Keenan Allen (WR, LAC) UNEXPECTEDLY INACTIVE", description: "31 of your lineups affected. Auto-pivot to rookie Quentin Johnston saves $5,100 per lineup. High-risk, high-reward play with a 79.4 score.", buttons: ["Execute Auto-Pivot (31 lineups)", "Manual Review"] },
+                strategicInsight: { title: "High-Risk Pivot", text: "Pivoting to Quentin Johnston offers massive leverage but low floor. Recommended for GPP/Tournament lineups only." },
+                players: [ { name: "Quentin Johnston - WR, LAC", score: 88, leverage: 92.1, ownership: 1.1, ceiling: 94, value: "+$1,850", note: "High-upside GPP play." }, { name: "Joshua Palmer - WR, LAC", score: 74, leverage: 68.4, ownership: 18.5, ceiling: 77, value: "+$450", note: "Safer cash game pivot." } ],
+                chat: { initialMessage: "Monday Night Football surprise! I'm re-analyzing all affected lineups. How do you want to handle the Keenan Allen news?", suggestions: ["Best pivot for GPP?", "Safest cash game play?"] },
+            },
+            2: {
+                id: 2,
+                title: "The Weather Emergency",
+                header: { status: "Live Analysis Active", edge: "+9.8%", roi: "+$1,755", activeAgents: 4, throughput: "21.5 MB/s" },
+                controls: ["Breaking News", "Weather Alert", "New Leverage", "Reset"],
+                feed: { icon: icons.cloudy, title: "WEATHER ALERT: Heavy snow & 25mph winds confirmed in Green Bay.", description: "Downgrading all passing game players for LV @ GB. Upgrading RBs and D/STs. 58 lineups have exposure.", buttons: ["View Affected Players", "Auto-Optimize Portfolio"] },
+                sentiment: { player: "Davante Adams", value: 25, label: "FADE" },
+                players: [ { name: "Josh Jacobs - RB, LV", score: 89, leverage: 81.3, ownership: 19.2, ceiling: 91, value: "+$1,120", note: "Elite play due to weather." }, { name: "Davante Adams - WR, LV", score: 41, leverage: 25.5, ownership: 24.8, ceiling: 56, value: "-$880", note: "High-risk fade candidate." } ],
+                chat: { initialMessage: "The weather in Green Bay is a major factor. I've downgraded passing projections by 40%. Are you ready to pivot?", suggestions: ["Who benefits most?", "Show me fade candidates."] },
+            },
+            3: {
+                id: 3,
+                title: "The Contrarian GPP Win",
+                header: { status: "Live Analysis Active", edge: "+22.5%", roi: "+$4,150", activeAgents: 4, throughput: "18.1 MB/s" },
+                controls: ["Breaking News", "Weather Alert", "New Leverage", "Reset"],
+                feed: { icon: icons.trendingUp, title: "LEVERAGE ALERT: Tank Dell ownership is inexplicably low (<2%).", description: "He is in an elite matchup and projects as a top-5 value. Perfect GPP tournament play to differentiate your lineups.", buttons: ["Increase Exposure", "Analyze Matchup"] },
+                strategicInsight: { title: "GPP-Winning Play", text: "Tank Dell's combination of low ownership and high ceiling presents a rare opportunity to gain significant ground on the field in large tournaments." },
+                players: [ { name: "Tank Dell - WR, HOU", score: 94, leverage: 95.8, ownership: 1.9, ceiling: 96, value: "+$2,100", note: "Elite GPP tournament play." }, { name: "CeeDee Lamb - WR, DAL", score: 65, leverage: 40.1, ownership: 38.7, ceiling: 92, value: "-$250", note: "High ownership 'chalk' play." } ],
+                chat: { initialMessage: "I've identified a massive leverage opportunity with Tank Dell. This is the kind of play that wins tournaments. How much exposure should we add?", suggestions: ["Build 10 lineups with Dell.", "Why is he low-owned?"] },
+            },
+            4: {
+                id: 4,
+                title: "The System Alert / Glitch",
+                header: { status: "Advisor Mode", edge: "N/A", roi: "N/A", activeAgents: "3/4", throughput: "9.1 MB/s" },
+                controls: ["Breaking News", "Weather Alert", "New Leverage", "Reset"],
+                feed: { icon: icons.alertTriangle, title: "SYSTEM WARNING: LiveExecution Agent has encountered an error.", description: "Automated lineup submission is paused for safety. All recommendations are now in `Manual Mode`. Your funds are safe.", buttons: ["View Status Monitor", "Contact Support"] },
+                agentMonitor: [ { name: "DataAgent", state: "Active", tasks: 20, errors: 0, lastActivity: "Now" }, { name: "LiveAnalysis", state: "Active", tasks: 41, errors: 0, lastActivity: "Now" }, { name: "LiveDecision", state: "Active", tasks: 20, errors: 0, lastActivity: "Now" }, { name: "LiveExecution", state: "Error", tasks: 3, errors: 1, lastActivity: "2m ago" } ],
+                chat: { initialMessage: "We've detected an issue with the LiveExecution agent and have paused auto-updates. My analysis is still active and I can provide recommendations for you to implement manually.", suggestions: ["What happened?", "Give me manual instructions."] },
+            },
+            5: {
+                id: 5,
+                title: "The Portfolio-Level Review",
+                header: { status: "Live Analysis Active", edge: "+14.1%", roi: "+$2,194", activeAgents: 4, throughput: "16.8 MB/s" },
+                controls: ["Breaking News", "Weather Alert", "New Leverage", "Reset"],
+                feed: { icon: icons.barChart, title: "PORTFOLIO ALERT: High Ownership Concentration.", description: "72% of your lineups feature players from the KC vs. PHI game. This increases portfolio risk. Recommend diversifying exposure.", buttons: ["Run Diversification Optimizer", "Show Me Alternatives"] },
+                portfolio: { lineups: 182, investment: "$2,450", edge: "+14.1%", risk: "High", exposure: { "Patrick Mahomes": "68%", "Travis Kelce": "65%", "Jalen Hurts": "58%", "A.J. Brown": "55%" }, winProbData: [20, 22, 28, 25, 35, 40, 38] },
+                chat: { initialMessage: "Your portfolio is heavily correlated. While the KC/PHI game has a high ceiling, this strategy reduces your chances of a unique lineup cashing. Shall I build some lower-owned stacks from other games?", suggestions: ["Yes, show me contrarian stacks.", "What is my risk score?"] },
+            },
+            6: {
+                id: 6,
+                title: "The 'All Clear' Final Check",
+                header: { status: "Live Analysis Active", edge: "+16.8%", roi: "+$3,105", activeAgents: 4, throughput: "19.8 MB/s" },
+                controls: ["Breaking News", "Weather Alert", "New Leverage", "Reset"],
+                feed: { icon: icons.checkCircle, title: "SYSTEM OPTIMAL: All lineups finalized.", description: "No critical alerts at this time. All data streams are live and latencies are normal. The system will now shift into live game monitoring mode.", buttons: ["View Final Portfolio", "Lock All Entries"] },
+                optimization: { lineupsOptimized: 28, pivots: 0, edgeImprovement: "+2.3%" },
+                players: [ { name: "Christian McCaffrey - RB, SF", score: 96, leverage: 75.4, ownership: 33.1, ceiling: 99, value: "+$1,320", note: "Elite foundational play." }, { name: "Amon-Ra St. Brown - WR, DET", score: 92, leverage: 80.2, ownership: 21.5, ceiling: 93, value: "+$1,150", note: "Core portfolio holding." } ],
+                chat: { initialMessage: "Welcome to gameday! Your portfolio is locked, loaded, and optimized. Confidence Score: 94%. Good luck! What would you like to monitor first?", suggestions: ["Track my player scores.", "Show live standings."] },
+            },
+            7: {
+                id: 7,
+                title: "The Neuron Engagement Model",
+                isStatic: true,
+                header: { status: "System Philosophy", edge: "N/A", roi: "N/A", activeAgents: "N/A", throughput: "N/A" },
+                chat: { initialMessage: "Welcome. This is the core philosophy behind the Neuron system. Feel free to ask any questions about our approach.", suggestions: ["How is this different?", "Tell me about the AI agents."] },
+                staticContent: {
+                    title: "The Neuron Spin: A New Way to Play",
+                    description: "Neuron transforms the user's role from a passive manager into an active mission commander of their own personal AI team.",
+                    points: [
+                        { title: "Live Collaboration, Not Static Research", text: "Engagement is a live, collaborative dialogue. The system of specialized agents works for you 24/7, proactively bringing critical alerts and insights to you. This turns engagement from a chore into an exciting, event-driven experience." },
+                        { title: "Strategic Storytelling, Not Just Projections", text: "Neuron provides a strategic narrative. It doesn't just show a projection; it explains the 'why' behind it using concepts like Leverage Score and Value Gap, making you feel like a strategist who understands the story of the week." },
+                        { title: "A Personalized AI, Not Generic Advice", text: "The Decision Context Store acts as the system's persistent memory, learning your specific risk tolerance and strategy. You are training your own AI co-pilot, creating a powerful long-term engagement loop." },
+                        { title: "Transparent Control, Not a 'Black Box'", text: "Neuron is built on trust through transparency. The UI explicitly shows you the Agent Status Monitor and Data Stream Overview. You are the ultimate decision-maker, empowered by a powerful and transparent AI assistant." },
+                    ]
+                }
+            },
+        };
+
+        const Header = ({ data, statusColor }) => (
+          <header className="p-4 text-white border-b border-cyan-900/50">
+            <div className="flex justify-between items-center">
+              <h1 className="text-xl font-bold flex items-center gap-2 text-cyan-300">
+                <span className="w-6 h-6">{icons.brainCircuit}</span>
+                Fantasy Football Neuron
+              </h1>
+              <div className="flex items-center gap-2 text-sm">
+                <div className={`w-2 h-2 rounded-full ${statusColor} animate-pulse`}></div>
+                <span className="font-semibold">{data.status}</span>
+              </div>
+            </div>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-x-4 gap-y-2 text-sm mt-4 text-gray-400">
+                <div className="flex flex-col"><span className="text-xs">Portfolio Edge</span><strong className="text-lg text-green-400">{data.edge}</strong></div>
+                <div className="flex flex-col"><span className="text-xs">Projected ROI</span><strong className="text-lg text-green-400">{data.roi}</strong></div>
+                <div className="flex flex-col"><span className="text-xs">Active Agents</span><strong className="text-lg text-white">{data.activeAgents}</strong></div>
+                <div className="flex flex-col"><span className="text-xs">Data Throughput</span><strong className="text-lg text-white">{data.throughput}</strong></div>
+            </div>
+          </header>
+        );
+
+        const Controls = ({ items, onAction }) => (
+          <div className="flex space-x-2 p-3 bg-black/20 text-sm border-b border-cyan-900/50">
+            {items.map(item => {
+              const iconMap = { "News": icons.zap, "Weather": icons.cloudy, "Leverage": icons.trendingUp, "Reset": icons.refreshCw, "Pivot": icons.refreshCw };
+              const key = Object.keys(iconMap).find(k => item.includes(k));
+              return (
+                <button 
+                  key={item} 
+                  onClick={() => onAction(`User clicked the '${item}' filter. As Neuron AI, please respond to this action.`)}
+                  className="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1 rounded-full flex items-center space-x-2 transition-colors duration-200">
+                  <span className="w-4 h-4">{iconMap[key]}</span>
+                  <span>{item}</span>
+                </button>
+              );
+            })}
+          </div>
+        );
+
+        const LiveIntelligenceFeed = ({ data, onAction }) => (
+          <div className="p-4 border-b border-cyan-900/50">
+            <h2 className="text-lg font-bold text-cyan-300 flex items-center gap-3"><span className="w-8 h-8 flex items-center justify-center bg-cyan-900/50 text-cyan-300 rounded-lg">{data.icon}</span>{data.title}</h2>
+            <p className="text-gray-300 mt-2 pl-11">{data.description}</p>
+            <div className="flex space-x-2 mt-4 pl-11">
+              {data.buttons.map((btn, index) => (
+                <button 
+                  key={btn} 
+                  onClick={() => onAction(`User clicked the '${btn}' button. As Neuron AI, confirm this action and explain what happens next.`)}
+                  className={`px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 ${index === 0 ? 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-[0_0_15px_rgba(0,255,255,0.3)]' : 'bg-gray-700 hover:bg-gray-600 text-gray-200'}`}>
+                  {btn}
+                </button>
+              ))}
+            </div>
+          </div>
+        );
+
+        const DataStreamOverview = ({ data }) => (
+          <div className="p-4 border-b border-cyan-900/50">
+            <h3 className="text-md font-semibold text-white mb-3 flex items-center gap-2">{icons.server} Data Stream Overview</h3>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
+              {Object.entries(data).map(([key, value]) => (
+                <div key={key} className="flex justify-between items-center">
+                  <span className="text-gray-400">{key}:</span>
+                  <div className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div><span className="text-green-400 font-semibold">{value}</span></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        );
+        const StatBar = ({ value, colorClass }) => (<div className="w-full bg-gray-700 rounded-full h-1.5"><div className={`${colorClass} h-1.5 rounded-full`} style={{ width: `${value}%` }}></div></div>);
+        const PlayerCard = ({ data }) => (
+          <div className="p-4 border-b border-cyan-900/50">
+            <div className="flex justify-between items-start mb-3"><h4 className="font-bold text-white">{data.name}</h4><span className="text-xl font-bold text-cyan-300">{data.score}%</span></div>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-3 text-sm">
+              <div><div className="flex justify-between text-gray-400 mb-1"><span>Leverage Score</span><strong className="text-white">{data.leverage}</strong></div><StatBar value={data.leverage} colorClass="bg-green-500" /></div>
+              <div><div className="flex justify-between text-gray-400 mb-1"><span>Ceiling Rank</span><strong className="text-white">{data.ceiling}th %ile</strong></div><StatBar value={data.ceiling} colorClass="bg-purple-500" /></div>
+              <div><div className="flex justify-between text-gray-400 mb-1"><span>Ownership</span><strong className="text-white">{data.ownership}%</strong></div><StatBar value={data.ownership} colorClass={data.ownership < 10 ? 'bg-cyan-500' : 'bg-orange-500'} /></div>
+              <div><div className="flex justify-between text-gray-400 mb-1"><span>Alpha Projection</span><strong className="text-green-400">{data.value}</strong></div><div className="w-full bg-gray-700 rounded-full h-1.5"></div></div>
+            </div>
+            <p className="text-sm text-cyan-200/70 italic mt-3 flex items-center gap-2"><span className="w-4 h-4">{icons.sparkles}</span>Strategic Insight: {data.note}</p>
+          </div>
+        );
+        const AgentStatusMonitor = ({ data }) => (
+            <div className="p-4 border-b border-cyan-900/50">
+                <h3 className="text-md font-semibold text-white mb-2 flex items-center gap-2">{icons.server} Agent Status Monitor</h3>
+                <table className="w-full text-sm text-left"><thead className="text-gray-400"><tr><th className="py-2">Agent</th><th className="py-2">State</th><th className="py-2">Tasks</th><th className="py-2">Errors</th><th className="py-2">Last Activity</th></tr></thead>
+                    <tbody>{data.map(agent => (<tr key={agent.name} className="text-white border-t border-cyan-900/50"><td className="py-2 font-semibold">{agent.name}</td><td className="py-2 font-semibold"><div className="flex items-center gap-2"><div className={`w-2 h-2 rounded-full ${agent.state === 'Active' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`}></div><span className={agent.state === 'Active' ? 'text-green-400' : 'text-red-500'}>{agent.state}</span></div></td><td className="py-2">{agent.tasks}</td><td className={`py-2 ${agent.errors > 0 ? 'text-red-500' : ''}`}>{agent.errors}</td><td className="py-2">{agent.lastActivity}</td></tr>))}</tbody>
+                </table>
+            </div>
+        );
+
+        const WinProbabilityChart = ({ data }) => {
+            const points = data.map((p, i) => `${(i / (data.length - 1)) * 100},${100 - p}`).join(' ');
+            return (
+                <div className="mt-4">
+                    <h4 className="text-sm font-semibold text-white mb-2 flex items-center gap-2">{icons.lineChart} Win Probability</h4>
+                    <svg viewBox="0 0 100 100" className="w-full h-24 bg-gray-900/50 rounded-lg p-2">
+                        <polyline fill="none" stroke="#06b6d4" strokeWidth="2" points={points} />
+                    </svg>
+                </div>
+            );
+        };
+
+        const SentimentGauge = ({ value, label, player }) => {
+            const angle = -90 + (value / 100) * 180;
+            return (
+                <div className="p-4 border-b border-cyan-900/50">
+                    <h3 className="text-md font-semibold text-white mb-2 flex items-center gap-2">{icons.gauge} Market Sentiment: {player}</h3>
+                    <div className="relative w-48 h-24 mx-auto">
+                        <svg viewBox="0 0 100 50" className="w-full h-full">
+                            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#374151" strokeWidth="8" />
+                            <path d="M 10 50 A 40 40 0 0 1 90 50" fill="none" stroke="#06b6d4" strokeWidth="8" strokeDasharray={`${value}, 100`} />
+                        </svg>
+                        <div className="absolute bottom-0 w-full text-center">
+                            <div className="text-2xl font-bold text-cyan-300">{label}</div>
+                            <div className="text-xs text-gray-400">{value}% Bullish</div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const StrategicInsight = ({ data }) => (
+            <div className="p-4 border-b border-cyan-900/50 bg-cyan-900/20">
+                <h3 className="text-md font-semibold text-cyan-300 mb-2 flex items-center gap-2">{icons.target} Strategic Alpha</h3>
+                <p className="text-sm text-white"><strong className="font-semibold">{data.title}:</strong> {data.text}</p>
+            </div>
+        );
+
+        const PortfolioCommandCenter = ({ data }) => (
+            <div className="p-4 border-b border-cyan-900/50">
+                <h3 className="text-md font-semibold text-white mb-3 flex items-center gap-2">{icons.barChart} Portfolio Command Center</h3>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div className="bg-gray-900/50 p-3 rounded-lg text-center"><div className="text-gray-400 text-xs">Active Lineups</div><div className="text-white text-xl font-bold">{data.lineups}</div></div>
+                    <div className="bg-gray-900/50 p-3 rounded-lg text-center"><div className="text-gray-400 text-xs">Total Investment</div><div className="text-white text-xl font-bold">{data.investment}</div></div>
+                    <div className="bg-gray-900/50 p-3 rounded-lg text-center"><div className="text-gray-400 text-xs">Projected Edge</div><div className="text-green-400 text-xl font-bold">{data.edge}</div></div>
+                    <div className="bg-gray-900/50 p-3 rounded-lg text-center"><div className="text-gray-400 text-xs">Risk Score</div><div className="text-orange-400 text-xl font-bold">{data.risk}</div></div>
+                </div>
+                <div className="mt-4"><h4 className="text-sm font-semibold text-white mb-2">Exposure Overview</h4><div className="flex flex-wrap gap-2 text-xs">{Object.entries(data.exposure).map(([player, percentage]) => (<div key={player} className="bg-gray-800 p-2 rounded"><span className="text-gray-300">{player}: </span><strong className="text-white">{percentage}</strong></div>))}</div></div>
+                {data.winProbData && <WinProbabilityChart data={data.winProbData} />}
+            </div>
+        );
+        const LiveOptimization = ({ data }) => (
+            <div className="p-4 border-b border-cyan-900/50">
+                <h3 className="text-md font-semibold text-white mb-2 flex items-center gap-2">{icons.sparkles} Live Optimization</h3>
+                <ul className="text-sm text-gray-300 space-y-2">
+                    <li className="flex items-center gap-2">{icons.checkCircle} {data.lineupsOptimized} lineups auto-optimized</li>
+                    <li className="flex items-center gap-2">{icons.zap} {data.pivots} critical pivots remaining</li>
+                    <li className="flex items-center gap-2">{icons.trendingUp} Edge improved by <strong className="text-green-400">{data.edgeImprovement}</strong></li>
+                </ul>
+            </div>
+        );
+        const Chat = ({ messages, suggestions, onSendMessage, isTyping }) => {
+          const [userInput, setUserInput] = useState('');
+          const chatEndRef = useRef(null);
+          useEffect(() => { chatEndRef.current?.scrollIntoView({ behavior: "smooth" }); }, [messages, isTyping]);
+          const handleSend = () => { if (userInput.trim()) { onSendMessage(userInput); setUserInput(''); } };
+          const handleSuggestionClick = (suggestion) => { onSendMessage(suggestion); }
+          return (
+            <div className="p-4 flex-grow flex flex-col bg-gray-900/50 h-full">
+              <div className="flex-grow overflow-y-auto pr-2" style={{maxHeight: 'calc(100vh - 200px)'}}>
+                {messages.map((msg, index) => (
+                  <div key={index} className={`mb-4 flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                    <div className={`p-3 rounded-lg max-w-xs lg:max-w-md ${msg.role === 'user' ? 'bg-cyan-800 text-white' : 'bg-black/20 border border-cyan-900/30 text-white'}`}>
+                      <p className="text-sm font-semibold mb-1">{msg.role === 'user' ? 'You' : 'Neuron AI'}</p>
+                      <p className="text-sm whitespace-pre-wrap">{msg.text}</p>
+                    </div>
+                  </div>
+                ))}
+                {isTyping && (
+                   <div className="mb-4 flex justify-start">
+                     <div className="p-3 rounded-lg bg-black/20 border border-cyan-900/30 text-white">
+                       <p className="text-sm font-semibold mb-1">Neuron AI</p>
+                       <div className="flex items-center gap-2">
+                           <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse delay-75"></div>
+                           <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse delay-150"></div>
+                           <div className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse delay-300"></div>
+                       </div>
+                     </div>
+                   </div>
+                )}
+                <div ref={chatEndRef} />
+              </div>
+              <div className="flex flex-wrap gap-2 my-3">
+                {suggestions.map(sugg => (
+                  <button key={sugg} onClick={() => handleSuggestionClick(sugg)} className="bg-gray-700 hover:bg-gray-600 text-gray-200 text-xs px-3 py-1.5 rounded-full transition-colors duration-200">{sugg}</button>
+                ))}
+              </div>
+              <div className="mt-auto flex items-center bg-gray-800 rounded-lg p-1 border border-cyan-900/50 focus-within:border-cyan-500 transition-colors duration-200">
+                <input type="text" placeholder="Engage with Neuron AI..." className="bg-transparent w-full text-white placeholder-gray-500 focus:outline-none px-2" value={userInput} onChange={(e) => setUserInput(e.target.value)} onKeyPress={(e) => e.key === 'Enter' && handleSend()} />
+                <button onClick={handleSend} disabled={isTyping} className="bg-cyan-600 hover:bg-cyan-500 text-white p-2 rounded-md transition-colors duration-200 disabled:bg-gray-600"><span className="w-5 h-5">{icons.send}</span></button>
+              </div>
+            </div>
+          );
+        };
+
+        function App() {
+          const [scenarioId, setScenarioId] = useState(1);
+          const [isTransitioning, setIsTransitioning] = useState(false);
+          const [messages, setMessages] = useState([]);
+          const [isTyping, setIsTyping] = useState(false);
+
+          const currentScenario = scenarios[scenarioId];
+          const statusColor = currentScenario.header.status === 'Advisor Mode' ? 'bg-yellow-500' : 'bg-green-500';
+          
+          useEffect(() => {
+            if (currentScenario.chat) {
+              setMessages([{ role: 'model', text: currentScenario.chat.initialMessage }]);
+            }
+          }, [scenarioId]);
+
+          const handleScenarioChange = (id) => {
+            setIsTransitioning(true);
+            setTimeout(() => {
+              setScenarioId(id);
+              setIsTransitioning(false);
+            }, 300);
+          };
+
+          // --- MODIFIED: This function now correctly calls the Gemini API ---
+          const handleInteraction = async (interactionText, isButtonAction = false) => {
+            const newMessages = isButtonAction ? [...messages] : [...messages, { role: 'user', text: interactionText }];
+            if (!isButtonAction) { setMessages(newMessages); }
+            setIsTyping(true);
+            
+            // --- CHANGE 1: Create a more detailed context for the AI ---
+            let context = `Title: ${currentScenario.title}\nStatus: ${currentScenario.header.status}`;
+            if (currentScenario.feed) {
+                context += `\nAlert: ${currentScenario.feed.title} - ${currentScenario.feed.description}`;
+            }
+            if (currentScenario.strategicInsight) {
+                context += `\nStrategic Insight: ${currentScenario.strategicInsight.title} - ${currentScenario.strategicInsight.text}`;
+            }
+            if (currentScenario.players) {
+                const playerInfo = currentScenario.players.map(p => `${p.name} (Score: ${p.score}, Ownership: ${p.ownership}%)`).join('; ');
+                context += `\nKey Players: ${playerInfo}`;
+            }
+
+            const fullPrompt = `
+              You are Neuron AI, a sophisticated and helpful fantasy football co-pilot. Your personality is sharp, insightful, and proactive. You don't just give answers; you provide strategic context.
+
+              Current Scenario Context:
+              ---
+              ${context}
+              ---
+
+              User's Request: "${interactionText}"
+
+              Your Response:
+            `;
+            
+            const chatHistory = [{ role: "user", parts: [{ text: fullPrompt }] }];
+            const payload = { contents: chatHistory };
+            
+            // --- CHANGE 2: Remove hardcoded API key. This will be handled by the environment. ---
+            const apiKey = ""; 
+            
+            // --- CHANGE 3: Use a current, recommended model. ---
+            const model = "gemini-2.0-flash";
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+            
+            try {
+              const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+              if (!response.ok) { throw new Error(`API request failed with status ${response.status}`); }
+              const result = await response.json();
+              
+              let modelResponse = "Sorry, I couldn't process that request. Please try again.";
+              if (result.candidates && result.candidates.length > 0 && result.candidates[0].content && result.candidates[0].content.parts && result.candidates[0].content.parts.length > 0) {
+                modelResponse = result.candidates[0].content.parts[0].text;
+              }
+              setMessages([...newMessages, { role: 'model', text: modelResponse }]);
+            } catch (error) {
+              console.error("Gemini API Error:", error);
+              setMessages([...newMessages, { role: 'model', text: `Error: ${error.message}. Could not connect to the AI engine.` }]);
+            } finally {
+              setIsTyping(false);
+            }
+          };
+
+          const renderLeftColumn = () => {
+            if (currentScenario.isStatic) {
+              return (
+                <div className="p-6">
+                  <h2 className="text-2xl font-bold text-cyan-300 mb-4">{currentScenario.staticContent.title}</h2>
+                  <p className="text-gray-400 mb-6">{currentScenario.staticContent.description}</p>
+                  <div className="space-y-4">
+                    {currentScenario.staticContent.points.map(point => (
+                      <div key={point.title} className="bg-gray-900/50 p-4 rounded-lg border border-cyan-900/50">
+                        <h3 className="font-semibold text-white">{point.title}</h3>
+                        <p className="text-sm text-gray-300 mt-1">{point.text}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            }
+            return (
+              <>
+                <Controls items={currentScenario.controls} onAction={(prompt) => handleInteraction(prompt, true)} />
+                <div className="flex-grow overflow-y-auto" style={{maxHeight: 'calc(100vh - 250px)'}}>
+                    <LiveIntelligenceFeed data={currentScenario.feed} onAction={(prompt) => handleInteraction(prompt, true)} />
+                    {currentScenario.strategicInsight && <StrategicInsight data={currentScenario.strategicInsight} />}
+                    {currentScenario.sentiment && <SentimentGauge value={currentScenario.sentiment.value} label={currentScenario.sentiment.label} player={currentScenario.sentiment.player} />}
+                    {currentScenario.dataStream && <DataStreamOverview data={currentScenario.dataStream} />}
+                    {currentScenario.agentMonitor && <AgentStatusMonitor data={currentScenario.agentMonitor} />}
+                    {currentScenario.portfolio && <PortfolioCommandCenter data={currentScenario.portfolio} />}
+                    {currentScenario.optimization && <LiveOptimization data={currentScenario.optimization} />}
+                    {currentScenario.players && currentScenario.players.map(p => <PlayerCard key={p.name} data={p} />)}
+                </div>
+              </>
+            );
+          };
+
+          return (
+            <div className="bg-[#0D1117] min-h-screen font-sans p-2 sm:p-4 flex flex-col items-center text-gray-200">
+                <div className="w-full max-w-7xl mb-4">
+                    <label htmlFor="scenario-select" className="block text-sm font-medium text-gray-400 mb-1">Select Test Scenario:</label>
+                    <select
+                        id="scenario-select"
+                        value={scenarioId}
+                        onChange={(e) => handleScenarioChange(Number(e.target.value))}
+                        className="bg-gray-800 text-white w-full p-2 rounded-lg border border-cyan-900/50 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    >
+                        {Object.values(scenarios).map(s => (<option key={s.id} value={s.id}>{s.id}: {s.title}</option>))}
+                    </select>
+                </div>
+
+                <div className={`w-full max-w-7xl bg-[#161B22] rounded-lg shadow-2xl shadow-black/50 border border-cyan-900/50 flex flex-col lg:flex-row transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+                    <div className="w-full lg:w-3/5 flex flex-col border-r-0 lg:border-r border-cyan-900/50">
+                        <Header data={currentScenario.header} statusColor={statusColor} />
+                        {renderLeftColumn()}
+                    </div>
+
+                    <div className="w-full lg:w-2/5 flex flex-col">
+                        {currentScenario.chat && <Chat 
+                            messages={messages} 
+                            suggestions={currentScenario.chat.suggestions}
+                            onSendMessage={(prompt) => handleInteraction(prompt, false)}
+                            isTyping={isTyping}
+                        />}
+                    </div>
+                </div>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+
+    </script>
+</body>
+</html>
