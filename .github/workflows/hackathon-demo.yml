@@ -545,15 +545,15 @@ jobs:
         echo "🎭 EPIC HACKATHON DASHBOARD CREATED!"
 
     - name: "Setup GitHub Pages"
-      uses: actions/configure-pages@v3
+      uses: actions/configure-pages@v4
       
     - name: "Upload Epic Dashboard"
-      uses: actions/upload-pages-artifact@v2
+      uses: actions/upload-pages-artifact@v3
       with:
         path: ./demo_dashboard
     
     - name: "Deploy Epic Demo Dashboard"
-      uses: actions/deploy-pages@v2
+      uses: actions/deploy-pages@v4
 
   hackathon-victory-summary:
     name: "Hackathon Victory Summary"
