@@ -9,7 +9,7 @@ This CLI demonstrates all 4 hackathon technologies working together:
 3. 🧠 Gemini Analysis: Google AI advanced pattern detection
 4. 📊 W&B Tracking: Experiment logging and transparency
 
-Author: Hackathon Team
+Author: ClimateJustice.ai Hackathon Team
 Version: 1.0.0
 License: MIT
 """
@@ -1133,6 +1133,348 @@ def status():
     click.echo("  • Set API keys as environment variables for full functionality")
     click.echo("  • Demo mode provides realistic simulations when APIs unavailable")
     click.echo("  • All core Neuron Framework features work without external APIs")
+
+@cli.command()
+@click.option('--output', default='results', help='Output directory for generated files')
+def generate_report(output):
+    """Generate comprehensive documentation and reports"""
+    click.echo("📋 Generating ClimateJustice.ai comprehensive reports...")
+    
+    import os
+    os.makedirs(output, exist_ok=True)
+    
+    # Generate README
+    readme_content = """# ClimateJustice.ai - Hackathon Results
+
+## 🏆 Hackathon Integration Success
+
+This project successfully demonstrates the integration of all 4 required hackathon technologies:
+
+### 🧠 Technology #1: Neuron Framework
+- **Multi-agent coordination system** with 5 specialized agents
+- **SynapticBus message passing** for real-time coordination
+- **Memory systems**: Episodic, semantic, and working memory
+- **Specialized agents**: BiasDetector, LegalAnalysis, CommunityImpact, PolicyAdvocacy, Coordinator
+
+### 🤖 Technology #2: MCP (Model Context Protocol)
+- **Anthropic Claude integration** for enhanced reasoning
+- **Agent coordination analysis** and legal assessment
+- **Context sharing** between agents and external AI systems
+- **Fallback simulation** when API unavailable
+
+### 🧠 Technology #3: Gemini (Google AI)
+- **Advanced pattern analysis** of bias detection results
+- **Legal vulnerability assessment** using Google's AI
+- **Community impact severity analysis**
+- **Pattern confidence scoring** for decision support
+
+### 📊 Technology #4: W&B (Weights & Biases)
+- **Complete experiment tracking** and metrics logging
+- **Transparency and reproducibility** for community protection
+- **Live monitoring dashboards** with public URLs
+- **ML metrics tracking** for bias detection algorithms
+
+## Quick Start
+
+```bash
+# Install dependencies
+pip install -r requirements.txt
+
+# Check system status
+python hackathon_cli.py status
+
+# Run basic analysis
+python hackathon_cli.py analyze --community paradise_ca
+
+# Run full integration (all 4 technologies)
+python hackathon_cli.py analyze --community paradise_ca --full-integration
+
+# Run complete demo
+python hackathon_cli.py demo
+```
+
+## Sample Results
+
+The system successfully detects insurance bias in fire-affected communities:
+
+- **Paradise, CA**: 73% cancellation rate detected
+- **Santa Rosa, CA**: 45% cancellation rate detected  
+- **Lahaina, HI**: 82% cancellation rate detected
+
+Each analysis provides:
+- Legal evidence packages for federal complaints
+- Community impact assessments
+- Policy recommendations
+- Stakeholder coordination plans
+
+## Architecture
+
+The system uses a novel multi-agent architecture where specialized AI agents coordinate via the SynapticBus to detect bias, analyze legal implications, assess community impact, and recommend policy responses.
+
+## License
+
+MIT License - Built for community protection and social justice.
+"""
+    
+    with open(os.path.join(output, 'README.md'), 'w') as f:
+        f.write(readme_content)
+    
+    # Generate requirements.txt
+    requirements = """click>=8.0.0
+rich>=12.0.0
+anthropic>=0.3.0
+google-generativeai>=0.3.0
+wandb>=0.13.0
+asyncio
+dataclasses
+typing
+uuid
+datetime
+json
+os
+time
+random
+logging
+"""
+    
+    with open(os.path.join(output, 'requirements.txt'), 'w') as f:
+        f.write(requirements)
+    
+    # Generate setup.py
+    setup_content = """from setuptools import setup, find_packages
+
+setup(
+    name="climatejustice-ai",
+    version="1.0.0",
+    author="ClimateJustice.ai Hackathon Team",
+    description="Neuron Framework integration with MCP, Gemini, and W&B for community protection",
+    long_description=open("README.md").read(),
+    long_description_content_type="text/markdown",
+    packages=find_packages(),
+    install_requires=[
+        "click>=8.0.0",
+        "rich>=12.0.0",
+        "anthropic>=0.3.0",
+        "google-generativeai>=0.3.0",
+        "wandb>=0.13.0",
+    ],
+    entry_points={
+        "console_scripts": [
+            "climatejustice=hackathon_cli:cli",
+        ],
+    },
+    classifiers=[
+        "Development Status :: 4 - Beta",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+        "Topic :: Sociology",
+    ],
+    python_requires=">=3.8",
+)
+"""
+    
+    with open(os.path.join(output, 'setup.py'), 'w') as f:
+        f.write(setup_content)
+    
+    # Generate .gitignore
+    gitignore = """# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Environment
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# API Keys
+.env.local
+.env.development
+.env.production
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Results
+results/
+climatejustice_results_*.json
+wandb/
+
+# Logs
+*.log
+logs/
+"""
+    
+    with open(os.path.join(output, '.gitignore'), 'w') as f:
+        f.write(gitignore)
+    
+    # Generate LICENSE
+    license_content = """MIT License
+
+Copyright (c) 2024 ClimateJustice.ai Hackathon Team
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+    
+    with open(os.path.join(output, 'LICENSE'), 'w') as f:
+        f.write(license_content)
+    
+    # Generate GitHub Actions workflow
+    os.makedirs(os.path.join(output, '.github', 'workflows'), exist_ok=True)
+    
+    workflow_content = """name: ClimateJustice.ai CI/CD
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: [3.8, 3.9, "3.10"]
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{ matrix.python-version }}
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-cov
+    
+    - name: Test Neuron Framework
+      run: |
+        python -c "import hackathon_cli; print('✅ Neuron Framework imports successfully')"
+    
+    - name: Test CLI Status
+      run: |
+        python hackathon_cli.py status
+    
+    - name: Test Community Analysis (Demo Mode)
+      run: |
+        python hackathon_cli.py analyze --community paradise_ca
+    
+    - name: Test Architecture Display
+      run: |
+        python hackathon_cli.py architecture
+
+  demo:
+    runs-on: ubuntu-latest
+    needs: test
+    if: github.ref == 'refs/heads/main'
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    
+    - name: Run Full Demo
+      env:
+        ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+      run: |
+        python hackathon_cli.py demo
+    
+    - name: Upload Results
+      uses: actions/upload-artifact@v3
+      with:
+        name: demo-results
+        path: climatejustice_results_*.json
+"""
+    
+    with open(os.path.join(output, '.github', 'workflows', 'ci.yml'), 'w') as f:
+        f.write(workflow_content)
+    
+    # Generate sample data
+    os.makedirs(os.path.join(output, 'data'), exist_ok=True)
+    
+    communities_data = get_sample_communities()
+    with open(os.path.join(output, 'data', 'sample_communities.json'), 'w') as f:
+        json.dump(communities_data, f, indent=2)
+    
+    click.echo(f"✅ Generated comprehensive project files in: {output}/")
+    click.echo("\n📁 Generated files:")
+    click.echo("  ├── README.md")
+    click.echo("  ├── requirements.txt") 
+    click.echo("  ├── setup.py")
+    click.echo("  ├── LICENSE")
+    click.echo("  ├── .gitignore")
+    click.echo("  ├── .github/workflows/ci.yml")
+    click.echo("  └── data/sample_communities.json")
+    
+    click.echo(f"\n🚀 To create GitHub repository:")
+    click.echo(f"  cd {output}")
+    click.echo("  git init")
+    click.echo("  git add .")
+    click.echo('  git commit -m "Initial ClimateJustice.ai hackathon submission"')
+    click.echo("  gh repo create climatejustice-ai --public")
+    click.echo("  git push -u origin main")
 
 if __name__ == '__main__':
     cli()
