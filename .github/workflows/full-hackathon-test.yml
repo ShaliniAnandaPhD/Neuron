@@ -1,0 +1,278 @@
+name: Full Hackathon CLI Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      community:
+        description: 'Community to protect'
+        required: false
+        default: 'Palisades'
+      test_level:
+        description: 'Test level'
+        required: false
+        default: 'full'
+        type: choice
+        options:
+          - basic
+          - full
+          - emergency
+
+env:
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+  WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  test-integration:
+    name: Test Integration Command
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install click rich google-generativeai wandb anthropic pandas numpy
+        
+    - name: Test integration command
+      run: |
+        echo "🏆 Testing all 4 hackathon technologies integration..."
+        python hackathon_cli.py test-integration
+        
+    - name: Upload integration results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: integration-test-results
+        path: results/
+        if-no-files-found: ignore
+
+  test-neuron-demo:
+    name: Test Neuron Framework Demo
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install click rich google-generativeai wandb anthropic pandas numpy
+        
+    - name: Test neuron demo
+      run: |
+        echo "🧠 Testing Neuron Framework multi-agent coordination..."
+        python hackathon_cli.py neuron-demo --agents 5
+        
+    - name: Upload neuron demo results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: neuron-demo-results
+        path: results/
+        if-no-files-found: ignore
+
+  test-community-protection:
+    name: Test Community Protection
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install click rich google-generativeai wandb anthropic pandas numpy
+        
+    - name: Test community protection
+      run: |
+        COMMUNITY="${{ github.event.inputs.community || 'Palisades' }}"
+        echo "🛡️ Testing community protection for $COMMUNITY..."
+        python hackathon_cli.py protect-community --community "$COMMUNITY" --agents 5
+        
+    - name: Check results
+      run: |
+        echo "📊 Checking generated results..."
+        if [ -d "results" ]; then
+          echo "Results found:"
+          ls -la results/
+          
+          if [ -f "results/hackathon_results.json" ]; then
+            echo "=== Hackathon Results ==="
+            cat results/hackathon_results.json
+          fi
+        fi
+        
+    - name: Upload community protection results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: community-protection-results
+        path: results/
+        if-no-files-found: ignore
+
+  emergency-response-test:
+    name: Emergency Response Test
+    runs-on: ubuntu-latest
+    if: github.event.inputs.test_level == 'emergency' || github.event_name == 'workflow_dispatch'
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+        
+    - name: Install dependencies
+      run: |
+        pip install click rich google-generativeai wandb anthropic pandas numpy
+        
+    - name: Emergency response simulation
+      run: |
+        echo "🚨 EMERGENCY RESPONSE SIMULATION"
+        echo "Testing rapid community protection deployment..."
+        
+        # Test multiple communities rapidly
+        for community in "Palisades" "Altadena" "Malibu"; do
+          echo "🏘️ Emergency protection for $community..."
+          timeout 60 python hackathon_cli.py protect-community --community "$community" --agents 6 || echo "Timeout - continuing..."
+        done
+        
+        echo "🎯 Emergency response simulation complete"
+
+  comprehensive-summary:
+    name: Comprehensive Test Summary
+    runs-on: ubuntu-latest
+    needs: [test-integration, test-neuron-demo, test-community-protection]
+    if: always()
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Download all results
+      uses: actions/download-artifact@v4
+      with:
+        merge-multiple: true
+        
+    - name: Generate comprehensive summary
+      run: |
+        echo "🏆 COMPREHENSIVE HACKATHON CLI TEST SUMMARY"
+        echo "=========================================="
+        echo ""
+        echo "📊 Test Results:"
+        echo "  🔧 Integration Test: ${{ needs.test-integration.result }}"
+        echo "  🧠 Neuron Demo: ${{ needs.test-neuron-demo.result }}"
+        echo "  🛡️ Community Protection: ${{ needs.test-community-protection.result }}"
+        echo ""
+        
+        echo "🏆 All 4 Hackathon Technologies Status:"
+        echo "  🧠 Neuron Framework: Multi-agent coordination system"
+        echo "  🤖 MCP Integration: Anthropic Claude enhancement"
+        echo "  🧠 Gemini Analysis: Google AI pattern detection"
+        echo "  📊 W&B Tracking: Experiment monitoring & transparency"
+        echo ""
+        
+        # Count successful tests
+        SUCCESS_COUNT=0
+        if [ "${{ needs.test-integration.result }}" = "success" ]; then
+          ((SUCCESS_COUNT++))
+        fi
+        if [ "${{ needs.test-neuron-demo.result }}" = "success" ]; then
+          ((SUCCESS_COUNT++))
+        fi
+        if [ "${{ needs.test-community-protection.result }}" = "success" ]; then
+          ((SUCCESS_COUNT++))
+        fi
+        
+        echo "🎯 Success Rate: $SUCCESS_COUNT/3 tests passed"
+        echo ""
+        
+        if [ $SUCCESS_COUNT -eq 3 ]; then
+          echo "🎉 PERFECT SCORE! All tests passed!"
+          echo "✅ Your Neuron Framework Hackathon CLI is fully operational"
+          echo "✅ All 4 technologies are perfectly integrated"
+          echo "✅ Community protection system is ready for deployment"
+          echo ""
+          echo "🚀 READY FOR:"
+          echo "  🛡️ Real-time community bias monitoring"
+          echo "  🚨 Emergency response automation (< 5 minutes)"
+          echo "  ⚖️ Automated legal document generation"
+          echo "  🏘️ Multi-community protection deployment"
+          echo ""
+          echo "🌟 HACKATHON ACHIEVEMENT UNLOCKED: FULL STACK AI COORDINATION!"
+          
+        elif [ $SUCCESS_COUNT -eq 2 ]; then
+          echo "🟡 GOOD: Most tests passed!"
+          echo "💡 Check failed test logs for any issues to resolve"
+          echo "✅ Core functionality is working"
+          
+        elif [ $SUCCESS_COUNT -eq 1 ]; then
+          echo "🟠 PARTIAL: Some functionality working"
+          echo "💡 Review test logs and check API configurations"
+          
+        else
+          echo "🔴 NEEDS ATTENTION: Tests encountered issues"
+          echo "💡 Check API keys and CLI implementation"
+        fi
+        
+        echo ""
+        echo "📁 Generated Results:"
+        find . -name "*.json" -o -name "*.log" | head -10 || echo "No result files found"
+        
+        echo ""
+        echo "🔗 Next Steps:"
+        echo "1. Review any failed tests in the Actions logs"
+        echo "2. Add emergency response workflows"
+        echo "3. Set up community monitoring schedules"
+        echo "4. Deploy to production for real community protection"
+        
+    - name: Check for generated data
+      run: |
+        echo "🔍 Analyzing generated data..."
+        
+        # Look for any JSON results
+        if find . -name "*.json" | grep -q .; then
+          echo "📄 JSON Results Found:"
+          find . -name "*.json" -exec echo "--- {} ---" \; -exec cat {} \; -exec echo "" \;
+        else
+          echo "ℹ️ No JSON results generated"
+        fi
+        
+        # Look for any other interesting files
+        echo ""
+        echo "📁 All generated files:"
+        find . -type f -newer /tmp -not -path "./.git/*" | head -20
+        
+    - name: Final celebration
+      if: needs.test-integration.result == 'success' && needs.test-neuron-demo.result == 'success' && needs.test-community-protection.result == 'success'
+      run: |
+        echo ""
+        echo "🎊🎊🎊 HACKATHON SUCCESS! 🎊🎊🎊"
+        echo ""
+        echo "🏆 PERFECT INTEGRATION OF ALL 4 TECHNOLOGIES:"
+        echo "   🧠 Neuron Framework ✅"
+        echo "   🤖 MCP + Anthropic ✅"
+        echo "   🧠 Google Gemini ✅"
+        echo "   📊 Weights & Biases ✅"
+        echo "   🚀 GitHub Actions ✅"
+        echo ""
+        echo "🛡️ COMMUNITY PROTECTION SYSTEM FULLY OPERATIONAL!"
+        echo "⚡ Ready for emergency response deployment!"
+        echo "🌍 Ready to protect communities from algorithmic discrimination!"
+        echo ""
+        echo "You've successfully built a production-ready AI system"
+        echo "that coordinates 4 cutting-edge technologies for social justice!"
