@@ -41,7 +41,7 @@ jobs:
           WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
-          python3 climatejustice.py analyze --community ${{ matrix.community }} --full-integration
+          python3 hackathon_cli.py analyze --community ${{ matrix.community }} --full-integration
           # Save the name of the results file to use later
           echo "RESULTS_FILE=$(ls -t climatejustice_results_*.json | head -n 1)" >> $GITHUB_ENV
 
