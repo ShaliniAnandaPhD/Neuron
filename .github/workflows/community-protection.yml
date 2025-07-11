@@ -1,0 +1,75 @@
+name: 1. Main Community Protection Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Runs automatically every 6 hours to audit communities for bias
+    - cron: '0 */6 * * *'
+
+jobs:
+  analyze-communities:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        # Define the communities to scan. Easily add more here.
+        community: [paradise_ca, santa_rosa_ca, lahaina_hi, malibu_ca, altadena_ca]
+      fail-fast: false # Ensures all community analyses run even if one fails
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          # jq is a tool to parse JSON in bash
+          sudo apt-get install -y jq
+
+      - name: 🧠🤖📊 Run Full Integration Analysis
+        id: analysis
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          WANDB_API_KEY: ${{ secrets.WANDB_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: |
+          python3 climatejustice.py analyze --community ${{ matrix.community }} --full-integration
+          # Save the name of the results file to use later
+          echo "RESULTS_FILE=$(ls -t climatejustice_results_*.json | head -n 1)" >> $GITHUB_ENV
+
+      - name: 📤 Upload Analysis Report Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: analysis-report-${{ matrix.community }}
+          path: ${{ env.RESULTS_FILE }}
+
+      - name: 🚨 Check for Critical Bias and Trigger Emergency Response
+        # This step checks the bias score from the JSON report.
+        # If the score is over 0.7, it triggers the emergency workflow.
+        id: check_bias
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BIAS_THRESHOLD: 0.7 # Set the emergency threshold here
+        run: |
+          BIAS_SCORE=$(jq '.neuron_framework.neuron_framework_results.bias_detection.bias_score' ${{ env.RESULTS_FILE }})
+          echo "Community: ${{ matrix.community }}, Bias Score: $BIAS_SCORE"
+          
+          if (( $(echo "$BIAS_SCORE > $BIAS_THRESHOLD" | bc -l) )); then
+            echo "🔥 CRITICAL BIAS DETECTED! Triggering Emergency Response Workflow."
+            
+            # Send a basic Slack Alert for immediate visibility
+            curl -X POST -H 'Content-type: application/json' --data '{"text":"🔥 CRITICAL BIAS DETECTED in ${{ matrix.community }} (Score: '$BIAS_SCORE'). Triggering Emergency Response."}' ${{ secrets.SLACK_WEBHOOK_URL }}
+
+            # Call the emergency workflow and pass data to it
+            gh workflow run emergency-response.yml -f community='${{ matrix.community }}' -f bias_score=$BIAS_SCORE -f report_file='${{ env.RESULTS_FILE }}'
+          else
+            echo "✅ Bias score is within acceptable limits."
+          fi
