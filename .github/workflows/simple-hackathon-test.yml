@@ -215,41 +215,38 @@ jobs:
         # Test Anthropic (Claude) - using new client
         echo "🤖 Testing Anthropic API..."
         python -c "
-import anthropic
-import os
-try:
-    client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
-    # Just test client creation, don't make actual API call
-    print('✅ Anthropic client created successfully')
-except Exception as e:
-    print(f'❌ Anthropic error: {e}')
-" || echo "⚠️ Anthropic test failed"
+        import anthropic
+        import os
+        try:
+            client = anthropic.Anthropic(api_key=os.environ.get('ANTHROPIC_API_KEY'))
+            print('✅ Anthropic client created successfully')
+        except Exception as e:
+            print(f'❌ Anthropic error: {e}')
+        " || echo "⚠️ Anthropic test failed"
         
         # Test Gemini
         echo "🧠 Testing Google Gemini API..."
         python -c "
-import google.generativeai as genai
-import os
-try:
-    genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
-    # Just test configuration, don't make actual API call
-    print('✅ Gemini configured successfully')
-except Exception as e:
-    print(f'❌ Gemini error: {e}')
-" || echo "⚠️ Gemini test failed"
+        import google.generativeai as genai
+        import os
+        try:
+            genai.configure(api_key=os.environ.get('GEMINI_API_KEY'))
+            print('✅ Gemini configured successfully')
+        except Exception as e:
+            print(f'❌ Gemini error: {e}')
+        " || echo "⚠️ Gemini test failed"
         
         # Test W&B
         echo "📊 Testing Weights & Biases API..."
         python -c "
-import wandb
-import os
-try:
-    # Just test login without starting a run
-    wandb.login(key=os.environ.get('WANDB_API_KEY'), verify=True)
-    print('✅ W&B login successful')
-except Exception as e:
-    print(f'❌ W&B error: {e}')
-" || echo "⚠️ W&B test failed"
+        import wandb
+        import os
+        try:
+            wandb.login(key=os.environ.get('WANDB_API_KEY'), verify=True)
+            print('✅ W&B login successful')
+        except Exception as e:
+            print(f'❌ W&B error: {e}')
+        " || echo "⚠️ W&B test failed"
         
         echo "🏆 API connectivity tests completed"
         
