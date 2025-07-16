@@ -41,34 +41,7 @@ python run_t1_test.py
 pytest tests/test_t1_system.py -v
 ```
 
-## 📊 Expected Output
 
-```
-🚀 Starting T1 Hot-Swap Test...
-📊 Weave Project: neuron-framework-t1-hotswap
-
-🧪 Running 2 test cases...
-
-📊 Running Test 1/2: High confidence conflict between pristine image and total loss text
-✅ Success: True
-📈 Metrics:
-   total_duration: 3.2
-   conflict_detection_time: 1.8
-   swap_duration: 0.3
-   accuracy_preserved: True
-   conflict_detected: True
-   swap_executed: True
-
-📋 Success Criteria:
-   ✅ conflict_detection_under_2s: True
-   ✅ swap_under_500ms: True
-   ✅ accuracy_within_2pct: True
-
-🎯 T1 Test Summary:
-   Total Tests: 2
-   Passed: 2
-   Success Rate: 100.0%
-```
 
 ## 🎯 Success Criteria
 
@@ -118,7 +91,7 @@ wandb login
 3. **Log Files**: Stored in `logs/` directory
 
 ### Weave Dashboard
-- Go to https://wandb.ai/[your-entity]/neuron-framework-t1-hotswap
+- Go to https://wandb.ai/[------]/neuron-framework-t1-hotswap
 - View execution traces, timing metrics, and model comparisons
 - Analyze conflict detection patterns and swap efficiency
 
