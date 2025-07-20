@@ -1,0 +1,38 @@
+# Core Dependencies
+asyncio>=3.4.3
+aiofiles>=23.0.0
+dataclasses>=0.6;python_version<"3.7"
+
+# Monitoring and Metrics
+psutil>=5.9.0
+prometheus-client>=0.19.0
+
+# Configuration
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Logging and Reporting
+colorlog>=6.7.0
+rich>=13.0.0
+tabulate>=0.9.0
+
+# Testing Framework
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+pytest-timeout>=2.1.0
+
+# Optional: Observability Integration
+# wandb>=0.15.0  # For W&B Weave integration
+# opentelemetry-api>=1.20.0
+# opentelemetry-sdk>=1.20.0
+# opentelemetry-exporter-otlp>=1.20.0
+
+# Optional: Advanced Monitoring
+# aioprometheus>=23.3.0  # Async Prometheus client
+# aiohttp>=3.8.0  # For metrics HTTP endpoint
+
+# Development Dependencies
+black>=23.0.0
+flake8>=6.0.0
+mypy>=1.5.0
+isort>=5.12.0

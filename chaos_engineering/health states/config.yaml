@@ -1,0 +1,87 @@
+# Chaos Engineering Test Configuration
+
+# System Configuration
+system:
+  agent_count: 6
+  agent_health_check_interval: 1.0
+  agent_task_timeout: 5.0
+  monitor_check_interval: 0.5
+
+# Success Thresholds
+thresholds:
+  failure_detection_seconds: 1.0    # Must detect failures within 1 second
+  recovery_time_seconds: 2.0        # Must recover agents within 2 seconds
+  data_integrity_percent: 100       # Must maintain 100% data integrity
+
+# Chaos Configuration
+chaos:
+  # Network chaos
+  network:
+    packet_loss_rate: 0.4           # 40% packet loss
+    latency_ms: 500                 # Additional latency in milliseconds
+    jitter_ms: 100                  # Latency variation
+    
+  # Agent failures
+  agents:
+    failure_count: 2                # Number of agents to fail
+    failure_type: timeout           # timeout, crash, or slow_death
+    recovery_delay: 2.0             # Delay before recovery starts
+    
+  # Resource pressure
+  resources:
+    memory_leak_mb: 100             # Memory to consume
+    cpu_throttle_percent: 80        # CPU usage limit
+    
+  # Cascade failures
+  cascade:
+    initial_failures: 2             # Initial failing agents
+    cascade_probability: 0.5        # Chance of failure spreading
+    cascade_delay: 2.0              # Delay between cascade waves
+
+# Test Scenarios
+scenarios:
+  cascade-failure:
+    description: "Multiple agents fail in cascade pattern"
+    duration_seconds: 60
+    task_count: 100
+    task_rate: 2.0
+    enabled: true
+    
+  network-partition:
+    description: "Network split between agent groups"
+    duration_seconds: 60
+    task_count: 80
+    task_rate: 1.5
+    enabled: true
+    
+  resource-exhaustion:
+    description: "Memory and CPU pressure test"
+    duration_seconds: 90
+    task_count: 120
+    task_rate: 1.5
+    enabled: true
+    
+  slow-death:
+    description: "Gradual agent degradation"
+    duration_seconds: 120
+    task_count: 150
+    task_rate: 1.25
+    enabled: true
+
+# Monitoring Configuration
+monitoring:
+  metrics_export_interval: 5.0      # Export metrics every 5 seconds
+  history_window_size: 100          # Keep last 100 metric samples
+  
+# Recovery Configuration
+recovery:
+  strategy: replace                 # replace or redundancy
+  max_recovery_attempts: 3
+  task_redistribution: true         # Redistribute tasks from failed agents
+  
+# Reporting Configuration
+reporting:
+  output_directory: chaos_reports
+  format: json                      # json, yaml, or html
+  include_events: true              # Include detailed event log
+  include_metrics: true             # Include performance metrics
