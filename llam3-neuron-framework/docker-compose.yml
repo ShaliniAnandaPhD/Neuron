@@ -1,0 +1,108 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: neuron_user
+      POSTGRES_PASSWORD: neuron_pass
+      POSTGRES_DB: neuron_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U neuron_user"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis
+  redis:
+    image: redis:7-alpine
+    command: redis-server --appendonly yes
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # LLaMA3 API (placeholder - replace with actual LLaMA3 service)
+  llama3:
+    image: ghcr.io/ggerganov/llama.cpp:server
+    volumes:
+      - ./models:/models
+    environment:
+      - MODEL=/models/llama3.gguf
+    ports:
+      - "8080:8080"
+    command: >
+      --host 0.0.0.0
+      --port 8080
+      --model /models/llama3.gguf
+      --n-gpu-layers 35
+      --ctx-size 8192
+      --threads 8
+
+  # Neuron API
+  neuron-api:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://neuron_user:neuron_pass@postgres:5432/neuron_db
+      - REDIS_URL=redis://redis:6379
+      - LLAMA3_API_ENDPOINT=http://llama3:8080
+      - LLAMA3_API_KEY=${LLAMA3_API_KEY}
+      - JWT_SECRET=${JWT_SECRET:-change-me-in-production}
+      - ENABLE_AUTH=${ENABLE_AUTH:-true}
+    ports:
+      - "8000:8000"
+      - "8081:8081"  # Health check port
+      - "9090:9090"  # Metrics port
+    volumes:
+      - ./logs:/app/logs
+    command: python main.py --host 0.0.0.0 --port 8000 --workers 4
+
+  # Prometheus (optional)
+  prometheus:
+    image: prom/prometheus:latest
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+
+  # Grafana (optional)
+  grafana:
+    image: grafana/grafana:latest
+    depends_on:
+      - prometheus
+    ports:
+      - "3000:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
+      - ./grafana/datasources:/etc/grafana/provisioning/datasources
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+
+volumes:
+  postgres_data:
+  redis_data:
+  prometheus_data:
+  grafana_data:
