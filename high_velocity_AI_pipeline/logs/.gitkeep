@@ -1,0 +1,3 @@
+# logs/.gitkeep  
+# This file ensures the logs directory is tracked by Git
+# Application logs will be written here

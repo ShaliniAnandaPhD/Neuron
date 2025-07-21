@@ -1,0 +1,60 @@
+# deployment.yaml
+# Defines the desired state for the pipeline application in Kubernetes.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hvp-deployment
+  labels:
+    app: hvp
+spec:
+  # Specifies the number of pod replicas to run.
+  replicas: 3
+  selector:
+    matchLabels:
+      app: hvp
+  template:
+    metadata:
+      labels:
+        app: hvp
+    spec:
+      containers:
+        - name: hvp-pipeline-container
+          # IMPORTANT: Replace this with the path to your image in a container registry.
+          image: your-registry/high-velocity-pipeline:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+              name: health
+            - containerPort: 8081
+              name: metrics
+          
+          # Mounts configuration and secrets into the container's environment.
+          envFrom:
+            - configMapRef:
+                name: hvp-config
+            - secretRef:
+                name: hvp-secrets
+          
+          # Defines resource requests and limits for the container.
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m" # 0.5 CPU core
+            limits:
+              memory: "2Gi"
+              cpu: "1" # 1 CPU core
+          
+          # Probes for checking if the container is live and ready.
+          livenessProbe:
+            httpGet:
+              path: /health # Assumes a /health endpoint exists
+              port: health
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /ready # Assumes a /ready endpoint exists
+              port: health
+            initialDelaySeconds: 30
+            periodSeconds: 15

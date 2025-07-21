@@ -1,0 +1,79 @@
+{
+  "_comment": "High-Velocity AI Pipeline - Production Configuration",
+  "_description": "Tuned settings based on successful experiment achieving 66.4ms p99 latency",
+  "_experiment_results": {
+    "achieved_p99_latency_ms": 66.4,
+    "achieved_throughput_msg_per_sec": 595,
+    "total_messages_processed": 41728,
+    "duration_seconds": 70.1,
+    "agent_swaps": 5,
+    "stability_achieved": true
+  },
+  
+  "performance_thresholds": {
+    "latency_threshold_ms": 100.0,
+    "safe_latency_threshold_ms": 70.0,
+    "safe_throughput_threshold": 600.0,
+    "cooldown_period_seconds": 20.0
+  },
+  
+  "target_performance": {
+    "target_throughput": 800.0,
+    "message_batch_size": 100,
+    "batch_interval_seconds": 0.125
+  },
+  
+  "agent_configuration": {
+    "default_agent": "standard",
+    "max_agent_swaps": 50,
+    "openai_model": "gpt-4-turbo-preview",
+    "groq_model": "llama3-70b-8192",
+    "api_timeout_seconds": 30.0,
+    "api_max_retries": 3
+  },
+  
+  "system_limits": {
+    "max_message_queue_size": 10000,
+    "max_memory_usage_mb": 2048,
+    "max_cpu_usage_percent": 80.0
+  },
+  
+  "monitoring_configuration": {
+    "enable_csv_export": true,
+    "enable_weave_tracing": true,
+    "metrics_update_interval_seconds": 1.0,
+    "export_directory": "exports",
+    "export_json_reports": true
+  },
+  
+  "circuit_breaker_settings": {
+    "circuit_breaker_failure_threshold": 5,
+    "circuit_breaker_timeout_seconds": 30.0,
+    "circuit_breaker_success_threshold": 3
+  },
+  
+  "market_data_generation": {
+    "market_volatility_enabled": true,
+    "market_symbols_count": 12,
+    "market_condition_change_interval_seconds": 30.0
+  },
+  
+  "logging_configuration": {
+    "log_level": "INFO",
+    "log_file": "logs/high_velocity_pipeline.log",
+    "log_format": "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  },
+  
+  "deployment_settings": {
+    "deployment_env": "production",
+    "health_check_port": 8080,
+    "metrics_port": 8081,
+    "enable_rate_limiting": true,
+    "max_requests_per_minute": 1000
+  },
+  
+  "security_settings": {
+    "enable_api_key_rotation": false,
+    "api_key_rotation_interval_hours": 24
+  }
+}

@@ -1,0 +1,25 @@
+# service.yaml
+# Defines how the pipeline deployment is exposed to the network.
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: hvp-service
+  labels:
+    app: hvp
+spec:
+  # Type LoadBalancer is common for cloud providers to provision an external IP.
+  # For other environments, you might use NodePort or ClusterIP.
+  type: LoadBalancer
+  selector:
+    # This selector ensures the service routes traffic to pods with the 'app: hvp' label.
+    app: hvp
+  ports:
+    - name: health
+      protocol: TCP
+      port: 80
+      targetPort: 8080 # Forwards external port 80 to the container's port 8080 (health checks)
+    - name: metrics
+      protocol: TCP
+      port: 8081
+      targetPort: 8081 # Exposes the metrics port directly

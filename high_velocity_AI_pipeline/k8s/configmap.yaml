@@ -1,0 +1,21 @@
+# configmap.yaml
+# Stores non-sensitive configuration data for the pipeline.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hvp-config
+  labels:
+    app: hvp
+data:
+  # These values will be available as environment variables inside the container.
+  # They correspond to the settings in the production.json file.
+  PIPELINE_LATENCY_THRESHOLD_MS: "100.0"
+  PIPELINE_TARGET_THROUGHPUT: "800.0"
+  PIPELINE_DEFAULT_AGENT: "standard"
+  DEPLOYMENT_ENV: "kubernetes"
+  PIPELINE_LOG_LEVEL: "INFO"
+  OPENAI_MODEL: "gpt-4-turbo-preview"
+  GROQ_MODEL: "llama3-70b-8192"
+  PIPELINE_ENABLE_CSV_EXPORT: "true"
+  PIPELINE_EXPORT_DIRECTORY: "/app/exports" # Use an in-container path

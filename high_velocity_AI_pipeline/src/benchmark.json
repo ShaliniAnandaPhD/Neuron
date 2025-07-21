@@ -1,0 +1,65 @@
+{
+  "_comment": "High-Velocity AI Pipeline - Benchmark Configuration",
+  "_description": "Aggressive settings for performance benchmarking and stress testing",
+
+  "performance_thresholds": {
+    "latency_threshold_ms": 120.0,
+    "safe_latency_threshold_ms": 80.0,
+    "safe_throughput_threshold": 800.0,
+    "cooldown_period_seconds": 15.0
+  },
+
+  "target_performance": {
+    "target_throughput": 1200.0,
+    "message_batch_size": 150,
+    "batch_interval_seconds": 0.1
+  },
+
+  "agent_configuration": {
+    "default_agent": "ultra_fast",
+    "max_agent_swaps": 100,
+    "openai_model": "gpt-4-turbo-preview",
+    "groq_model": "llama3-70b-8192",
+    "api_timeout_seconds": 20.0,
+    "api_max_retries": 2
+  },
+
+  "system_limits": {
+    "max_message_queue_size": 20000,
+    "max_memory_usage_mb": 4096,
+    "max_cpu_usage_percent": 95.0
+  },
+
+  "monitoring_configuration": {
+    "enable_csv_export": true,
+    "enable_weave_tracing": true,
+    "metrics_update_interval_seconds": 0.25,
+    "export_directory": "exports/benchmarks",
+    "export_json_reports": true
+  },
+
+  "circuit_breaker_settings": {
+    "circuit_breaker_failure_threshold": 10,
+    "circuit_breaker_timeout_seconds": 20.0,
+    "circuit_breaker_success_threshold": 5
+  },
+
+  "market_data_generation": {
+    "market_volatility_enabled": true,
+    "market_symbols_count": 20,
+    "market_condition_change_interval_seconds": 10.0
+  },
+
+  "logging_configuration": {
+    "log_level": "INFO",
+    "log_file": "logs/benchmark_pipeline.log",
+    "log_format": "%(asctime)s - %(levelname)s - %(message)s"
+  },
+
+  "deployment_settings": {
+    "deployment_env": "benchmark",
+    "health_check_port": 8080,
+    "metrics_port": 8081,
+    "enable_rate_limiting": false
+  }
+}

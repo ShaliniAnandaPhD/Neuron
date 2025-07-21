@@ -1,0 +1,287 @@
+# High-Velocity AI Pipeline - Docker Compose Configuration
+# Production-ready multi-service deployment with monitoring
+
+version: '3.8'
+
+services:
+  # =============================================================================
+  # MAIN PIPELINE SERVICE
+  # =============================================================================
+  hvp-pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: hvp-pipeline-main
+    restart: unless-stopped
+    
+    # Environment configuration
+    env_file:
+      - .env
+    environment:
+      - DEPLOYMENT_ENV=docker
+      - INSTANCE_ID=hvp-docker-001
+      - PYTHONPATH=/app/src
+    
+    # Port mappings
+    ports:
+      - "8080:8080"   # Main application
+      - "8081:8081"   # Metrics endpoint
+    
+    # Volume mounts
+    volumes:
+      - ./exports:/app/exports
+      - ./logs:/app/logs
+      - ./config:/app/config:ro
+      - hvp-data:/app/data
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G
+          cpus: '1.0'
+        reservations:
+          memory: 1G
+          cpus: '0.5'
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "python", "scripts/health_checker.py", "--check-only"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Dependencies
+    depends_on:
+      - redis
+      - prometheus
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+    
+    # Networks
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # MONITORING DASHBOARD
+  # =============================================================================
+  hvp-monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: production
+    container_name: hvp-monitor-dashboard
+    restart: unless-stopped
+    
+    # Override command for monitoring
+    command: ["python", "scripts/monitor_dashboard.py", "--web-mode"]
+    
+    env_file:
+      - .env
+    environment:
+      - DEPLOYMENT_ENV=docker
+      - MONITOR_MODE=dashboard
+    
+    ports:
+      - "8082:8080"   # Dashboard web interface
+    
+    volumes:
+      - ./exports:/app/exports:ro
+      - ./logs:/app/logs:ro
+      - ./config:/app/config:ro
+    
+    depends_on:
+      - hvp-pipeline
+      - redis
+    
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # REDIS (CACHING AND MESSAGE QUEUE)
+  # =============================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: hvp-redis
+    restart: unless-stopped
+    
+    # Redis configuration
+    command: redis-server --appendonly yes --maxmemory 512mb --maxmemory-policy allkeys-lru
+    
+    ports:
+      - "6379:6379"
+    
+    volumes:
+      - hvp-redis-data:/data
+      - ./config/redis.conf:/usr/local/etc/redis/redis.conf:ro
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # PROMETHEUS (METRICS COLLECTION)
+  # =============================================================================
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: hvp-prometheus
+    restart: unless-stopped
+    
+    # Prometheus configuration
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    
+    ports:
+      - "9090:9090"
+    
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - hvp-prometheus-data:/prometheus
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 1G
+          cpus: '0.5'
+    
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # GRAFANA (VISUALIZATION)
+  # =============================================================================
+  grafana:
+    image: grafana/grafana:latest
+    container_name: hvp-grafana
+    restart: unless-stopped
+    
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=hvp-admin-2024
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
+    
+    ports:
+      - "3000:3000"
+    
+    volumes:
+      - hvp-grafana-data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    
+    depends_on:
+      - prometheus
+    
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # NGINX (REVERSE PROXY)
+  # =============================================================================
+  nginx:
+    image: nginx:alpine
+    container_name: hvp-nginx
+    restart: unless-stopped
+    
+    ports:
+      - "80:80"
+      - "443:443"
+    
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - ./nginx/html:/usr/share/nginx/html:ro
+    
+    depends_on:
+      - hvp-pipeline
+      - hvp-monitor
+      - grafana
+    
+    networks:
+      - hvp-network
+
+  # =============================================================================
+  # DEVELOPMENT SERVICE (Optional)
+  # =============================================================================
+  hvp-dev:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: development
+    container_name: hvp-dev
+    restart: "no"
+    
+    command: ["python", "run_pipeline.py", "--dev"]
+    
+    env_file:
+      - .env
+    environment:
+      - DEVELOPMENT_MODE=true
+      - DEBUG_MODE=true
+      - PIPELINE_LOG_LEVEL=DEBUG
+    
+    ports:
+      - "8083:8080"   # Development instance
+      - "5678:5678"   # Debug port
+    
+    volumes:
+      - .:/app
+      - hvp-dev-data:/app/data
+    
+    # Override for development
+    user: "1000:1000"  # Use host user ID
+    
+    networks:
+      - hvp-network
+    
+    profiles:
+      - development
+
+  # =============================================================================
+  # BENCHMARK SERVICE (Optional)
+  # =============================================================================
+  hvp-benchmark:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: benchmark
+    container_name: hvp-benchmark
+    restart: "no"
+    
+    command: ["python", "run_pipeline.py", "--benchmark", "--duration", "300"]
+    
+    env_file:
+      - .env
+    environment:
+      - DEPLOYMENT_ENV=benchmark
+      - PIPELINE_TARGET_THROUGHPUT=1000
+    
+    volumes:
+      - ./exports:/app/exports
+      - ./logs:/app/logs
+      - benchmark-results:/app/benchmark-results

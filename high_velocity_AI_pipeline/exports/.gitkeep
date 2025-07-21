@@ -1,0 +1,4 @@
+# exports/.gitkeep
+# This file ensures the exports directory is tracked by Git
+# CSV files and performance reports will be generated here
+
