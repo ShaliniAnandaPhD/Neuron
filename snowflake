@@ -1,0 +1,322 @@
+-- ============================================
+-- Neuron AI Framework - Snowflake Setup
+-- Last updated: Setting this up for the agent memory stuff
+-- ============================================
+
+-- First, let's create our main database
+CREATE DATABASE IF NOT EXISTS NEURON_AI;
+USE DATABASE NEURON_AI;
+
+-- Organizing schemas by function (makes it easier to manage later)
+CREATE SCHEMA IF NOT EXISTS MEMORY_STORE;      -- All the agent memories go here
+CREATE SCHEMA IF NOT EXISTS AGENT_COORDINATION; -- Agent talk to each other here
+CREATE SCHEMA IF NOT EXISTS ANALYTICS;          -- For tracking what's actually happening
+CREATE SCHEMA IF NOT EXISTS MULTIMODAL_DATA;    -- Images, audio, etc.
+
+-- ============================================
+-- Memory tables - this is where agents remember stuff
+-- ============================================
+USE SCHEMA MEMORY_STORE;
+
+-- Main memory table - keeping 90 days of history (can adjust if needed)
+CREATE OR REPLACE TABLE EPISODIC_MEMORY (
+    memory_id VARCHAR(36) DEFAULT UUID_STRING(),
+    agent_id VARCHAR(100) NOT NULL,
+    circuit_id VARCHAR(100) NOT NULL,
+    timestamp TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    event_type VARCHAR(50),
+    context VARIANT,  -- Storing JSON here for flexibility
+    embeddings ARRAY,
+    metadata OBJECT,
+    PRIMARY KEY (memory_id)
+) DATA_RETENTION_TIME_IN_DAYS = 90  -- Adjust based on your storage budget
+  CLUSTER BY (agent_id, timestamp);  -- Speeds up agent-specific queries
+
+-- Semantic memory - basically the agent's learned concepts
+CREATE OR REPLACE TABLE SEMANTIC_MEMORY (
+    concept_id VARCHAR(36) DEFAULT UUID_STRING(),
+    agent_id VARCHAR(100) NOT NULL,
+    concept VARCHAR(500),
+    relationships VARIANT,
+    knowledge_graph OBJECT,
+    confidence_score FLOAT,
+    last_accessed TIMESTAMP_NTZ,
+    access_count INTEGER DEFAULT 0,
+    PRIMARY KEY (concept_id)
+) CLUSTER BY (agent_id, concept);
+
+-- Short-term memory (expires after 1 hour by default)
+CREATE OR REPLACE TABLE WORKING_MEMORY (
+    session_id VARCHAR(36),
+    agent_id VARCHAR(100),
+    circuit_id VARCHAR(100),
+    memory_state VARIANT,
+    attention_weights ARRAY,
+    active_from TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    ttl_seconds INTEGER DEFAULT 3600,  -- 1 hour default, change as needed
+    PRIMARY KEY (session_id, agent_id)
+);
+
+-- ============================================
+-- Agent communication tables
+-- ============================================
+USE SCHEMA AGENT_COORDINATION;
+
+-- Keep track of all our agents
+CREATE OR REPLACE TABLE AGENT_REGISTRY (
+    agent_id VARCHAR(100) PRIMARY KEY,
+    agent_type VARCHAR(50),
+    capabilities ARRAY,
+    status VARCHAR(20) DEFAULT 'INACTIVE',
+    circuit_assignments ARRAY,
+    created_at TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    last_heartbeat TIMESTAMP_NTZ  -- To check if agent is still alive
+);
+
+-- Message passing between agents
+CREATE OR REPLACE TABLE AGENT_MESSAGES (
+    message_id VARCHAR(36) DEFAULT UUID_STRING(),
+    from_agent_id VARCHAR(100),
+    to_agent_id VARCHAR(100),
+    circuit_id VARCHAR(100),
+    message_type VARCHAR(50),
+    payload VARIANT,  -- Flexible JSON payload
+    priority INTEGER DEFAULT 5,  -- 1-10 scale
+    status VARCHAR(20) DEFAULT 'PENDING',
+    created_at TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    processed_at TIMESTAMP_NTZ,
+    PRIMARY KEY (message_id)
+) CLUSTER BY (to_agent_id, status, priority);  -- Optimize for message polling
+
+-- Stream for real-time message processing
+CREATE OR REPLACE STREAM AGENT_MESSAGE_STREAM ON TABLE AGENT_MESSAGES;
+
+-- Event bus for the synaptic system
+CREATE OR REPLACE TABLE SYNAPTIC_EVENTS (
+    event_id VARCHAR(36) DEFAULT UUID_STRING(),
+    circuit_id VARCHAR(100),
+    event_type VARCHAR(50),
+    source_module VARCHAR(100),
+    target_modules ARRAY,
+    event_data VARIANT,
+    timestamp TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    PRIMARY KEY (event_id)
+) CLUSTER BY (circuit_id, timestamp);
+
+CREATE OR REPLACE STREAM SYNAPTIC_EVENT_STREAM ON TABLE SYNAPTIC_EVENTS;
+
+-- ============================================
+-- Analytics & tracking
+-- ============================================
+USE SCHEMA ANALYTICS;
+
+-- Track every decision for debugging/audit
+CREATE OR REPLACE TABLE DECISION_TRAILS (
+    trail_id VARCHAR(36) DEFAULT UUID_STRING(),
+    agent_id VARCHAR(100),
+    circuit_id VARCHAR(100),
+    decision_timestamp TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    input_context VARIANT,
+    reasoning_steps ARRAY,  -- Step by step what the agent thought
+    alternatives_considered VARIANT,
+    final_decision VARIANT,
+    confidence_score FLOAT,
+    execution_time_ms INTEGER,
+    PRIMARY KEY (trail_id)
+) CLUSTER BY (agent_id, decision_timestamp);
+
+-- Performance metrics
+CREATE OR REPLACE TABLE AGENT_METRICS (
+    metric_id VARCHAR(36) DEFAULT UUID_STRING(),
+    agent_id VARCHAR(100),
+    circuit_id VARCHAR(100),
+    metric_timestamp TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    performance_metrics OBJECT,
+    resource_usage OBJECT,
+    error_count INTEGER DEFAULT 0,
+    success_rate FLOAT,
+    avg_response_time_ms FLOAT,
+    PRIMARY KEY (metric_id)
+) CLUSTER BY (agent_id, metric_timestamp);
+
+-- ============================================
+-- Multimodal storage (images, audio, etc)
+-- ============================================
+USE SCHEMA MULTIMODAL_DATA;
+
+-- Store references to multimodal data
+CREATE OR REPLACE TABLE MULTIMODAL_INPUTS (
+    input_id VARCHAR(36) DEFAULT UUID_STRING(),
+    agent_id VARCHAR(100),
+    circuit_id VARCHAR(100),
+    input_type VARCHAR(20), -- TEXT, IMAGE, AUDIO, VIDEO
+    raw_data VARIANT,       -- Small stuff goes here
+    processed_data VARIANT,
+    embeddings ARRAY,
+    metadata OBJECT,
+    storage_location VARCHAR(500), -- For big files, store path to stage
+    created_at TIMESTAMP_NTZ DEFAULT CURRENT_TIMESTAMP(),
+    PRIMARY KEY (input_id)
+) CLUSTER BY (agent_id, input_type);
+
+-- Stages for large files
+CREATE OR REPLACE STAGE MULTIMODAL_STAGE
+    FILE_FORMAT = (TYPE = 'PARQUET');
+
+CREATE OR REPLACE STAGE IMAGE_STAGE
+    FILE_FORMAT = (TYPE = 'BINARY');
+
+-- ============================================
+-- Helper procedures
+-- ============================================
+USE SCHEMA AGENT_COORDINATION;
+
+-- Quick way to get all recent memories for an agent
+CREATE OR REPLACE PROCEDURE GET_AGENT_MEMORY(
+    agent_id_param VARCHAR,
+    lookback_hours INTEGER
+)
+RETURNS TABLE (memory_type VARCHAR, content VARIANT, timestamp TIMESTAMP_NTZ)
+LANGUAGE SQL
+AS
+$$
+DECLARE
+    res RESULTSET;
+BEGIN
+    -- Grab both long-term and working memory
+    res := (
+        SELECT 'EPISODIC' as memory_type, context as content, timestamp
+        FROM MEMORY_STORE.EPISODIC_MEMORY
+        WHERE agent_id = :agent_id_param
+            AND timestamp >= DATEADD('hour', -:lookback_hours, CURRENT_TIMESTAMP())
+        UNION ALL
+        SELECT 'WORKING' as memory_type, memory_state as content, active_from as timestamp
+        FROM MEMORY_STORE.WORKING_MEMORY
+        WHERE agent_id = :agent_id_param
+            AND DATEADD('second', ttl_seconds, active_from) > CURRENT_TIMESTAMP()
+        ORDER BY timestamp DESC
+    );
+    RETURN TABLE(res);
+END;
+$$;
+
+-- Run multiple circuits at once
+CREATE OR REPLACE PROCEDURE EXECUTE_PARALLEL_CIRCUITS(
+    circuit_ids ARRAY
+)
+RETURNS VARCHAR
+LANGUAGE JAVASCRIPT
+AS
+$$
+    var results = [];
+    // Fire off all circuits in parallel
+    for (var i = 0; i < CIRCUIT_IDS.length; i++) {
+        var circuit_id = CIRCUIT_IDS[i];
+        
+        var stmt = snowflake.createStatement({
+            sqlText: `INSERT INTO AGENT_COORDINATION.SYNAPTIC_EVENTS 
+                     (circuit_id, event_type, source_module, event_data)
+                     VALUES (?, 'CIRCUIT_ACTIVATED', 'ORCHESTRATOR', OBJECT_CONSTRUCT('status', 'processing'))`,
+            binds: [circuit_id]
+        });
+        stmt.executeAsync();
+        results.push(circuit_id);
+    }
+    return 'Started circuits: ' + results.join(', ');
+$$;
+
+-- ============================================
+-- Automated tasks
+-- ============================================
+
+-- Process messages every minute
+CREATE OR REPLACE TASK PROCESS_AGENT_MESSAGES
+    WAREHOUSE = COMPUTE_WH  -- Change to your warehouse
+    SCHEDULE = '1 MINUTE'
+AS
+    INSERT INTO AGENT_COORDINATION.SYNAPTIC_EVENTS (circuit_id, event_type, source_module, target_modules, event_data)
+    SELECT 
+        circuit_id,
+        'MESSAGE_RELAY',
+        from_agent_id,
+        ARRAY_CONSTRUCT(to_agent_id),
+        payload
+    FROM AGENT_COORDINATION.AGENT_MESSAGE_STREAM
+    WHERE METADATA$ACTION = 'INSERT' 
+        AND METADATA$ISUPDATE = FALSE;
+
+-- Clean up old working memory every 6 hours
+CREATE OR REPLACE TASK CLEANUP_EXPIRED_MEMORY
+    WAREHOUSE = COMPUTE_WH  -- Change to your warehouse
+    SCHEDULE = 'USING CRON 0 */6 * * * UTC'
+AS
+    DELETE FROM MEMORY_STORE.WORKING_MEMORY
+    WHERE DATEADD('second', ttl_seconds, active_from) < CURRENT_TIMESTAMP();
+
+-- Turn on the tasks
+ALTER TASK PROCESS_AGENT_MESSAGES RESUME;
+ALTER TASK CLEANUP_EXPIRED_MEMORY RESUME;
+
+-- ============================================
+-- Quick analytics views
+-- ============================================
+USE SCHEMA ANALYTICS;
+
+-- Simple dashboard for agent performance
+CREATE OR REPLACE VIEW AGENT_PERFORMANCE_DASHBOARD AS
+SELECT 
+    am.agent_id,
+    ar.agent_type,
+    ar.capabilities,
+    AVG(am.success_rate) as avg_success_rate,
+    AVG(am.avg_response_time_ms) as avg_response_time,
+    SUM(am.error_count) as total_errors,
+    COUNT(DISTINCT dt.trail_id) as total_decisions,
+    AVG(dt.confidence_score) as avg_confidence
+FROM AGENT_METRICS am
+JOIN AGENT_COORDINATION.AGENT_REGISTRY ar ON am.agent_id = ar.agent_id
+LEFT JOIN DECISION_TRAILS dt ON am.agent_id = dt.agent_id
+WHERE am.metric_timestamp >= DATEADD('day', -7, CURRENT_TIMESTAMP())  -- Last week
+GROUP BY am.agent_id, ar.agent_type, ar.capabilities;
+
+-- See how agents are using memory
+CREATE OR REPLACE VIEW MEMORY_USAGE_PATTERNS AS
+SELECT 
+    agent_id,
+    DATE_TRUNC('hour', timestamp) as hour,
+    COUNT(*) as memory_accesses,
+    ARRAY_AGG(DISTINCT event_type) as event_types,
+    AVG(ARRAY_SIZE(embeddings)) as avg_embedding_size
+FROM MEMORY_STORE.EPISODIC_MEMORY
+WHERE timestamp >= DATEADD('day', -30, CURRENT_TIMESTAMP())  -- Last month
+GROUP BY agent_id, hour
+ORDER BY hour DESC;
+
+-- ============================================
+-- Set up basic access controls
+-- ============================================
+
+CREATE ROLE IF NOT EXISTS NEURON_ADMIN;   -- Full access
+CREATE ROLE IF NOT EXISTS NEURON_AGENT;   -- Read/write for agents
+CREATE ROLE IF NOT EXISTS NEURON_ANALYST; -- Read-only for analytics
+
+-- Basic permissions
+GRANT ALL ON DATABASE NEURON_AI TO ROLE NEURON_ADMIN;
+GRANT USAGE ON DATABASE NEURON_AI TO ROLE NEURON_AGENT;
+GRANT USAGE ON DATABASE NEURON_AI TO ROLE NEURON_ANALYST;
+
+GRANT SELECT, INSERT, UPDATE ON ALL TABLES IN SCHEMA MEMORY_STORE TO ROLE NEURON_AGENT;
+GRANT SELECT, INSERT ON ALL TABLES IN SCHEMA AGENT_COORDINATION TO ROLE NEURON_AGENT;
+GRANT SELECT ON ALL VIEWS IN SCHEMA ANALYTICS TO ROLE NEURON_ANALYST;
+
+-- ============================================
+-- Add some test agents to get started
+-- ============================================
+
+INSERT INTO AGENT_COORDINATION.AGENT_REGISTRY (agent_id, agent_type, capabilities, status)
+VALUES 
+    ('REASONER_001', 'DeliberativeAgent', ARRAY_CONSTRUCT('contradiction_detection', 'memory_retrieval'), 'ACTIVE'),
+    ('INTAKE_001', 'ReflexAgent', ARRAY_CONSTRUCT('sentiment_analysis', 'intent_detection'), 'ACTIVE');
+
+-- All done!
+SELECT 'Neuron Snowflake setup complete - agents ready to go!' as STATUS;
