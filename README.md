@@ -60,7 +60,7 @@ This is only the beginning. While Series 1 hardens your foundation with Neuron�
 
 **Agentic systems are only as smart as they are stable.** Start with the shield, then build the brain.
 
-🔗 **Explore Series 1 at:** [https://lnkd.in/gkeEPvnx](https://lnkd.in/gkeEPvnx)
+🔗 **Explore Series 1 at:** https://neuronsystems.org/openclaw-neuron
 
 ---
 
