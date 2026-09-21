@@ -8,7 +8,10 @@ The license above is a *modified MIT LICENSE* for the purpose of this project ðŸ
 
 ðŸ“„ For full legal terms and enforcement policy, read the [Neuron Legal Notice & Enforcement Terms](https://www.notion.so/shalini-ananda-phd/LEGAL-NOTICE-ENFORCEMENT-TERMS-NEURON-FRAMEWORK-200c18ea2aa1803aa07ddbb41cd9080d).
 
-
+ [!WARNING]
+> **This repository is no longer actively maintained.**
+>
+> The author has since begun using it for a specific use case and is no longer developing it as a general project. Issues and pull requests may not receive a response.
 -----------------------------------
 
 # Neuron: A Brain-Inspired AI Framework for Complex Reasoning
