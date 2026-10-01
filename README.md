@@ -14,7 +14,7 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 > The author has since begun using it for a specific use case and is no longer developing it as a general project. Issues and pull requests may not receive a response.
 -----------------------------------
 
-# Neuron: A Brain-Inspired AI Framework for Complex Reasoning
+# Neuron: AI Framework for Complex Reasoning
 
 [![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
 [![🧠 Run Ambiguity Audit](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml)
