@@ -35,7 +35,7 @@ class CrossArchitectureComparisonAnalyzer:
     
     def _load_data(self):
         """Load the 'What Breaks First?' testing data."""
-        file_path = Path(self.data_dir) / 'what_breaks_first_testing_results.txt'
+        file_path = Path(self.data_dir) / 'what_breaks_first_testing_results.csv'
         
         if file_path.exists():
             try:
@@ -778,7 +778,10 @@ class CrossArchitectureComparisonAnalyzer:
 
 # Example usage
 if __name__ == "__main__":
-    analyzer = CrossArchitectureComparisonAnalyzer(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    analyzer = CrossArchitectureComparisonAnalyzer(data_dir=os.path.join(BENCH_DIR, 'datasets'), output_dir=os.path.join(BENCH_DIR, 'results', 'architecture_analysis'))
     results = analyzer.run_all_analyses()
     analyzer.export_results(format='json')
     analyzer.visualize_comparison()

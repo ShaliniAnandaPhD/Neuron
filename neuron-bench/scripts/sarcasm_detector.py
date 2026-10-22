@@ -39,7 +39,7 @@ class SarcasmDetectionAnalyzer:
     def _load_data(self):
         """Load sarcasm pattern tests and related datasets."""
         # Load sarcasm pattern tests
-        sarcasm_file = Path(self.data_dir) / 'sarcasm_pattern_tests.txt'
+        sarcasm_file = Path(self.data_dir) / 'sarcasm_pattern_tests.csv'
         
         if sarcasm_file.exists():
             try:
@@ -51,7 +51,7 @@ class SarcasmDetectionAnalyzer:
             print(f"Sarcasm detection data file not found: {sarcasm_file}")
         
         # Load target gap analysis for sarcasm component info
-        gap_file = Path(self.data_dir) / 'target_gap_analysis.txt'
+        gap_file = Path(self.data_dir) / 'target_gap_analysis.csv'
         
         if gap_file.exists():
             try:
@@ -64,7 +64,7 @@ class SarcasmDetectionAnalyzer:
                 print(f"Error loading target gap analysis: {e}")
         
         # Load error analysis for sarcasm-related errors
-        error_file = Path(self.data_dir) / 'error_analysis_dataset.txt'
+        error_file = Path(self.data_dir) / 'error_analysis_dataset.csv'
         
         if error_file.exists():
             try:
@@ -1589,7 +1589,10 @@ class SarcasmDetectionAnalyzer:
 
 # Example usage
 if __name__ == "__main__":
-    analyzer = SarcasmDetectionAnalyzer(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    analyzer = SarcasmDetectionAnalyzer(data_dir=os.path.join(BENCH_DIR, 'datasets'), output_dir=os.path.join(BENCH_DIR, 'results', 'sarcasm_analysis'))
     analyzer.run_all_analyses()
     analyzer.export_results(format='json')
     

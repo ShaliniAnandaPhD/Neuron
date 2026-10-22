@@ -36,7 +36,7 @@ class TimeSeriesAnalyzer:
     
     def _load_data(self):
         """Load performance over time data from file."""
-        file_path = Path(self.data_dir) / 'performance_over_time.txt'
+        file_path = Path(self.data_dir) / 'performance_over_time.csv'
         
         if file_path.exists():
             try:
@@ -335,9 +335,11 @@ class TimeSeriesAnalyzer:
                     forecasted_scores = forecast_result.predicted_mean.tolist()
                     
                     # Get confidence intervals
-                    ci = forecast_result.conf_int()
+                    # conf_int() returns a DataFrame for pandas input and an
+                    # ndarray for array input; index it as an array either way
+                    ci = np.asarray(forecast_result.conf_int())
                     confidence_intervals = [
-                        [ci.iloc[i, 0], ci.iloc[i, 1]]
+                        [float(ci[i, 0]), float(ci[i, 1])]
                         for i in range(len(ci))
                     ]
                 except Exception as e:
@@ -1024,18 +1026,19 @@ class TimeSeriesAnalyzer:
         # 4. Bar chart of top components by efficiency
         top_efficient = pattern_df.nlargest(10, 'improvement_efficiency')
         
+        rate_norm = plt.Normalize(
+            top_efficient['avg_improvement_rate'].min(),
+            top_efficient['avg_improvement_rate'].max()
+        )
         bars = axs[1, 1].barh(
             top_efficient['component'],
             top_efficient['improvement_efficiency'],
-            color=top_efficient['avg_improvement_rate'],
-            cmap='viridis'
+            # barh takes colors, not a cmap: map the rates through viridis
+            color=plt.cm.viridis(rate_norm(top_efficient['avg_improvement_rate']))
         )
         
         # Add a colorbar
-        sm = plt.cm.ScalarMappable(cmap='viridis', norm=plt.Normalize(
-            top_efficient['avg_improvement_rate'].min(),
-            top_efficient['avg_improvement_rate'].max()
-        ))
+        sm = plt.cm.ScalarMappable(cmap='viridis', norm=rate_norm)
         sm.set_array([])
         cbar = fig.colorbar(sm, ax=axs[1, 1])
         cbar.set_label('Improvement Rate')
@@ -1379,7 +1382,10 @@ class TimeSeriesAnalyzer:
 
 # Example usage
 if __name__ == "__main__":
-    analyzer = TimeSeriesAnalyzer(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    analyzer = TimeSeriesAnalyzer(data_dir=os.path.join(BENCH_DIR, 'datasets'), output_dir=os.path.join(BENCH_DIR, 'results', 'time_series_analysis'))
     analyzer.run_all_analyses()
     analyzer.export_results(format='json')
     

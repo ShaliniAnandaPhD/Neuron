@@ -39,10 +39,10 @@ class GapAnalysisEngine:
         
         # Required files for gap analysis
         required_files = [
-            'target_gap_analysis.txt',
-            'dimension_detailed_metrics.txt',
-            'performance_over_time.txt',
-            'improvement_priorities.txt'
+            'target_gap_analysis.csv',
+            'dimension_detailed_metrics.csv',
+            'performance_over_time.csv',
+            'improvement_priorities.csv'
         ]
         
         for filename in required_files:
@@ -465,7 +465,10 @@ class GapAnalysisEngine:
 # Example usage
 if __name__ == "__main__":
     # Create gap analysis engine
-    gap_analyzer = GapAnalysisEngine(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    gap_analyzer = GapAnalysisEngine(data_dir=os.path.join(BENCH_DIR, 'datasets'))
     
     # Run all analyses
     component_gaps = gap_analyzer.calculate_component_gaps()
@@ -476,7 +479,7 @@ if __name__ == "__main__":
     action_plan = gap_analyzer.generate_priority_action_plan()
     
     # Export analysis results
-    gap_analyzer.export_analysis_results()
+    gap_analyzer.export_analysis_results(os.path.join(BENCH_DIR, 'results', 'gap_analysis'))
     
     print("Gap analysis complete!")
 

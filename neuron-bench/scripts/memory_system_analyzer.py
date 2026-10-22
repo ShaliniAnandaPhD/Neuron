@@ -38,7 +38,7 @@ class MemmorySystemAnalyzer:
     def _load_data(self):
         """Load memory retention data and related datasets."""
         # Load memory retention timeframe tests
-        memory_file = Path(self.data_dir) / 'memory_retention_timeframe_tests.txt'
+        memory_file = Path(self.data_dir) / 'memory_retention_timeframe_tests.csv'
         
         if memory_file.exists():
             try:
@@ -50,7 +50,7 @@ class MemmorySystemAnalyzer:
             print(f"Memory retention data file not found: {memory_file}")
         
         # Load target gap analysis for memory component info
-        gap_file = Path(self.data_dir) / 'target_gap_analysis.txt'
+        gap_file = Path(self.data_dir) / 'target_gap_analysis.csv'
         
         if gap_file.exists():
             try:
@@ -63,7 +63,7 @@ class MemmorySystemAnalyzer:
                 print(f"Error loading target gap analysis: {e}")
         
         # Load error analysis for memory-related errors
-        error_file = Path(self.data_dir) / 'error_analysis_dataset.txt'
+        error_file = Path(self.data_dir) / 'error_analysis_dataset.csv'
         
         if error_file.exists():
             try:
@@ -1280,7 +1280,10 @@ class MemmorySystemAnalyzer:
 
 # Example usage
 if __name__ == "__main__":
-    analyzer = MemmorySystemAnalyzer(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    analyzer = MemmorySystemAnalyzer(data_dir=os.path.join(BENCH_DIR, 'datasets'), output_dir=os.path.join(BENCH_DIR, 'results', 'memory_analysis'))
     analyzer.run_all_analyses()
     analyzer.export_results(format='json')
     

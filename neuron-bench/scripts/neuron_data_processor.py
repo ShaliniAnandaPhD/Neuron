@@ -32,7 +32,7 @@ class NeuronDataProcessor:
             print(f"Creating data directory: {self.data_dir}")
             os.makedirs(self.data_dir)
             
-        csv_files = list(data_path.glob('*.txt'))
+        csv_files = list(data_path.glob('*.csv'))
         
         if not csv_files:
             print(f"No data files found in {self.data_dir}")
@@ -283,7 +283,10 @@ class NeuronDataProcessor:
 
 # Example usage
 if __name__ == "__main__":
-    processor = NeuronDataProcessor(data_dir='./data')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    processor = NeuronDataProcessor(data_dir=os.path.join(BENCH_DIR, 'datasets'))
     processor.load_all_datasets()
     
     # Generate aggregated data
@@ -295,7 +298,7 @@ if __name__ == "__main__":
     arch_comparison = processor.get_arch_comparison_data()
     
     # Export processed data
-    processor.export_processed_data()
+    processor.export_processed_data(os.path.join(BENCH_DIR, 'results', 'processed_data'))
     
     print("Data processing complete!")
 

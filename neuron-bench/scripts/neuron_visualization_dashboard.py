@@ -46,7 +46,7 @@ class NeuronVisualizationDashboard:
         data_path = Path(self.data_dir)
         
         # List all data files in the directory
-        data_files = list(data_path.glob('*.txt'))
+        data_files = list(data_path.glob('*.csv'))
         
         for file_path in data_files:
             dataset_name = file_path.stem
@@ -1146,7 +1146,10 @@ class NeuronVisualizationDashboard:
 
 # Example usage
 if __name__ == "__main__":
-    visualizer = NeuronVisualizationDashboard(data_dir='./data', output_dir='./visualizations')
+    # Read the CSVs in neuron-bench/datasets and write to neuron-bench/results,
+    # wherever the script is run from (it used to look for ./data).
+    BENCH_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    visualizer = NeuronVisualizationDashboard(data_dir=os.path.join(BENCH_DIR, 'datasets'), output_dir=os.path.join(BENCH_DIR, 'results', 'visualizations'))
     visualizer.create_dashboard()
     
     print("Visualization dashboard creation complete!")

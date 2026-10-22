@@ -22,3 +22,6 @@ htmlcov/
 
 # Runtime output
 *.log
+
+# neuron-bench analysis output
+neuron-bench/results/
