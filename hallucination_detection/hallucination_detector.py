@@ -21,6 +21,28 @@ from datetime import datetime
 from enum import Enum
 import numpy as np
 
+_STOPWORDS = frozenset(
+    "a an the is are was were be been being has have had of in on at to for "
+    "with by from and or but this that these those it its as".split()
+)
+
+
+def _content_words(text: str) -> set:
+    """
+    Lowercased words with stopwords removed and a crude plural strip
+    ("trials" -> "trial"), so comparisons focus on the words that carry meaning.
+    Numbers keep their units and separators ("85%", "120/80").
+    """
+    words = set()
+    for word in re.findall(r"[a-z0-9%/.]+", text.lower()):
+        word = word.strip(".")
+        if len(word) < 2 or word in _STOPWORDS:
+            continue
+        if len(word) > 3 and word.endswith("s") and not word.endswith("ss"):
+            word = word[:-1]
+        words.add(word)
+    return words
+
 
 class HallucinationType(Enum):
     """Categories of hallucination patterns"""
@@ -139,16 +161,16 @@ class UncertaintyQuantifier:
         Simple semantic similarity using token overlap and sequence matching.
         In production, use sentence transformers or embeddings.
         """
-        tokens1 = set(text1.lower().split())
-        tokens2 = set(text2.lower().split())
+        words1 = _content_words(text1)
+        words2 = _content_words(text2)
         
-        if not tokens1 or not tokens2:
+        if not words1 or not words2:
             return 0.0
         
-        intersection = tokens1.intersection(tokens2)
-        union = tokens1.union(tokens2)
-        
-        return len(intersection) / len(union) if union else 0.0
+        # Overlap relative to the shorter text, so a paraphrase that adds or
+        # drops a word still counts as similar. Stopwords are ignored because
+        # they made unrelated sentences look alike and paraphrases look apart.
+        return len(words1 & words2) / min(len(words1), len(words2))
 
 
 class SelfConsistencyChecker:
@@ -265,7 +287,7 @@ class SelfConsistencyChecker:
         for claim in all_claims:
             claim_counts[claim] = claim_counts.get(claim, 0) + 1
         
-        threshold = len(samples) * 0.3  # Appears in < 30% of samples
+        threshold = len(samples) / 2  # Appears in a minority of samples
         divergent = [
             claim for claim, count in claim_counts.items() 
             if count < threshold
@@ -390,14 +412,19 @@ class FactVerificationAgent:
         """
         Check if context contains supporting evidence for claim.
         """
-        claim_tokens = set(claim.lower().split())
+        claim_words = _content_words(claim)
+        if not claim_words:
+            return False
+        claim_numbers = {word for word in claim_words if any(c.isdigit() for c in word)}
         
-        # Check context fields for relevant information
-        for key, value in context.items():
+        # A context field supports the claim if it contains every number the
+        # claim states and at least half of the claim's content words.
+        for value in context.values():
             if isinstance(value, str):
-                value_tokens = set(value.lower().split())
-                overlap = len(claim_tokens.intersection(value_tokens))
-                if overlap > len(claim_tokens) * 0.5:  # 50% token overlap
+                value_words = _content_words(value)
+                if not claim_numbers <= value_words:
+                    continue
+                if len(claim_words & value_words) >= 0.5 * len(claim_words):
                     return True
         
         return False
@@ -407,16 +434,16 @@ class FactVerificationAgent:
         Check if context contradicts the claim.
         """
         # Simple contradiction detection - look for negation patterns
-        contradiction_markers = ['not', 'never', 'no', 'false', 'incorrect']
+        contradiction_markers = {'not', 'never', 'no', 'false', 'incorrect'}
+        claim_words = _content_words(claim)
         
-        for key, value in context.items():
+        # Match whole words: substring matching flagged "on" inside
+        # "hypertension" and "no" inside "normal" as contradictions.
+        for value in context.values():
             if isinstance(value, str):
-                value_lower = value.lower()
-                if any(marker in value_lower for marker in contradiction_markers):
-                    # Check if claim appears near negation
-                    claim_words = claim.lower().split()[:3]  # First few words
-                    if any(word in value_lower for word in claim_words):
-                        return True
+                value_tokens = set(re.findall(r"[a-z']+", value.lower()))
+                if value_tokens & contradiction_markers and claim_words & _content_words(value):
+                    return True
         
         return False
 
