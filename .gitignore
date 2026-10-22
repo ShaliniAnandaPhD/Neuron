@@ -25,3 +25,5 @@ htmlcov/
 
 # neuron-bench analysis output
 neuron-bench/results/
+# safety/safety_monitor.py runtime logs
+safety_logs/

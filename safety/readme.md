@@ -47,50 +47,38 @@ Unauthorized commercial exploitation may result in legal action under U.S. Copyr
 
 ```
 safety/
-├── README.md                 # This file
-├── safety_monitor.py         # Core safety monitoring system
-├── safety_config.py          # Configuration management
-├── circuit_breakers.py       # Fault detection and isolation
-├── audit_logger.py           # Compliance and forensic logging
-├── escalation_manager.py     # Human oversight integration
-├── cli/
-│   ├── safety_commands.py    # CLI interface for safety operations
-│   └── test_commands.py      # Safety testing and validation
-├── config/
-│   ├── safety-policy.yaml    # Default safety configuration
-│   └── compliance-rules.yaml # Regulatory compliance settings
-└── tests/
-    ├── test_safety_monitor.py
-    ├── test_circuit_breakers.py
-    └── fault_injection_tests.py
+├── readme.md            # This file
+├── safety_monitor.py    # Safety monitoring system (runnable demo in __main__)
+├── safety-policy.yaml   # Example safety policy and thresholds
+└── requirements.txt     # PyYAML, the one dependency
 ```
+
+The CLI (`neuron safety ...`), circuit breaker, audit logger and escalation
+modules described below are the planned design; only `safety_monitor.py` is
+in the repository so far.
 
 ---
 
 ## 🚀 Quick Start
 
-### Installation
 ```bash
-# Install safety system dependencies
 pip install -r safety/requirements.txt
 
-# Initialize safety configuration
-python -m neuron.safety.cli.safety_commands --init
+# Register a test agent, monitor it for a few seconds, then stop.
+# Logs go to ./safety_logs/
+python safety/safety_monitor.py
 ```
 
-### Basic Usage
-```bash
-# Start real-time safety monitoring
-neuron safety --monitor --config safety-policy.yaml
+Use it from Python:
 
-# Test circuit breakers
-neuron safety --test circuit-breakers
+```python
+from safety_monitor import SafetyMonitor, SafetyMetrics
 
-# View audit logs
-neuron safety --audit last-24h
-
-# Emergency shutdown
-neuron safety --shutdown --reason "manual_intervention"
+monitor = SafetyMonitor()              # or SafetyMonitor("safety-policy.yaml")
+monitor.register_agent("agent-1", metrics)   # metrics: a SafetyMetrics instance
+monitor.start_monitoring()
+...
+monitor.stop_monitoring()
 ```
 
 ### Configuration
