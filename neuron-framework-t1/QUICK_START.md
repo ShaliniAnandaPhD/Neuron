@@ -31,15 +31,31 @@ WEAVE_ENTITY=your-wandb-entity
 
 ## 🧪 Run Tests
 
-### Option 1: Direct Execution
+### Unit tests (no API keys needed)
+```bash
+python -m pytest tests -v
+```
+The OpenAI and Anthropic clients are mocked. The live end-to-end test is
+skipped unless you opt in (below).
+
+### Live T1 run (calls the real APIs)
 ```bash
 python run_t1_test.py
+# or, through pytest:
+RUN_LIVE_T1=1 python -m pytest tests/test_t1_system.py -v
 ```
 
-### Option 2: Pytest
-```bash
-pytest tests/test_t1_system.py -v
-```
+### Models
+| Role | Default | Override with |
+|------|---------|---------------|
+| Primary vision model (OpenAI) | `gpt-5.6-sol` | `PRIMARY_VISION_MODEL`, `PRIMARY_VISION_REASONING_EFFORT` (default `none`) |
+| Fallback vision model (Claude) | `claude-sonnet-5-5` | `FALLBACK_VISION_MODEL`, `FALLBACK_VISION_EFFORT` (default `low`) |
+
+These replace the retired `gpt-4-vision-preview` and `claude-3-sonnet-20240229`.
+The Claude call enables server-side refusal fallback (`fallbacks: "default"`),
+so if a safety classifier declines a request the API retries it on another
+Claude model within the same call. Weave tracing is optional: without the
+`weave` package installed, the agents run and log events to the standard logger.
 
 
 

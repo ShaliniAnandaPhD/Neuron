@@ -1,8 +1,7 @@
-import weave
+from src import tracing as weave
 from src.core.base_agent import BaseAgent, Message
 from typing import Dict, Any
 
-@weave.op()
 class IntakeAgent(BaseAgent):
     """Processes incoming insurance claims"""
     
@@ -10,6 +9,10 @@ class IntakeAgent(BaseAgent):
         super().__init__(agent_id)
         self.supported_formats = ['image/jpeg', 'image/png', 'text/plain']
     
+    async def process_message(self, message: Message) -> Message:
+        """BaseAgent entry point (it is abstract, so the agent could not be created)."""
+        return await self.process_claim(message.payload)
+
     @weave.op()
     async def process_claim(self, claim_data: Dict[str, Any]) -> Message:
         """Process incoming insurance claim"""

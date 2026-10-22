@@ -1,4 +1,4 @@
-import weave
+from src import tracing as weave
 import time
 import asyncio
 from src.core.base_agent import BaseAgent, Message
@@ -6,7 +6,6 @@ from src.models.vision_models import VisionModelInterface
 from typing import Dict, Any
 from config.config import Config
 
-@weave.op()
 class SwapController(BaseAgent):
     """Manages model swapping and validation"""
     
@@ -16,6 +15,10 @@ class SwapController(BaseAgent):
         self.accuracy_tolerance = Config.ACCURACY_TOLERANCE
         self.vision_models = VisionModelInterface()
     
+    async def process_message(self, message: Message) -> Message:
+        """BaseAgent entry point (it is abstract, so the agent could not be created)."""
+        return await self.execute_swap(message)
+
     @weave.op()
     async def execute_swap(self, message: Message) -> Message:
         """Execute model swap and validate results"""
@@ -76,9 +79,9 @@ class SwapController(BaseAgent):
         image_data = swap_data['claim_data']['image_data']
         
         if 'claude' in swap_data['fallback_model'].lower():
-            return await self.vision_models.analyze_with_claude3v(image_data, prompt)
+            return await self.vision_models.analyze_with_claude(image_data, prompt)
         else:
-            return await self.vision_models.analyze_with_gpt4v(image_data, prompt)
+            return await self.vision_models.analyze_with_openai(image_data, prompt)
     
     def _validate_swap_results(self, primary: Dict, fallback: Dict, text: Dict) -> bool:
         """Validate that swap resolved the conflict"""

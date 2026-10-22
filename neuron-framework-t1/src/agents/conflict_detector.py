@@ -1,4 +1,4 @@
-import weave
+from src import tracing as weave
 import asyncio
 import time
 from src.core.base_agent import BaseAgent, Message
@@ -6,7 +6,6 @@ from src.models.vision_models import VisionModelInterface
 from typing import Dict, Any
 from config.config import Config
 
-@weave.op()
 class ConflictDetector(BaseAgent):
     """Detects conflicts between vision and text analysis"""
     
@@ -15,6 +14,10 @@ class ConflictDetector(BaseAgent):
         self.confidence_threshold = Config.CONFIDENCE_THRESHOLD
         self.vision_models = VisionModelInterface()
     
+    async def process_message(self, message: Message) -> Message:
+        """BaseAgent entry point (it is abstract, so the agent could not be created)."""
+        return await self.analyze_claim(message)
+
     @weave.op()
     async def analyze_claim(self, message: Message) -> Message:
         """Analyze claim and detect conflicts"""
@@ -62,7 +65,7 @@ class ConflictDetector(BaseAgent):
         
         Be specific about damage severity and confidence."""
         
-        return await self.vision_models.analyze_with_gpt4v(image_data, prompt)
+        return await self.vision_models.analyze_with_openai(image_data, prompt)
     
     @weave.op()
     async def _analyze_text_description(self, description: str) -> Dict[str, Any]:

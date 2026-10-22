@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import asyncio
-import weave
+from src import tracing as weave
 from tests.test_t1_system import T1SystemTest, generate_test_cases
 from config.config import Config
 

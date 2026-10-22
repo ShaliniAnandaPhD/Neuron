@@ -1,16 +1,15 @@
-import pytest
-import weave
 import asyncio
+import os
 import time
+
+import pytest
+
+from src import tracing as weave
 from src.agents.intake_agent import IntakeAgent
 from src.agents.conflict_detector import ConflictDetector
 from src.agents.swap_controller import SwapController
 from config.config import Config
 
-# Initialize Weave
-weave.init(Config.WEAVE_PROJECT)
-
-@weave.op()
 class T1SystemTest:
     """Complete T1 system test"""
     
@@ -122,10 +121,16 @@ def generate_test_cases():
         }
     ]
 
-# Main test execution
+# Main test execution. This calls the real OpenAI and Anthropic APIs with real
+# images, so it only runs when asked: RUN_LIVE_T1=1 plus both API keys.
+LIVE = os.getenv("RUN_LIVE_T1") == "1" and Config.OPENAI_API_KEY and Config.ANTHROPIC_API_KEY
+
+
 @pytest.mark.asyncio
+@pytest.mark.skipif(not LIVE, reason="live API test: set RUN_LIVE_T1=1 and both API keys")
 async def test_t1_complete_system():
     """Test complete T1 system"""
+    weave.init(Config.WEAVE_PROJECT)
     test_system = T1SystemTest()
     test_cases = generate_test_cases()
     

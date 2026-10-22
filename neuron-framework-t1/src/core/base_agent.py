@@ -1,4 +1,4 @@
-import weave
+from src import tracing as weave
 import asyncio
 import time
 from typing import Dict, Any, Optional, List
@@ -21,7 +21,6 @@ class Message:
             import uuid
             self.message_id = str(uuid.uuid4())
 
-@weave.op()
 class BaseAgent(ABC):
     def __init__(self, agent_id: str):
         self.agent_id = agent_id
