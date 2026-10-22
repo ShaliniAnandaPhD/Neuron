@@ -14,7 +14,7 @@ services:
       # These variables are set in the Dockerfile as well, but can be overridden here
       FLASK_APP: app.py
       FLASK_RUN_HOST: 0.0.0.0
-      FLASK_ENV: development
+      FLASK_DEBUG: "1"
     # Ensure the backend starts before the frontend tries to connect
     depends_on:
       - frontend # This ensures backend starts after frontend, but frontend needs to proxy requests to backend.

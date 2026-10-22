@@ -1,26 +1,15 @@
-# Use an official Python runtime as a parent image
-FROM python:3.9-slim-buster
-
-# Set the working directory in the container
+FROM python:3.12-slim
 WORKDIR /app
 
-# Copy the requirements file into the container at /app
 COPY requirements.txt .
-
-# Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the rest of your application's source code to the container at /app
 COPY . .
 
-# Set environment variables for Flask
+# Docker ENV lines cannot carry trailing comments: listen on all interfaces
 ENV FLASK_APP=app.py
-ENV FLASK_RUN_HOST=0.0.0.0 # Listen on all available network interfaces
-ENV FLASK_ENV=development # Set to development for auto-reloading during dev
+ENV FLASK_RUN_HOST=0.0.0.0
+# Auto-reload during development (FLASK_ENV was removed in Flask 2.3)
+ENV FLASK_DEBUG=1
 
-# Expose the port that Flask will run on
 EXPOSE 5000
-
-# Command to run the Flask application
-# Use a more robust server like Gunicorn for production, but flask run is fine for development
 CMD ["flask", "run"]
