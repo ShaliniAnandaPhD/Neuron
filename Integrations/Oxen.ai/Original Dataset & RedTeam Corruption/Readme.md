@@ -31,3 +31,27 @@
 
 10. **Schema Mismatch Report**  
    Report comparing original vs. corrupted schemas — includes newly introduced nulls and encoding mismatches.
+
+## Screenshots
+
+In the order they were captured:
+
+![Screenshot 1](Screenshots/screenshot-01.png)
+
+![Screenshot 2](Screenshots/screenshot-02.png)
+
+![Screenshot 3](Screenshots/screenshot-03.png)
+
+![Screenshot 4](Screenshots/screenshot-04.png)
+
+![Screenshot 5](Screenshots/screenshot-05.png)
+
+![Screenshot 6](Screenshots/screenshot-06.png)
+
+![Screenshot 7](Screenshots/screenshot-07.png)
+
+![Screenshot 8](Screenshots/screenshot-08.png)
+
+![Screenshot 9](Screenshots/screenshot-09.png)
+
+![Screenshot 10](Screenshots/screenshot-10.png)

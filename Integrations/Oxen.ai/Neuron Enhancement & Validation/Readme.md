@@ -17,3 +17,19 @@
 5. **Clean Dataset Preview with Risk Score**  
    Post-enhancement dataset showing new column and absence of nulls/invalids.
 
+
+## Screenshots
+
+In the order they were captured:
+
+![Screenshot 1](screenshots/screenshot-01.png)
+
+![Screenshot 2](screenshots/screenshot-02.png)
+
+![Screenshot 3](screenshots/screenshot-03.png)
+
+![Screenshot 4](screenshots/screenshot-04.png)
+
+![Screenshot 5](screenshots/screenshot-05.png)
+
+![Screenshot 6](screenshots/screenshot-06.png)
