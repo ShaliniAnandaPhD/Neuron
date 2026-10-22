@@ -216,3 +216,28 @@ def test_shutdown_async_leaves_no_pending_tasks():
         assert [t for t in asyncio.all_tasks(loop) if not t.done()] == []
     finally:
         loop.close()
+
+
+def test_memory_store_and_query():
+    from neuron import MemoryType
+
+    async def scenario():
+        core = initialize()
+        core.start()
+        try:
+            memory = core.memory_manager
+            await memory.store(
+                {"event": "complaint"}, MemoryType.EPISODIC, metadata={"customer": "c1"}
+            )
+            await memory.store({"note": "draft"}, MemoryType.WORKING)
+            episodic = await memory.query(
+                {"metadata.customer": "c1"}, memory_type=MemoryType.EPISODIC
+            )
+            working = await memory.query({}, memory_type=MemoryType.WORKING)
+            return [e.content for e in episodic], [e.content for e in working]
+        finally:
+            await core.shutdown_async()
+
+    episodic, working = asyncio.run(scenario())
+    assert episodic == [{"event": "complaint"}]
+    assert working == [{"note": "draft"}]

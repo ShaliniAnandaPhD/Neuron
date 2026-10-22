@@ -190,7 +190,9 @@ class InMemoryStore(MemoryStore):
             
             for entry in self._store.values():
                 match = True
-                entry_dict = asdict(entry)
+                # to_dict() gives memory_type as its name, the form the memory
+                # systems filter on (asdict kept the enum, so no query matched)
+                entry_dict = entry.to_dict()
                 
                 # Check each query parameter
                 for key, value in query.items():
