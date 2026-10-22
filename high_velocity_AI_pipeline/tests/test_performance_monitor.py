@@ -7,6 +7,8 @@ within the PerformanceMonitor and its helper classes like LatencyTracker and
 ThroughputTracker.
 """
 
+from unittest.mock import MagicMock
+
 import pytest
 import time
 from datetime import datetime

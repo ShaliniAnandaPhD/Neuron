@@ -3,12 +3,15 @@ NFL Data Pipeline - Core Data Models and Configuration
 Defines all data structures, enums, and configuration for the real-time NFL pipeline
 """
 
-from dataclasses import dataclass, field
+import uuid
+from dataclasses import asdict, dataclass, field
 from datetime import datetime
 from typing import Dict, List, Optional, Any, Union
 from enum import Enum
 import hashlib
 import json
+
+import numpy as np
 
 
 # ===== CONFIGURATION CLASS =====

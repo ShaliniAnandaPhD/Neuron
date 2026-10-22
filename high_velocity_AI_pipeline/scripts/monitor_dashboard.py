@@ -18,6 +18,7 @@ from typing import Dict, List, Any, Optional
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 try:
+    import rich.box
     from rich.console import Console
     from rich.table import Table
     from rich.panel import Panel

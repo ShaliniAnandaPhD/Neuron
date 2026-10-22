@@ -177,4 +177,9 @@ def main():
         print(f"\n✅ Memory agent optimization configured successfully")
         
     except Exception as e:
-        print(f"
+        print(f"❌ Memory agent optimization failed: {e}")
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()
