@@ -12,6 +12,7 @@ type having specific capabilities and responsibilities within the larger network
 import asyncio
 import inspect
 import json
+import random
 import logging
 import threading
 import time
@@ -29,7 +30,7 @@ from .exceptions import (
     AgentProcessingError,
     ValidationError,
 )
-from .types import (
+from .neuron_types import (
     AgentCapability,
     AgentID,
     AgentMetrics,
@@ -75,9 +76,12 @@ class BaseAgent(ABC):
         self._state = AgentState.INITIALIZING
         self._state_lock = threading.RLock()
         
-        # Processing resources
+        # Processing resources. The queue is only touched from the event loop
+        # that runs the processing loop (self._loop); see receive_message.
         self._message_queue = asyncio.Queue()
         self._processing_thread = None
+        self._processing_task = None
+        self._loop = None
         self._stop_event = threading.Event()
         
         # Metrics and monitoring
@@ -158,15 +162,33 @@ class BaseAgent(ABC):
             
             # Reset the stop event
             self._stop_event.clear()
-            
-            # Start processing thread
-            self._processing_thread = threading.Thread(
-                target=self._processing_loop,
-                name=f"Agent-{self.id}",
-                daemon=True
-            )
-            self._processing_thread.start()
-            
+
+            try:
+                running_loop = asyncio.get_running_loop()
+            except RuntimeError:
+                running_loop = None
+
+            if running_loop is not None:
+                # Called from async code: process messages as a task on the
+                # same loop as the SynapticBus, so delivery needs no locking.
+                self._loop = running_loop
+                self._processing_task = running_loop.create_task(
+                    self._async_processing_loop(), name=f"Agent-{self.id}"
+                )
+            else:
+                # No event loop: process messages on a dedicated thread.
+                self._loop = asyncio.new_event_loop()
+                self._processing_thread = threading.Thread(
+                    target=self._processing_loop,
+                    name=f"Agent-{self.id}",
+                    daemon=True
+                )
+                self._processing_thread.start()
+
+            # Receive messages addressed to this agent.
+            if self._synaptic_bus is not None and not self._synaptic_bus.is_registered(self.id):
+                self._synaptic_bus.register_agent_nowait(self.id, self.receive_message)
+
             self._state = AgentState.PROCESSING
             logger.info(f"Agent {self.name} ({self.id}) started processing")
     
@@ -181,9 +203,17 @@ class BaseAgent(ABC):
             if self._state != AgentState.PROCESSING:
                 return
             
+            # Stop receiving messages
+            if self._synaptic_bus is not None and self._synaptic_bus.is_registered(self.id):
+                self._synaptic_bus.unregister_agent_nowait(self.id)
+
             # Signal the processing loop to stop
             self._stop_event.set()
-            
+
+            if self._processing_task is not None:
+                self._processing_task.cancel()
+                self._processing_task = None
+
             # Wait for the processing thread to terminate
             if self._processing_thread and self._processing_thread.is_alive():
                 self._processing_thread.join(timeout=5.0)
@@ -232,8 +262,17 @@ class BaseAgent(ABC):
             logger.warning(f"Agent {self.id} received message while not in ready/processing state")
             return
         
-        # Add message to the queue
-        await self._message_queue.put(message)
+        # Add message to the queue. An asyncio.Queue belongs to one event loop,
+        # so hand the message over thread-safely when the agent runs elsewhere.
+        try:
+            current_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            current_loop = None
+
+        if self._loop is None or self._loop is current_loop:
+            await self._message_queue.put(message)
+        else:
+            self._loop.call_soon_threadsafe(self._message_queue.put_nowait, message)
         logger.debug(f"Agent {self.id} queued message {message.id} from {message.sender}")
     
     async def send_message(self, recipients: Union[AgentID, List[AgentID]], content: Any,
@@ -332,7 +371,9 @@ class BaseAgent(ABC):
         This method runs in a separate thread and continuously processes
         messages from the agent's message queue until stopped.
         """
-        loop = asyncio.new_event_loop()
+        # start() creates the loop before the thread runs, so messages that
+        # arrive early are already handed to the right loop.
+        loop = self._loop
         asyncio.set_event_loop(loop)
         
         try:
@@ -2513,4 +2554,3 @@ class AgentBuilder:
         agent_id = self.build()
         self._agent_manager.start_agent(agent_id)
         return agent_id
-"""

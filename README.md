@@ -181,53 +181,106 @@ pip install -e .
 
 ### Your First Agent Circuit
 
+A circuit is a set of agents joined by connections. Input goes to the INPUT
+agents; each agent's reply travels along its connections to the next agents;
+replies from OUTPUT agents come back from `get_output()`. This example is
+[`examples/quickstart.py`](examples/quickstart.py) and runs as part of the
+test suite:
+
 ```python
-from neuron import initialize, create_agent, CircuitDefinition
-from neuron.agents import ReflexAgent, DeliberativeAgent
+import asyncio
 
-# Initialize the agent framework
-core = initialize()
+from neuron import BaseAgent, CircuitDefinition, initialize
 
-# Define a cognitive reasoning circuit with agent coordination
-circuit_def = CircuitDefinition.create(
-    name="CustomerSupportCircuit",
-    description="Handles complex customer issues with agent memory coordination",
-    agents={
-        "intake": {
-            "type": "ReflexAgent",
-            "role": "INPUT",
-            "capabilities": ["sentiment_analysis", "intent_detection"]
-        },
-        "reasoner": {
-            "type": "DeliberativeAgent", 
-            "role": "PROCESSOR",
-            "capabilities": ["contradiction_detection", "memory_retrieval"]
-        },
-        "responder": {
-            "type": "ReflexAgent",
-            "role": "OUTPUT",
-            "capabilities": ["response_generation", "tone_adaptation"]
+
+class Intake(BaseAgent):
+    """Tags a support message with positive and negative signals."""
+
+    def _initialize(self):
+        pass
+
+    async def process_message(self, message):
+        text = message.content["message"].lower()
+        signals = {
+            "positive": any(word in text for word in ("love", "great", "thanks")),
+            "negative": any(word in text for word in ("broken", "refund", "angry")),
         }
-    },
-    connections=[
-        {"source": "intake", "target": "reasoner", "type": "direct"},
-        {"source": "reasoner", "target": "responder", "type": "conditional"}
-    ]
-)
+        await self.send_message(message.sender, {**message.content, "signals": signals})
 
-# Deploy and test agent coordination
-circuit_id = core.circuit_designer.create_circuit(circuit_def)
-core.circuit_designer.deploy_circuit(circuit_id)
 
-# Process a complex request through agent network
-response = core.circuit_designer.send_input(circuit_id, {
-    "customer_id": "12345",
-    "message": "I love this product but it's completely broken and I want a refund but also keep it",
-    "context": "third_complaint_this_month"
-})
+class ContradictionCheck(BaseAgent):
+    """Flags messages that are positive and negative at the same time."""
 
-print(response)  # Agent network detects contradiction and requests clarification
+    def _initialize(self):
+        pass
+
+    async def process_message(self, message):
+        signals = message.content["signals"]
+        mixed = signals["positive"] and signals["negative"]
+        await self.send_message(
+            message.sender, {**message.content, "contradiction": mixed}
+        )
+
+
+class Responder(BaseAgent):
+    """Writes the reply."""
+
+    def _initialize(self):
+        pass
+
+    async def process_message(self, message):
+        if message.content["contradiction"]:
+            reply = "Sounds like you like it but it isn't working. Repair or refund?"
+        else:
+            reply = "Thanks, we're on it."
+        await self.send_message(message.sender, {"reply": reply})
+
+
+async def main():
+    core = initialize()
+    core.start()  # components run as tasks on this event loop
+    for agent_type in (Intake, ContradictionCheck, Responder):
+        core.agent_manager.register_agent_type(agent_type)
+
+    circuit = CircuitDefinition.create(
+        name="CustomerSupportCircuit",
+        description="Detects mixed signals and asks a clarifying question",
+        agents={
+            "intake": {"type": "Intake", "role": "INPUT"},
+            "checker": {"type": "ContradictionCheck", "role": "PROCESSOR"},
+            "responder": {"type": "Responder", "role": "OUTPUT"},
+        },
+        connections=[
+            {"source": "intake", "target": "checker", "connection_type": "direct"},
+            {"source": "checker", "target": "responder", "connection_type": "direct"},
+        ],
+    )
+    circuit_id = await core.circuit_designer.create_and_deploy(circuit)
+
+    message = "I love this product but it's completely broken and I want a refund"
+    await core.circuit_designer.send_input(circuit_id, {"message": message})
+    output = await core.circuit_designer.get_output(circuit_id, timeout=5)
+    print(f"{output['agent']}: {output['content']['reply']}")
+
+    await core.circuit_designer.terminate_circuit(circuit_id)
+    core.shutdown()
+
+
+if __name__ == "__main__":
+    asyncio.run(main())
 ```
+
+```bash
+python examples/quickstart.py
+# responder: Sounds like you like it but it isn't working. Repair or refund?
+```
+
+The framework is asynchronous: call `initialize()` and `core.start()` from
+inside a coroutine, as above, and `await` the circuit methods. Connections can
+be `direct`, `conditional` or `filtered` (a Python expression over `message`
+in the connection's `metadata`), or `transformed` (an expression that rewrites
+the content). Expressions are evaluated with `eval`, so only deploy circuit
+definitions you trust.
 
 ## 🏗️ Core Agent Architecture
 

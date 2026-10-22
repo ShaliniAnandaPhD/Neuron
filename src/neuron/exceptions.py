@@ -241,4 +241,3 @@ class ResourceNotFoundError(ResourceError):
     or references to non-existent entities.
     """
     pass
-"""

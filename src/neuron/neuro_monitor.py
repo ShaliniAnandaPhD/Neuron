@@ -21,7 +21,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
 
 from .config import config
 from .exceptions import MonitoringError
-from .types import AgentID, CircuitID
+from .neuron_types import AgentID, CircuitID
 
 logger = logging.getLogger(__name__)
 
@@ -1785,4 +1785,3 @@ class NeuroMonitor:
             return visualization_data
         except Exception as e:
             raise MonitoringError(f"Error visualizing metrics: {e}") from e
-"""

@@ -30,7 +30,7 @@ from .exceptions import (
     SynapticBusError,
     ValidationError,
 )
-from .types import AgentID, Message, MessageID, MessagePriority
+from .neuron_types import AgentID, Message, MessageID, MessagePriority
 
 logger = logging.getLogger(__name__)
 
@@ -223,12 +223,21 @@ class MessageRouter:
             ChannelError: If a channel with the same name already exists
         """
         async with self._lock:
-            if name in self._channels:
-                raise ChannelError(f"Channel {name} already exists")
-            
-            channel = Channel(name, buffer_size)
-            self._channels[name] = channel
-            return channel
+            return self.create_channel_nowait(name, buffer_size)
+    
+    def create_channel_nowait(self, name: str, buffer_size: int = 1000) -> Channel:
+        """
+        Synchronous form of create_channel, usable before an event loop runs.
+        
+        Raises:
+            ChannelError: If a channel with the same name already exists
+        """
+        if name in self._channels:
+            raise ChannelError(f"Channel {name} already exists")
+        
+        channel = Channel(name, buffer_size)
+        self._channels[name] = channel
+        return channel
     
     async def remove_channel(self, name: str) -> None:
         """
@@ -706,9 +715,10 @@ class SynapticBus:
     
     def _create_default_channels(self) -> None:
         """Create default communication channels."""
-        asyncio.create_task(self._router.create_channel("broadcast"))
-        asyncio.create_task(self._router.create_channel("errors"))
-        asyncio.create_task(self._router.create_channel("system"))
+        # Creating a channel needs no event loop, so do it now rather than
+        # scheduling tasks (which fails when no loop is running yet).
+        for name in ("broadcast", "errors", "system"):
+            self._router.create_channel_nowait(name)
         
         logger.debug("Created default channels")
     
@@ -728,7 +738,14 @@ class SynapticBus:
             self._stop_event.clear()
             
             # Start message processing task
-            self._processing_task = asyncio.create_task(self._process_messages())
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                raise RuntimeError(
+                    "SynapticBus.start() must be called from a running event loop, "
+                    "e.g. inside a coroutine run with asyncio.run()"
+                ) from None
+            self._processing_task = loop.create_task(self._process_messages())
             
             logger.info("SynapticBus started")
     
@@ -788,29 +805,53 @@ class SynapticBus:
         Raises:
             ValueError: If the agent is already registered
         """
+        self.register_agent_nowait(agent_id, callback)
+
+    def register_agent_nowait(self, agent_id: AgentID, callback: Callable[[Message], Any]) -> None:
+        """
+        Synchronous form of register_agent, for callers that are not coroutines
+        (such as BaseAgent.start). The callback must be a coroutine function.
+
+        Raises:
+            ValueError: If the agent is already registered
+        """
         with self._lock:
             if agent_id in self._agent_callbacks:
                 raise ValueError(f"Agent {agent_id} is already registered")
-            
+
             self._agent_callbacks[agent_id] = callback
             logger.debug(f"Registered agent: {agent_id}")
-    
+
     async def unregister_agent(self, agent_id: AgentID) -> None:
         """
         Unregister an agent.
-        
+
         Args:
             agent_id: ID of the agent
-            
+
+        Raises:
+            ValueError: If the agent is not registered
+        """
+        self.unregister_agent_nowait(agent_id)
+
+    def unregister_agent_nowait(self, agent_id: AgentID) -> None:
+        """
+        Synchronous form of unregister_agent.
+
         Raises:
             ValueError: If the agent is not registered
         """
         with self._lock:
             if agent_id not in self._agent_callbacks:
                 raise ValueError(f"Agent {agent_id} is not registered")
-            
+
             del self._agent_callbacks[agent_id]
             logger.debug(f"Unregistered agent: {agent_id}")
+
+    def is_registered(self, agent_id: AgentID) -> bool:
+        """Return True if an agent is registered to receive messages."""
+        with self._lock:
+            return agent_id in self._agent_callbacks
     
     async def create_channel(self, name: str, buffer_size: int = 1000) -> Channel:
         """
@@ -1048,4 +1089,3 @@ class SynapticBus:
                 await self.send(message)
         except Exception as e:
             logger.error(f"Error in message delivery: {e}")
-"""

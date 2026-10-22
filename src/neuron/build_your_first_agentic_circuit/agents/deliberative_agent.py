@@ -15,8 +15,8 @@ from dataclasses import dataclass, field
 from enum import Enum
 import json
 
-from neuron.core.base import BaseAgent, Message, MessageType, AgentCapabilities, MemoryType
-from neuron.memory.working import WorkingMemory
+from neuron.build_your_first_agentic_circuit.core.base import BaseAgent, Message, MessageType, AgentCapabilities, MemoryType
+from neuron.build_your_first_agentic_circuit.memory.working import WorkingMemory
 
 logger = logging.getLogger(__name__)
 

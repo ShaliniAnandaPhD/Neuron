@@ -32,7 +32,7 @@ from .exceptions import (
     NeuronException,
     PluginError,
 )
-from .types import AgentID, CircuitID
+from .neuron_types import AgentID, CircuitID
 
 logger = logging.getLogger(__name__)
 
@@ -520,4 +520,3 @@ def run_context(config_path: Optional[Union[str, Path]] = None,
     core = NeuronCore(config_path, config_dict)
     with core.run_context():
         yield core
-"""

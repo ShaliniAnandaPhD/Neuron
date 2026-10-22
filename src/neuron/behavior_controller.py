@@ -18,7 +18,7 @@ import time
 from abc import ABC, abstractmethod
 from dataclasses import asdict, dataclass, field
 from enum import Enum
-from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
 
 from .agent import BaseAgent
 from .config import config
@@ -1180,4 +1180,3 @@ def with_behavior_control(agent_class: Type) -> Type:
     BehaviorEnhancedAgent.__qualname__ = BehaviorEnhancedAgent.__name__
     
     return BehaviorEnhancedAgent
-"""

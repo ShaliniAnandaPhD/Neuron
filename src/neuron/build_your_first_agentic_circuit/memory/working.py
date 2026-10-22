@@ -19,7 +19,7 @@ import threading
 import pickle
 import os
 
-from neuron.core.base import MemoryInterface
+from neuron.build_your_first_agentic_circuit.core.base import MemoryInterface
 
 logger = logging.getLogger(__name__)
 

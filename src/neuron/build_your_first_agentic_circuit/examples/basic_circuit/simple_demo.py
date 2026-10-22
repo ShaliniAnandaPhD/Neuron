@@ -13,17 +13,17 @@ import asyncio
 import logging
 import time
 import json
-from typing import Dict, Any
+from typing import Any, Dict, List
 
 # Import Neuron framework components
 import sys
 import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-from neuron.core.messaging import SynapticBus, RoutingRule, RoutingStrategy
-from neuron.core.base import Message, MessageType, MessagePriority, AgentCapabilities, MemoryType
-from neuron.agents.deliberative_agent import DeliberativeAgent, create_kotler_agent
-from neuron.memory.working import WorkingMemory
+from neuron.build_your_first_agentic_circuit.core.messaging import SynapticBus, RoutingRule, RoutingStrategy
+from neuron.build_your_first_agentic_circuit.core.base import Message, MessageType, MessagePriority, AgentCapabilities, MemoryType
+from neuron.build_your_first_agentic_circuit.agents.deliberative_agent import DeliberativeAgent, create_kotler_agent
+from neuron.build_your_first_agentic_circuit.memory.working import WorkingMemory
 
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')

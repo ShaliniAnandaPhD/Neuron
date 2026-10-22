@@ -24,7 +24,7 @@ from typing import Any, Callable, Dict, Generic, List, Optional, Set, Tuple, Typ
 
 from .config import config
 from .exceptions import MemoryAccessError, MemoryStorageError
-from .types import AgentID, MemoryEntry, MemoryID, MemoryType
+from .neuron_types import AgentID, MemoryEntry, MemoryID, MemoryType
 
 logger = logging.getLogger(__name__)
 
@@ -2164,4 +2164,3 @@ class MemoryManager:
             raise ValueError(f"Unsupported memory type: {memory_type}")
         
         return self._memory_systems[memory_type]
-"""

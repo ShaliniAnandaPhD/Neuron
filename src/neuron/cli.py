@@ -6,6 +6,7 @@ allowing users to initialize, start, and manage the framework and its components
 """
 
 import argparse
+import asyncio
 import json
 import logging
 import os
@@ -237,6 +238,14 @@ def setup_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _initialized_core(args: argparse.Namespace) -> NeuronCore:
+    """Return the framework core with its components created in this process."""
+    core = NeuronCore()
+    if getattr(core, "agent_manager", None) is None:
+        core = initialize(args.config)
+    return core
+
+
 def handle_init(args: argparse.Namespace) -> int:
     """
     Handle the init command.
@@ -262,8 +271,8 @@ def handle_init(args: argparse.Namespace) -> int:
         core = initialize(args.config, config_dict)
         
         print(f"Initialized Neuron framework with:")
-        print(f"  - Data directory: {core.config.get('system', 'data_dir')}")
-        print(f"  - Plugin directory: {core.config.get('system', 'plugin_dir')}")
+        print(f"  - Data directory: {config.get('system', 'data_dir')}")
+        print(f"  - Plugin directory: {config.get('system', 'plugin_dir')}")
         
         return 0
     except Exception as e:
@@ -287,18 +296,15 @@ def handle_start(args: argparse.Namespace) -> int:
         if args.no_plugins:
             config_dict["extensions"] = {"auto_discover": False}
         
-        # Start the framework
-        core = start(args.config, config_dict)
-        
-        print(f"Started Neuron framework")
-        print(f"Use 'neuron stop' to stop the framework")
-        
-        # Keep running until interrupted
-        try:
+        async def run_until_interrupted() -> None:
+            # The framework's components run as tasks on this event loop.
+            core = start(args.config, config_dict)
+            print("Started Neuron framework (press Ctrl+C to stop)")
             while core.is_running:
-                # Sleep briefly to avoid high CPU usage
-                import time
-                time.sleep(1.0)
+                await asyncio.sleep(1.0)
+        
+        try:
+            asyncio.run(run_until_interrupted())
         except KeyboardInterrupt:
             print("Received interrupt, shutting down...")
             shutdown()
@@ -390,11 +396,8 @@ def handle_plugin(args: argparse.Namespace) -> int:
         Exit code
     """
     try:
-        core = NeuronCore()
-        
-        if not core.is_initialized:
-            print("Neuron framework is not initialized")
-            return 1
+        # Each CLI command runs in its own process, so set the framework up here.
+        core = _initialized_core(args)
         
         if args.plugin_command == "list":
             # List installed plugins
@@ -439,7 +442,7 @@ def handle_plugin(args: argparse.Namespace) -> int:
             
             # Copy plugin to plugin directory
             import shutil
-            plugin_dir = Path(core.config.get("system", "plugin_dir"))
+            plugin_dir = Path(config.get("system", "plugin_dir"))
             target_dir = plugin_dir / plugin_path.name
             
             if target_dir.exists():
@@ -474,11 +477,8 @@ def handle_agent(args: argparse.Namespace) -> int:
         Exit code
     """
     try:
-        core = NeuronCore()
-        
-        if not core.is_initialized:
-            print("Neuron framework is not initialized")
-            return 1
+        # Each CLI command runs in its own process, so set the framework up here.
+        core = _initialized_core(args)
         
         if args.agent_command == "list":
             # List available agent types
@@ -548,11 +548,8 @@ def handle_circuit(args: argparse.Namespace) -> int:
         Exit code
     """
     try:
-        core = NeuronCore()
-        
-        if not core.is_initialized:
-            print("Neuron framework is not initialized")
-            return 1
+        # Each CLI command runs in its own process, so set the framework up here.
+        core = _initialized_core(args)
         
         if args.circuit_command == "list":
             # List available circuit templates
@@ -587,8 +584,8 @@ def handle_circuit(args: argparse.Namespace) -> int:
                     return 1
             
             # Create the circuit
-            circuit_id = core.circuit_designer.create_from_template(
-                args.template, params
+            circuit_id = asyncio.run(
+                core.circuit_designer.create_from_template(args.template, params)
             )
             
             print(f"Created circuit: {circuit_id}")
@@ -606,7 +603,7 @@ def handle_circuit(args: argparse.Namespace) -> int:
                 return 1
             
             # Deploy the circuit
-            core.circuit_designer.deploy_circuit(args.circuit_id)
+            asyncio.run(core.circuit_designer.deploy_circuit(args.circuit_id))
             
             print(f"Deployed circuit: {args.circuit_id}")
             
@@ -641,11 +638,8 @@ def handle_webui(args: argparse.Namespace) -> int:
             print("Install with: pip install fastapi uvicorn jinja2")
             return 1
         
-        core = NeuronCore()
-        
-        if not core.is_initialized:
-            print("Neuron framework is not initialized")
-            return 1
+        # Each CLI command runs in its own process, so set the framework up here.
+        core = _initialized_core(args)
         
         # Import the web UI module
         try:
@@ -735,4 +729,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-"""

@@ -24,7 +24,7 @@ from typing import Any, Callable, Dict, List, Optional, Set, Tuple, Type, Union
 from .agent import AgentBuilder, BaseAgent, CoordinatorAgent
 from .config import config
 from .exceptions import CircuitDesignerError, CircuitRuntimeError, ValidationError
-from .types import AgentID, CircuitDefinition, CircuitID, CircuitRole, Message
+from .neuron_types import AgentID, CircuitDefinition, CircuitID, CircuitRole, Message
 
 logger = logging.getLogger(__name__)
 
@@ -167,27 +167,28 @@ class CircuitValidator:
             errors.append("Circuit has no output agent")
         
         # Check for connectivity
-        if circuit_def.connections:
-            # Build a simple adjacency list for connected components analysis
+        if circuit_def.connections and agent_ids:
+            # Build an undirected adjacency list: an agent counts as connected
+            # whether messages flow into it or out of it. (Following only
+            # outgoing edges made the result depend on which agent the
+            # search happened to start from.)
             adjacency = {agent_id: [] for agent_id in agent_ids}
             for connection in circuit_def.connections:
                 source = connection.get("source")
                 target = connection.get("target")
-                if source and target:
+                if source in adjacency and target in adjacency:
                     adjacency[source].append(target)
-            
+                    adjacency[target].append(source)
+
             # Check if the graph is connected
             visited = set()
-            
-            def dfs(node):
+            stack = [next(iter(agent_ids))]
+            while stack:
+                node = stack.pop()
+                if node in visited:
+                    continue
                 visited.add(node)
-                for neighbor in adjacency[node]:
-                    if neighbor not in visited:
-                        dfs(neighbor)
-            
-            # Start DFS from the first agent
-            start_node = next(iter(agent_ids))
-            dfs(start_node)
+                stack.extend(adjacency[node])
             
             if len(visited) < len(agent_ids):
                 errors.append("Circuit has disconnected agents")
@@ -226,6 +227,12 @@ class Circuit:
         self._lock = threading.RLock()
         self._coordinator_id = None  # ID of the coordinator agent (if any)
         
+        # The circuit sends every message to its agents and receives every
+        # reply under this ID, then forwards replies along the connections.
+        self._hub_id = f"{circuit_id}:hub"
+        self._routes = {}  # actual source ID -> [(actual target ID, predicate, transform)]
+        self._outputs = None  # asyncio.Queue of replies from OUTPUT agents
+        
         logger.info(f"Initialized circuit: {definition.name} ({circuit_id})")
     
     async def deploy(self) -> None:
@@ -254,6 +261,10 @@ class Circuit:
                 
                 # Start agents
                 await self._start_agents()
+                
+                # Receive agent replies so they can be routed
+                self._outputs = asyncio.Queue()
+                self._synaptic_bus.register_agent_nowait(self._hub_id, self._on_agent_message)
                 
                 self._status = "deployed"
                 logger.info(f"Circuit {self.definition.name} ({self.id}) deployed successfully")
@@ -305,7 +316,7 @@ class Circuit:
             }
             
             # Create the agent
-            actual_id = (await builder
+            actual_id = (builder
                        .of_type(agent_class)
                        .with_id(agent_id)
                        .with_name(name)
@@ -354,7 +365,7 @@ class Circuit:
         }
         
         # Create the coordinator
-        actual_id = (await builder
+        actual_id = (builder
                    .of_type(CoordinatorAgent)
                    .with_id(coordinator_id)
                    .with_name(name)
@@ -401,45 +412,21 @@ class Circuit:
                 logger.warning(f"Skipping connection due to missing agent: {source_id} -> {target_id}")
                 continue
             
-            # Create connection based on type
-            if conn_type == ConnectionType.DIRECT:
-                # Direct connections don't need special setup
-                pass
-            elif conn_type == ConnectionType.FILTERED:
-                # Create a filtering rule
-                filter_condition = metadata.get("filter_condition")
-                if filter_condition:
-                    # Convert filter condition string to lambda (simplified)
-                    # In a real implementation, this would use a safer evaluation mechanism
-                    try:
-                        condition = eval(f"lambda message: {filter_condition}")
-                        await self._synaptic_bus.add_routing_rule(condition, actual_target)
-                    except Exception as e:
-                        logger.error(f"Error creating filter condition: {e}")
+            # Work out how messages travel along this connection. Conditions and
+            # transforms are Python expressions over `message`, evaluated with
+            # eval(), so only deploy circuit definitions you trust.
+            predicate = None
+            transform = None
+            if conn_type in (ConnectionType.FILTERED, ConnectionType.CONDITIONAL):
+                key = "filter_condition" if conn_type == ConnectionType.FILTERED else "condition_code"
+                if metadata.get(key):
+                    predicate = self._compile_expression(metadata[key], source_id, target_id)
             elif conn_type == ConnectionType.TRANSFORMED:
-                # Create a transformer rule (simplified)
-                # In a real implementation, this would use more sophisticated transformation
-                transform_code = metadata.get("transform_code")
-                if transform_code:
-                    try:
-                        transformer = eval(f"lambda message: {transform_code}")
-                        # Use transformer in a routing rule (simplified)
-                        condition = lambda message: message.sender == actual_source
-                        await self._synaptic_bus.add_routing_rule(condition, actual_target)
-                    except Exception as e:
-                        logger.error(f"Error creating transformer: {e}")
-            elif conn_type == ConnectionType.CONDITIONAL:
-                # Create a conditional rule
-                condition_code = metadata.get("condition_code")
-                if condition_code:
-                    try:
-                        condition = eval(f"lambda message: {condition_code}")
-                        await self._synaptic_bus.add_routing_rule(condition, actual_target)
-                    except Exception as e:
-                        logger.error(f"Error creating condition: {e}")
-            elif conn_type == ConnectionType.WEIGHTED:
-                # Weighted connections would be implemented in the message processing logic
-                pass
+                if metadata.get("transform_code"):
+                    transform = self._compile_expression(metadata["transform_code"], source_id, target_id)
+            # DIRECT and WEIGHTED connections forward every message unchanged.
+            
+            self._routes.setdefault(actual_source, []).append((actual_target, predicate, transform))
             
             # Record the connection
             connection = Connection(
@@ -486,6 +473,74 @@ class Circuit:
         
         logger.debug(f"Started all agents for circuit {self.id}")
     
+    @staticmethod
+    def _compile_expression(expression: str, source_id: str, target_id: str) -> Callable[[Message], Any]:
+        try:
+            return eval(f"lambda message: {expression}")
+        except SyntaxError as e:
+            raise CircuitRuntimeError(
+                f"Invalid expression on connection {source_id} -> {target_id}: {expression!r}"
+            ) from e
+    
+    async def _on_agent_message(self, message: Message) -> None:
+        """
+        Route a reply from one of the circuit's agents.
+        
+        The reply is forwarded to every agent the sender connects to (subject
+        to each connection's condition or transform). Replies from OUTPUT
+        agents, and from agents with no outgoing connections, become circuit
+        output that get_output() returns.
+        """
+        sender_name = self._agent_name(message.sender)
+        routes = self._routes.get(message.sender, [])
+        
+        for target, predicate, transform in routes:
+            try:
+                if predicate is not None and not predicate(message):
+                    continue
+                content = transform(message) if transform is not None else message.content
+            except Exception as e:
+                logger.error(f"Connection {sender_name} -> {self._agent_name(target)} failed: {e}")
+                continue
+            
+            await self._synaptic_bus.send(Message.create(
+                sender=self._hub_id,
+                recipients=[target],
+                content=content,
+                metadata={**message.metadata, "circuit_id": self.id, "from_agent": sender_name},
+                trace_id=message.trace_id,
+            ))
+        
+        role = self.definition.agents.get(sender_name, {}).get("role")
+        if not routes or role == CircuitRole.OUTPUT.name:
+            await self._outputs.put({
+                "agent": sender_name,
+                "content": message.content,
+                "trace_id": message.trace_id,
+            })
+    
+    def _agent_name(self, actual_id: AgentID) -> str:
+        """Map an actual agent ID back to its name in the circuit definition."""
+        for name, agent_id in self._agents.items():
+            if agent_id == actual_id:
+                return name
+        return actual_id
+    
+    async def get_output(self, timeout: Optional[float] = 5.0) -> Dict[str, Any]:
+        """
+        Wait for the next output the circuit produces.
+        
+        Returns:
+            {"agent": name of the agent that produced it, "content": ..., "trace_id": ...}
+            
+        Raises:
+            CircuitRuntimeError: If the circuit is not deployed
+            asyncio.TimeoutError: If no output arrives within `timeout` seconds
+        """
+        if self._outputs is None:
+            raise CircuitRuntimeError(f"Circuit {self.id} is not deployed")
+        return await asyncio.wait_for(self._outputs.get(), timeout)
+    
     async def send_input(self, input_data: Any, metadata: Optional[Dict[str, Any]] = None) -> None:
         """
         Send input to the circuit.
@@ -515,7 +570,7 @@ class Circuit:
         
         # Create input message
         message = Message.create(
-            sender=self._coordinator_id or "circuit_system",
+            sender=self._hub_id,
             recipients=input_agents,
             content=input_data,
             metadata=metadata or {}
@@ -589,6 +644,9 @@ class Circuit:
                     self._agent_manager.terminate_agent(agent_id)
                 except Exception as e:
                     logger.warning(f"Error terminating agent {agent_id}: {e}")
+            
+            if self._synaptic_bus.is_registered(self._hub_id):
+                self._synaptic_bus.unregister_agent_nowait(self._hub_id)
             
             # Close circuit channel
             try:
@@ -1084,9 +1142,30 @@ class CircuitDesigner:
         circuit = self._circuits.get(circuit_id)
         if not circuit:
             raise CircuitDesignerError(f"Circuit '{circuit_id}' not found")
-        
+
         await circuit.send_input(input_data, metadata)
-    
+
+    async def get_output(self, circuit_id: CircuitID, timeout: Optional[float] = 5.0) -> Dict[str, Any]:
+        """
+        Wait for the next output from a circuit.
+
+        Args:
+            circuit_id: ID of the circuit
+            timeout: Seconds to wait (None waits forever)
+
+        Returns:
+            {"agent": name of the agent that produced it, "content": ..., "trace_id": ...}
+
+        Raises:
+            CircuitDesignerError: If the circuit doesn't exist
+            asyncio.TimeoutError: If no output arrives in time
+        """
+        circuit = self._circuits.get(circuit_id)
+        if not circuit:
+            raise CircuitDesignerError(f"Circuit '{circuit_id}' not found")
+
+        return await circuit.get_output(timeout)
+
     async def pause_circuit(self, circuit_id: CircuitID) -> None:
         """
         Pause a circuit.
@@ -1245,4 +1324,3 @@ class CircuitDesigner:
             return template
         except Exception as e:
             raise CircuitDesignerError(f"Error loading template: {e}") from e
-"""

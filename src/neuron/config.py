@@ -335,8 +335,6 @@ def initialize_config(config_path: Optional[Union[str, Path]] = None,
     Raises:
         ConfigurationError: If there are validation errors
     """
-    global config
-    
     if config_path:
         config.load_file(config_path)
     
@@ -368,4 +366,3 @@ def reset_config() -> None:
     global config
     config = NeuronConfig()
     logger.info("Reset configuration to defaults")
-"""
