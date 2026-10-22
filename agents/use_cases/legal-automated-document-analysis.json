@@ -1,0 +1,11 @@
+{
+  "industry": "Legal",
+  "use_case": "Automated Document Analysis",
+  "description": "Rapidly review and extract key information from contracts, briefs, and legal texts.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "ABA",
+    "Legal Professional Privilege",
+    "GDPR"
+  ]
+}

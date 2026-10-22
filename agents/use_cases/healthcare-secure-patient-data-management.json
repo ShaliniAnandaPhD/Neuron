@@ -1,0 +1,11 @@
+{
+  "industry": "Healthcare",
+  "use_case": "Secure Patient Data Management",
+  "description": "Securely store and retrieve patient data while ensuring regulatory adherence.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "HIPAA",
+    "FDA",
+    "HITECH"
+  ]
+}

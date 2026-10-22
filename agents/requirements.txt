@@ -1,0 +1,2 @@
+# The agent itself uses only the Python standard library. This is for the tests.
+pytest>=7.0

@@ -1,0 +1,11 @@
+{
+  "industry": "Retail",
+  "use_case": "Personalized Customer Experience",
+  "description": "Deliver tailored recommendations and interactions based on past behavior and preferences.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "PCI-DSS",
+    "GDPR",
+    "FTC Guidelines"
+  ]
+}

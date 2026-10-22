@@ -1,0 +1,11 @@
+{
+  "industry": "Insurance",
+  "use_case": "Claims Processing & Validation",
+  "description": "Efficiently and accurately process claims, identifying inconsistencies.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "NAIC",
+    "Solvency II",
+    "ISO-27001"
+  ]
+}

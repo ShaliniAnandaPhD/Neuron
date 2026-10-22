@@ -1,0 +1,11 @@
+{
+  "industry": "Manufacturing",
+  "use_case": "Production Optimization",
+  "description": "Optimize manufacturing schedules, material flow, and resource utilization.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "ISO-9001",
+    "OSHA",
+    "ISO-14001"
+  ]
+}

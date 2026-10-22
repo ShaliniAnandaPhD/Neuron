@@ -1,0 +1,11 @@
+{
+  "industry": "Financial",
+  "use_case": "Fraud Detection & Prevention",
+  "description": "Identify suspicious transactions and prevent financial crime with robust analysis.",
+  "behavior_profile": "balanced",
+  "compliance_standards": [
+    "PCI-DSS",
+    "SOX",
+    "GDPR"
+  ]
+}
