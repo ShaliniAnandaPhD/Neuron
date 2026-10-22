@@ -64,7 +64,7 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
       - name: '⬇️ Install Dependencies'
-        run: pip install -r requirements.txt
+        run: pip install -r scripts/requirements-finetune.txt
       - name: '🛠️ Run Agent Build and Tuning Script'
         run: |
           python scripts/finetune.py \
@@ -95,7 +95,7 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
       - name: '⬇️ Install Dependencies'
-        run: pip install -r requirements.txt
+        run: pip install -r scripts/requirements-finetune.txt
       - name: '📥 Download Tuned Agent Artifact'
         uses: actions/download-artifact@v4
         with:
@@ -130,7 +130,7 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
       - name: '⬇️ Install Dependencies'
-        run: pip install -r requirements.txt
+        run: pip install -r scripts/requirements-finetune.txt
       - name: '📥 Download Tuned Agent Artifact'
         uses: actions/download-artifact@v4
         with:

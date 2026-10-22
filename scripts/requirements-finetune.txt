@@ -1,0 +1,8 @@
+# Fine-tuning and evaluation pipeline: scripts/finetune.py, scripts/evaluate.py,
+# scripts/validate_compliance.py, scripts/build_and_tune.py and compliance_rules/.
+torch>=2.2
+transformers>=4.40
+tqdm>=4.66
+pandas>=2.0
+scikit-learn>=1.3
+pyyaml>=6.0

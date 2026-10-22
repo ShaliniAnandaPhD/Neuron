@@ -1,35 +1,4 @@
-# filename: requirements.txt
-
-# Core dependencies for the fine-tuning pipeline
-torch>=2.0.0
-transformers>=4.30.0
-tqdm>=4.60.0
-
-# Core async/utility dependencies
-typing-extensions>=4.0.0
-
-# Utilities
-pyyaml>=6.0
-jsonschema>=4.0.0
-
-# Machine learning integrations
-numpy>=1.21.0
-pandas>=1.4.0
-scikit-learn>=1.0.0
-
-# Monitoring
-psutil>=5.9.0
-
-# Visualization (optional)
-matplotlib>=3.5.0
-plotly>=5.8.0
-dash>=2.5.0
-
-# Web interface (optional)
-fastapi>=0.78.0
-uvicorn>=0.17.6
-jinja2>=3.1.2
-
-# Linter for code quality checks
-flake8==4.0.1
-
+# The Neuron framework (src/neuron) plus test and lint tools.
+# Same as: pip install -e ".[dev]"
+# Optional extras: ".[models]" for Hugging Face providers, ".[web]" for `neuron webui`.
+-e .[dev]
