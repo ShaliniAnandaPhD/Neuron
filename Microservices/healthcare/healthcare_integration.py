@@ -8,7 +8,6 @@ from datetime import datetime
 
 from neuron.agent import DeliberativeAgent, ReflexAgent
 from neuron.circuit_designer import CircuitDefinition
-from neuron.types import AgentType, ConnectionType
 from ..base_microservice import BaseMicroservice
 
 class MultilingualNLPComponent(DeliberativeAgent):
@@ -53,7 +52,7 @@ class MultilingualNLPComponent(DeliberativeAgent):
         
         # Forward processed records to the next component
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "measurement_standardization")],
+            recipients=message.sender,
             content={"processed_records": processed_records}
         )
     
@@ -276,7 +275,7 @@ class MeasurementStandardization(DeliberativeAgent):
         
         # Forward standardized records to the next component
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "medical_terminology_resolver")],
+            recipients=message.sender,
             content={"standardized_records": standardized_records}
         )
     
@@ -484,7 +483,7 @@ class MedicalTerminologyResolver(DeliberativeAgent):
         
         # Forward resolved records to the next component
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "health_data_synthesizer")],
+            recipients=message.sender,
             content={"resolved_records": resolved_records}
         )
     
@@ -597,7 +596,7 @@ class HealthDataSynthesizer(DeliberativeAgent):
         
         # Forward synthesis to the output agent
         await self.send_message(
-            recipients=[message.metadata.get("output_agent", "output")],
+            recipients=message.sender,
             content={"health_synthesis": synthesis, "original_records": resolved_records}
         )
     
@@ -1006,7 +1005,7 @@ class OutputAgent(ReflexAgent):
             }
         }
         
-        return output
+        await self.send_message(message.sender, output)
     
     def _count_languages(self, records):
         """Count records by language."""
@@ -1066,49 +1065,47 @@ class HealthcareDataIntegrationMicroservice(BaseMicroservice):
             agents={
                 "multilingual_nlp": {
                     "type": "MultilingualNLPComponent",
-                    "instance": self.agents["multilingual_nlp"]
+                    "role": "INPUT"
                 },
                 "measurement_standardization": {
                     "type": "MeasurementStandardization",
-                    "instance": self.agents["measurement_standardization"]
+                    "role": "PROCESSOR"
                 },
                 "medical_terminology_resolver": {
                     "type": "MedicalTerminologyResolver",
-                    "instance": self.agents["medical_terminology_resolver"]
+                    "role": "PROCESSOR"
                 },
                 "health_data_synthesizer": {
                     "type": "HealthDataSynthesizer",
-                    "instance": self.agents["health_data_synthesizer"]
+                    "role": "PROCESSOR"
                 },
                 "output": {
                     "type": "OutputAgent",
-                    "instance": self.agents["output"]
+                    "role": "OUTPUT"
                 }
             },
             connections=[
                 {
                     "source": "multilingual_nlp",
                     "target": "measurement_standardization",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "measurement_standardization",
                     "target": "medical_terminology_resolver",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "medical_terminology_resolver",
                     "target": "health_data_synthesizer",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "health_data_synthesizer",
                     "target": "output",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 }
-            ],
-            input_agents=["multilingual_nlp"],
-            output_agents=["output"]
+            ]
         )
     
     async def integrate_patient_records(self, patient_records):

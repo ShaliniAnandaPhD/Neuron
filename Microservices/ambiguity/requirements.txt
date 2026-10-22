@@ -1,4 +1,6 @@
-fastapi
-uvicorn
-pyyaml
-scikit-learn
+# Also install the Neuron framework from the repository root: pip install -e .
+fastapi>=0.110
+uvicorn>=0.29
+pydantic>=2.0
+# evaluate.py charts
+matplotlib>=3.8

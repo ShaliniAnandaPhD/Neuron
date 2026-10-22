@@ -1,5 +1,5 @@
 import asyncio
-from microservices.healthcare.healthcare_integration import HealthcareDataIntegrationMicroservice
+from Microservices.healthcare.healthcare_integration import HealthcareDataIntegrationMicroservice
 
 async def main():
     # Create healthcare data integration microservice

@@ -75,7 +75,7 @@ Formats and logs the final results:
 
 ## 🚀 Pipeline Flow
 
-![Ambiguity Resolution Pipeline](docs/blueprints/ambiguity_pipeline.svg)
+![Ambiguity Resolution Pipeline](Docs/blueprints/ambiguity_pipeline.svg)
 
 The agents work in sequence to analyze and resolve ambiguity:
 
@@ -88,22 +88,22 @@ The agents work in sequence to analyze and resolve ambiguity:
 
 ### Command Line
 
-The `AmbiguityResolver` can be used directly from the command line:
+Run from the repository root after `pip install -e .`:
 
 ```bash
-python cli_resolver.py --query "Just wondering if someone could help me with my account issue."
+python -m Microservices.ambiguity.cli_resolver --query "Just wondering if someone could help me with my account issue." --pretty
 ```
 
 For batch processing, use a JSON file:
 
 ```bash
-python cli_resolver.py --file examples/ambiguous_request.json --output results.json
+python -m Microservices.ambiguity.cli_resolver --file Microservices/ambiguity/examples/ambiguous.json --output results.json
 ```
 
 ### Python API
 
 ```python
-from microservices.ambiguity.ambiguity_resolver import AmbiguityResolverMicroservice
+from Microservices.ambiguity.ambiguity_resolver import AmbiguityResolverMicroservice
 
 async def analyze_query(query):
     # Create and deploy the microservice

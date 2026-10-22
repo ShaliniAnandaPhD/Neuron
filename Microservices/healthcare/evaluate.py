@@ -2,7 +2,7 @@ import asyncio
 import json
 import argparse
 import matplotlib.pyplot as plt
-from healthcare_integration import HealthcareDataIntegrationMicroservice
+from Microservices.healthcare.healthcare_integration import HealthcareDataIntegrationMicroservice
 
 async def evaluate_against_ground_truth(dataset_path, ground_truth_path):
     """Evaluate the Healthcare Integration against human-annotated ground truth."""

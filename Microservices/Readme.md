@@ -70,50 +70,44 @@ All micro-audits:
 
 ##  Getting Started
 
+Three microservices are implemented in this folder: `ambiguity/` (tone and
+urgency disambiguation), `healthcare/` (multilingual patient record
+integration) and `multilingual/` (medical device documentation). The other
+audits in the table above are planned, not yet built.
+
+Each one is a Neuron circuit: `BaseMicroservice.process()` deploys the
+circuit, sends the input and returns the OUTPUT agent's result. Run
+everything from the repository root:
+
 ```bash
 git clone https://github.com/ShaliniAnandaPhD/Neuron
-cd Neuron/Microservices/ambiguity  # or switch to any other audit module
-```
+cd Neuron
+pip install -e .
+pip install -r Microservices/ambiguity/requirements.txt
 
-Run a microservice:
+# CLI
+python -m Microservices.ambiguity.cli_resolver --query "Just wondering if someone could help me with my account issue." --pretty
 
-```bash
-# CLI mode
-python cli_resolver.py --query "Just wondering if someone could help me with my account issue."
+# API (POST /resolve, POST /resolve/batch, GET /metrics)
+uvicorn Microservices.ambiguity.api:app --reload
 
-# API mode
-uvicorn api:app --reload
-```
+# Evaluate against the labeled dataset
+python -m Microservices.ambiguity.evaluate --dataset Microservices/ambiguity/data/evaluation_dataset.json
 
-Evaluate against edge-case datasets:
-
-```bash
-python evaluate.py
-```
-
-You can also compose audit pipelines:
-
-```python
-from micro_audits import SarcasmAuditor, MultilingualContradictionChecker
-
-pipeline = [
-    SarcasmAuditor(),
-    MultilingualContradictionChecker(),
-]
-
-for agent in pipeline:
-    input_data = agent.run(input_data)
+# Tests
+python -m pytest Microservices/ambiguity/tests
 ```
 
 ---
 
 ##  Logging + Metrics
 
-Each micro-audit agent emits:
-- JSON logs to `logs/{agent_name}.{timestamp}.json`
-- Per-stage confidence scores
-- Before/after system behavior traces
-- Optional red-team tags for future feedback loops
+Each microservice:
+- logs every request to `Microservices/logs/{service_name}.log`
+- reports request counts, errors and average latency from `get_metrics()`
+  (`GET /metrics` in the API)
+- returns per-stage scores (for example tone, intent and urgency analysis)
+  alongside its final answer
 
 ---
 

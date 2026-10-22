@@ -2,7 +2,7 @@ import asyncio
 import json
 import argparse
 import matplotlib.pyplot as plt
-from ambiguity_resolver import AmbiguityResolverMicroservice
+from Microservices.ambiguity.ambiguity_resolver import AmbiguityResolverMicroservice
 
 async def evaluate_against_ground_truth(dataset_path):
     """Evaluate the AmbiguityResolver against human-annotated ground truth."""

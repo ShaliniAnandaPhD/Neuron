@@ -1,7 +1,7 @@
 # examples/multilingual_documentation_example.py
 
 import asyncio
-from microservices.multilingual.multilingual_documentation import MultilingualDocumentationMicroservice
+from Microservices.multilingual.multilingual_documentation import MultilingualDocumentationMicroservice
 
 async def main():
     # Create medical device documentation microservice

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 import asyncio
 import uvicorn
 import json
-from healthcare_integration import HealthcareDataIntegrationMicroservice
+from Microservices.healthcare.healthcare_integration import HealthcareDataIntegrationMicroservice
 
 app = FastAPI(title="Healthcare Integration API")
 
@@ -33,4 +33,4 @@ async def get_metrics():
     return resolver.get_metrics()
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("Microservices.healthcare.api:app", host="0.0.0.0", port=8000, reload=True)

@@ -77,7 +77,7 @@ The agents work in sequence to process and integrate healthcare data:
 
 ### Command Line
 
-The `HealthcareIntegration` can be used directly from the command line:
+Run from the repository root after `pip install -e .`:
 
 ```bash
-python cli_integration.py --records patient_records.json --output results.json
+python -m Microservices.healthcare.cli_integration --records Microservices/healthcare/examples/sample_inputs/patient_records.json --output results.json

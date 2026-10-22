@@ -1,11 +1,10 @@
 from typing import Dict, Any, List, Optional
 import json
+import re
 import uuid
 
 from neuron.agent import DeliberativeAgent, CoordinatorAgent
 from neuron.circuit_designer import CircuitDefinition
-from neuron.memory import Memory, MemoryType
-from neuron.types import AgentType, ConnectionType
 from ..base_microservice import BaseMicroservice
 
 class TerminologyAgent(DeliberativeAgent):
@@ -63,7 +62,7 @@ class TerminologyAgent(DeliberativeAgent):
         
         # Forward to the next agent
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "cultural_adaptation_agent")],
+            recipients=message.sender,
             content=terminology_mapping
         )
     
@@ -182,7 +181,7 @@ class CulturalAdaptationAgent(DeliberativeAgent):
         
         # Forward to the next agent
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "format_preservation_agent")],
+            recipients=message.sender,
             content=cultural_adaptation
         )
     
@@ -287,8 +286,9 @@ class CulturalAdaptationAgent(DeliberativeAgent):
         
         if source_units == "imperial" and target_units == "metric":
             # Convert inches to cm (very basic)
-            import re
-            inch_pattern = r"(\d+(?:\.\d+)?)\s*(?:inch|inches)"
+            # "inch(?:es)?" rather than "(?:inch|inches)": the alternation
+            # matched "inch" first and left "es" behind ("20.3 cmes").
+            inch_pattern = r"(\d+(?:\.\d+)?)\s*inch(?:es)?\b"
             
             def replace_inches(match):
                 inches = float(match.group(1))
@@ -344,7 +344,7 @@ class FormatPreservationAgent(DeliberativeAgent):
         
         # Forward to the next agent
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "safety_critical_content_agent")],
+            recipients=message.sender,
             content=format_preservation
         )
     
@@ -527,7 +527,7 @@ class SafetyCriticalContentAgent(DeliberativeAgent):
         
         # Forward to the output agent
         await self.send_message(
-            recipients=[message.metadata.get("output_agent", "output")],
+            recipients=message.sender,
             content=safety_verification
         )
     
@@ -619,7 +619,7 @@ class OutputAgent(DeliberativeAgent):
         }
         
         # Return the result
-        return output
+        await self.send_message(message.sender, output)
 
 
 class MultilingualDocumentationMicroservice(BaseMicroservice):
@@ -643,49 +643,47 @@ class MultilingualDocumentationMicroservice(BaseMicroservice):
             agents={
                 "terminology": {
                     "type": "TerminologyAgent",
-                    "instance": self.agents["terminology"]
+                    "role": "INPUT"
                 },
                 "cultural_adaptation": {
                     "type": "CulturalAdaptationAgent",
-                    "instance": self.agents["cultural_adaptation"]
+                    "role": "PROCESSOR"
                 },
                 "format_preservation": {
                     "type": "FormatPreservationAgent",
-                    "instance": self.agents["format_preservation"]
+                    "role": "PROCESSOR"
                 },
                 "safety_critical_content": {
                     "type": "SafetyCriticalContentAgent",
-                    "instance": self.agents["safety_critical_content"]
+                    "role": "PROCESSOR"
                 },
                 "output": {
                     "type": "OutputAgent",
-                    "instance": self.agents["output"]
+                    "role": "OUTPUT"
                 }
             },
             connections=[
                 {
                     "source": "terminology",
                     "target": "cultural_adaptation",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "cultural_adaptation",
                     "target": "format_preservation",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "format_preservation",
                     "target": "safety_critical_content",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "safety_critical_content",
                     "target": "output",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 }
-            ],
-            input_agents=["terminology"],
-            output_agents=["output"]
+            ]
         )
     
     async def translate_document(self, document, source_language, target_language):

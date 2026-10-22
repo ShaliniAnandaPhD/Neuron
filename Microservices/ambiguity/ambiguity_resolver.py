@@ -1,4 +1,4 @@
-# microservices/ambiguity/ambiguity_resolver.py
+# Microservices/ambiguity/ambiguity_resolver.py
 
 from typing import Dict, Any, List, Optional, Tuple, Union
 import json
@@ -10,9 +10,9 @@ from datetime import datetime
 
 from neuron.agent import DeliberativeAgent, ReflexAgent
 from neuron.circuit_designer import CircuitDefinition
-from neuron.types import AgentType, ConnectionType
-from neuron.memory import Memory, MemoryType
 from ..base_microservice import BaseMicroservice
+
+logger = logging.getLogger(__name__)
 
 class ToneAgent(DeliberativeAgent):
     """Agent for analyzing the tone of user messages."""
@@ -28,15 +28,18 @@ class ToneAgent(DeliberativeAgent):
             "hedges": [
                 r"\bjust\b", r"\bperhaps\b", r"\bmaybe\b", r"\bpossibly\b",
                 r"\bi think\b", r"\bi guess\b", r"\bsort of\b", r"\bkind of\b",
-                r"\bsomewhat\b", r"\ba bit\b", r"\ba little\b", r"\bwonder if\b"
+                r"\bsomewhat\b", r"\ba bit\b", r"\ba little\b", r"\bwonder(?:ing)? if\b",
+                r"\bwhen (?:you|they|someone) (?:have|has|get|gets) (?:a (?:moment|minute|chance)|(?:some )?time)\b"
             ],
             "subjunctives": [
                 r"\bcould you\b", r"\bwould you\b", r"\bmight you\b",
-                r"\bwould it be possible\b", r"\bcould it be possible\b"
+                r"\bwould it be possible\b", r"\bcould it be possible\b",
+                r"\b(?:someone|anyone|somebody) (?:could|might|would)\b", r"\bmight be able to\b"
             ],
             "politeness_markers": [
                 r"\bplease\b", r"\bthanks\b", r"\bthank you\b", r"\bappreciate\b",
-                r"\bgrateful\b", r"\bwould be great\b", r"\bwould be helpful\b"
+                r"\bgrateful\b", r"\bwould be great\b", r"\bwould be helpful\b",
+                r"\bi know you'?re busy\b"
             ],
             "apologies": [
                 r"\bsorry\b", r"\bapologies\b", r"\bexcuse me\b", r"\bpardon\b"
@@ -53,11 +56,14 @@ class ToneAgent(DeliberativeAgent):
             "time_constraints": [
                 r"\basap\b", r"\burgent\b", r"\bimmediately\b", r"\bquickly\b",
                 r"\bas soon as\b", r"\bright away\b", r"\bnow\b", r"\bemergency\b",
-                r"\bdeadline\b", r"\btoday\b", r"\btomorrow\b", r"\bwithin\s+\d+\s+(?:hour|minute|day|week)s?\b"
+                r"\bdeadline\b", r"\btoday\b", r"\btomorrow\b", r"\bwithin\s+\d+\s+(?:hour|minute|day|week)s?\b",
+                r"\bin\s+(?:an?|\d+)\s+(?:hour|minute)s?\b"
             ],
             "consequences": [
                 r"\bimportant\b", r"\bcritical\b", r"\bcrucial\b", r"\bvital\b",
-                r"\bessential\b", r"\bsignificant\b", r"\bserious\b"
+                r"\bessential\b", r"\bsignificant\b", r"\bserious\b",
+                r"\bcan'?t (?:access|log ?in|sign in)\b", r"\blocked out\b",
+                r"\bclient (?:demo|meeting|call|presentation)\b", r"\bpresentation\b"
             ],
             "escalation": [
                 r"\bescalate\b", r"\bmanager\b", r"\bsupervisor\b", r"\bcomplaint\b",
@@ -66,9 +72,31 @@ class ToneAgent(DeliberativeAgent):
             ],
             "repeats": [
                 r"\bagain\b", r"\brepeat\b", r"\balready\b", r"\bstill\b",
-                r"\bnot working\b", r"\bstill not\b", r"\bonce more\b"
+                r"\bnot working\b", r"\bisn'?t working\b", r"\bstill not\b", r"\bonce more\b",
+                r"\b(?:multiple|several|many) times\b"
+            ],
+            "intensifiers": [
+                r"\bright now\b", r"\bextremely\b", r"\bat once\b", r"\breally need\b"
             ]
         }
+    
+    # How much one match in each category counts. Scores saturate:
+    # score = 1 - 0.5 ** (weighted matches), so one strong cue gives ~0.5-0.65
+    # and three or more give ~0.9, whatever the message length.
+    POLITENESS_WEIGHTS = {
+        "hedges": 1.0, "subjunctives": 1.0, "politeness_markers": 1.5,
+        "apologies": 1.5, "minimizers": 0.5,
+    }
+    URGENCY_WEIGHTS = {
+        "time_constraints": 1.0, "consequences": 0.75, "escalation": 1.0,
+        "repeats": 0.5, "intensifiers": 0.5,
+    }
+    # Phrases that explicitly lower urgency ("no rush"). "When you have time"
+    # is not one: it is a polite hedge that often wraps urgent requests.
+    CALMING_PATTERNS = [
+        r"\bno rush\b", r"\bno hurry\b", r"\bnot urgent\b",
+        r"\bwhenever (?:you|it'?s) (?:can|convenient)\b", r"\bat your convenience\b",
+    ]
     
     async def process_message(self, message):
         """Process a message to analyze its tone."""
@@ -80,7 +108,7 @@ class ToneAgent(DeliberativeAgent):
         
         # Send results to next agent
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "intent_resolver")],
+            recipients=message.sender,
             content={
                 "query": query,
                 "tone_analysis": tone_analysis
@@ -96,18 +124,19 @@ class ToneAgent(DeliberativeAgent):
                 "politeness": [],
                 "urgency": []
             },
-            "tone_masking_detected": False
+            "tone_masking_detected": False,
+            "calming_detected": False
         }
         
         # Count politeness markers
-        politeness_count = 0
+        politeness_count = 0.0
         for category, patterns in self.politeness_markers.items():
             detected = []
             for pattern in patterns:
                 matches = re.findall(pattern, text, re.IGNORECASE)
                 if matches:
                     detected.extend(matches)
-                    politeness_count += len(matches)
+                    politeness_count += len(matches) * self.POLITENESS_WEIGHTS.get(category, 1.0)
             
             if detected:
                 analysis["detected_patterns"]["politeness"].append({
@@ -116,14 +145,14 @@ class ToneAgent(DeliberativeAgent):
                 })
         
         # Count urgency markers
-        urgency_count = 0
+        urgency_count = 0.0
         for category, patterns in self.urgency_markers.items():
             detected = []
             for pattern in patterns:
                 matches = re.findall(pattern, text, re.IGNORECASE)
                 if matches:
                     detected.extend(matches)
-                    urgency_count += len(matches)
+                    urgency_count += len(matches) * self.URGENCY_WEIGHTS.get(category, 1.0)
             
             if detected:
                 analysis["detected_patterns"]["urgency"].append({
@@ -132,14 +161,14 @@ class ToneAgent(DeliberativeAgent):
                 })
         
         # Calculate scores
-        text_length = len(text.split())
-        politeness_factor = 1.0 if text_length < 10 else min(20.0, text_length) / 20.0
+        analysis["politeness_score"] = 1.0 - 0.5 ** politeness_count
+        analysis["urgency_score"] = 1.0 - 0.5 ** urgency_count
+        analysis["calming_detected"] = any(
+            re.search(pattern, text, re.IGNORECASE) for pattern in self.CALMING_PATTERNS
+        )
         
-        analysis["politeness_score"] = min(1.0, politeness_count / (5.0 * politeness_factor))
-        analysis["urgency_score"] = min(1.0, urgency_count / (3.0 * politeness_factor))
-        
-        # Detect tone masking (high politeness with underlying urgency)
-        if analysis["politeness_score"] > 0.6 and analysis["urgency_score"] > 0.3:
+        # Detect tone masking (polite wording around explicit urgency cues)
+        if analysis["politeness_score"] > 0.5 and analysis["urgency_score"] > 0.3:
             analysis["tone_masking_detected"] = True
         
         return analysis
@@ -150,19 +179,17 @@ class UrgencyScorer(DeliberativeAgent):
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.urgency_factors = {
-            "tone_multiplier": 1.5,
-            "intent_multiplier": 1.2,
-            "ambiguity_penalty": 0.8,
-            "base_intent_urgency": {
-                "report_problem": 0.7,
-                "account_issue": 0.6,
-                "billing_issue": 0.8,
-                "request_help": 0.5,
-                "request_feature": 0.3,
-                "general_inquiry": 0.2
-            }
+        # Typical urgency of each intent when the message has no explicit cues
+        self.base_intent_urgency = {
+            "report_problem": 0.7,
+            "account_issue": 0.6,
+            "billing_issue": 0.8,
+            "request_help": 0.3,
+            "request_feature": 0.3,
+            "general_inquiry": 0.2
         }
+        # Multiplier applied when the user says there is no rush
+        self.calming_factor = 0.4
     
     async def process_message(self, message):
         """Process a message to calculate its true urgency score."""
@@ -185,63 +212,47 @@ class UrgencyScorer(DeliberativeAgent):
         
         # Send results to the output agent
         await self.send_message(
-            recipients=[message.metadata.get("output_agent", "output")],
+            recipients=message.sender,
             content=resolution
         )
     
     async def _calculate_urgency(self, query, tone_analysis, intent_analysis):
-        """Calculate true urgency score based on tone and intent analysis."""
-        urgency_analysis = {
-            "explicit_urgency": tone_analysis.get("urgency_score", 0.0),
-            "implied_urgency": 0.0,
-            "intent_based_urgency": 0.0,
-            "true_urgency": 0.0,
-            "urgency_mismatch": False
-        }
+        """
+        Calculate true urgency from explicit cues and the request's intent.
         
-        # Calculate intent-based urgency
+        explicit_urgency      urgency words in the message ("immediately", "in an hour")
+        intent_based_urgency  how urgent this kind of request usually is
+        true_urgency          both combined as independent evidence:
+                              1 - (1 - explicit) * (1 - intent)
+        perceived_urgency     what the wording conveys once politeness softens it
+        implied_urgency       true minus perceived: urgency the polite tone hides
+        """
+        explicit = tone_analysis.get("urgency_score", 0.0)
+        politeness = tone_analysis.get("politeness_score", 0.0)
+        
         primary_intent = intent_analysis.get("primary_intent", "general_inquiry")
-        base_urgency = self.urgency_factors["base_intent_urgency"].get(primary_intent, 0.2)
-        intent_confidence = intent_analysis.get("intent_confidence", 0.5)
+        base_urgency = self.base_intent_urgency.get(primary_intent, 0.2)
+        confidence = intent_analysis.get("intent_confidence", 0.0)
+        intent_urgency = base_urgency * (0.5 + 0.5 * confidence)
         
-        intent_urgency = base_urgency * intent_confidence * self.urgency_factors["intent_multiplier"]
-        urgency_analysis["intent_based_urgency"] = min(1.0, intent_urgency)
+        true_urgency = 1.0 - (1.0 - explicit) * (1.0 - intent_urgency)
+        if tone_analysis.get("calming_detected", False) and explicit < 0.3:
+            true_urgency *= self.calming_factor
         
-        # Calculate implied urgency based on tone + intent
-        implied_urgency = 0.0
+        perceived = explicit * (1.0 - politeness)
+        masking = tone_analysis.get("tone_masking_detected", False) or (
+            politeness > 0.5 and true_urgency > 0.4
+        )
         
-        if intent_analysis.get("implied_urgency", False):
-            implied_urgency = max(0.4, urgency_analysis["intent_based_urgency"])
-            
-            if tone_analysis.get("tone_masking_detected", False):
-                politeness_score = tone_analysis.get("politeness_score", 0.0)
-                # Higher politeness with masked urgency increases implied urgency
-                implied_urgency *= (1.0 + (politeness_score * 0.5))
-        
-        urgency_analysis["implied_urgency"] = min(1.0, implied_urgency)
-        
-        # Apply ambiguity penalty if needed
-        ambiguity_level = intent_analysis.get("ambiguity_level", 0.0)
-        ambiguity_factor = 1.0 - (ambiguity_level * self.urgency_factors["ambiguity_penalty"])
-        
-        # Calculate true urgency
-        explicit_urgency = urgency_analysis["explicit_urgency"]
-        implied_urgency = urgency_analysis["implied_urgency"]
-        intent_urgency = urgency_analysis["intent_based_urgency"]
-        
-        # True urgency considers both explicit and implied, with higher weight to implied
-        true_urgency = max(
-            explicit_urgency,
-            implied_urgency * 0.8 + intent_urgency * 0.2
-        ) * ambiguity_factor
-        
-        urgency_analysis["true_urgency"] = min(1.0, true_urgency)
-        
-        # Detect urgency mismatch
-        if implied_urgency > explicit_urgency + 0.3:
-            urgency_analysis["urgency_mismatch"] = True
-        
-        return urgency_analysis
+        return {
+            "explicit_urgency": explicit,
+            "intent_based_urgency": intent_urgency,
+            "perceived_urgency": perceived,
+            "implied_urgency": max(0.0, true_urgency - perceived),
+            "true_urgency": min(1.0, true_urgency),
+            "tone_masking": masking,
+            "urgency_mismatch": masking and true_urgency - perceived >= 0.3
+        }
     
     async def _create_final_resolution(self, tone_analysis, intent_analysis, urgency_analysis):
         """Create a final resolution based on all analyses."""
@@ -256,8 +267,8 @@ class UrgencyScorer(DeliberativeAgent):
         elif true_urgency > 0.4:
             urgency_level = "medium"
         
-        # Determine if tone masking was detected
-        tone_masking = tone_analysis.get("tone_masking_detected", False)
+        # Polite wording around a request that is at least medium urgency
+        tone_masking = urgency_analysis.get("tone_masking", False)
         
         return {
             "resolved_intent": primary_intent,
@@ -277,14 +288,9 @@ class OutputAgent(ReflexAgent):
         """Process the final resolution and format the output."""
         resolution = message.content
         
-        # Log the resolution
-        log_path = os.path.join("logs", f"resolution_{datetime.now().strftime('%Y%m%d%H%M%S')}.json")
-        os.makedirs("logs", exist_ok=True)
-        
-        with open(log_path, "w") as f:
-            json.dump(resolution, f, indent=2)
-        
-        self.logger.info(f"Resolution logged to {log_path}")
+        # Log the resolution (the microservice's log file is set up in
+        # BaseMicroservice)
+        logger.info("Resolution: %s", json.dumps(resolution)[:1000])
         
         # Create a formatted output
         output = {
@@ -294,7 +300,7 @@ class OutputAgent(ReflexAgent):
             "timestamp": datetime.now().isoformat()
         }
         
-        return output
+        await self.send_message(message.sender, output)
 
 
 class AmbiguityResolverMicroservice(BaseMicroservice):
@@ -317,40 +323,38 @@ class AmbiguityResolverMicroservice(BaseMicroservice):
             agents={
                 "tone_agent": {
                     "type": "ToneAgent",
-                    "instance": self.agents["tone_agent"]
+                    "role": "INPUT"
                 },
                 "intent_resolver": {
                     "type": "IntentResolver",
-                    "instance": self.agents["intent_resolver"]
+                    "role": "PROCESSOR"
                 },
                 "urgency_scorer": {
                     "type": "UrgencyScorer",
-                    "instance": self.agents["urgency_scorer"]
+                    "role": "PROCESSOR"
                 },
                 "output": {
                     "type": "OutputAgent",
-                    "instance": self.agents["output"]
+                    "role": "OUTPUT"
                 }
             },
             connections=[
                 {
                     "source": "tone_agent",
                     "target": "intent_resolver",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "intent_resolver",
                     "target": "urgency_scorer",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 },
                 {
                     "source": "urgency_scorer",
                     "target": "output",
-                    "connection_type": ConnectionType.DIRECT
+                    "connection_type": "direct"
                 }
-            ],
-            input_agents=["tone_agent"],
-            output_agents=["output"]
+            ]
         )
     
     async def resolve_ambiguity(self, query):
@@ -374,30 +378,38 @@ class IntentResolver(DeliberativeAgent):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.intent_patterns = self._init_intent_patterns()
-        self.memory = Memory(MemoryType.SHORT_TERM)
     
     def _init_intent_patterns(self):
-        """Initialize intent pattern categories."""
+        """
+        Intent patterns as (pattern, weight) pairs. Generic words that appear
+        in most support requests ("help", "issue", "error") count half as much
+        as words that name the topic ("password", "charge"); "account" is
+        common in billing messages too, so it counts 0.75.
+        """
         return {
             "request_help": [
-                r"\bhelp\b", r"\bassist\b", r"\bsupport\b", r"\bguide\b",
-                r"\binformation\b", r"\binfo\b", r"\badvice\b"
+                (r"\bhelp\b", 0.5), (r"\bassist(?:ance)?\b", 0.5), (r"\bsupport\b", 0.5),
+                (r"\bguide\b", 0.5), (r"\binformation\b", 0.5), (r"\binfo\b", 0.5),
+                (r"\badvice\b", 0.5), (r"\bhow (?:do|can|to)\b", 1.0), (r"\btell me how\b", 1.0)
             ],
             "report_problem": [
-                r"\bissue\b", r"\bproblem\b", r"\berror\b", r"\bfail\b", r"\bbug\b",
-                r"\bbroken\b", r"\bnot working\b", r"\bcan'?t\b.*\bwork\b"
+                (r"\bissue\b", 0.5), (r"\bproblem\b", 0.5), (r"\berror\b", 0.5),
+                (r"\bfail(?:s|ed|ing)?\b", 0.5), (r"\bbug\b", 0.5), (r"\bbroken\b", 0.5),
+                (r"\b(?:not|isn'?t|doesn'?t) work(?:ing)?\b", 0.5), (r"\bcan'?t\b.*\bwork\b", 0.5)
             ],
             "request_feature": [
-                r"\bfeature\b", r"\bfunctionality\b", r"\bcapability\b",
-                r"\badd\b", r"\bimplement\b", r"\bsuggestion\b", r"\benhancement\b"
+                (r"\bfeature\b", 1.0), (r"\bfunctionality\b", 1.0), (r"\bcapability\b", 1.0),
+                (r"\badd\b", 1.0), (r"\bimplement\b", 1.0), (r"\bsuggestion\b", 1.0),
+                (r"\benhancement\b", 1.0)
             ],
             "account_issue": [
-                r"\baccount\b", r"\blogin\b", r"\bpassword\b", r"\bsign in\b",
-                r"\bprofile\b", r"\bsubscription\b", r"\bregistration\b"
+                (r"\baccount\b", 0.75), (r"\blog ?in\b", 1.0), (r"\bpassword\b", 1.0),
+                (r"\bsign in\b", 1.0), (r"\bprofile\b", 1.0), (r"\bregistration\b", 1.0)
             ],
             "billing_issue": [
-                r"\bbill\b", r"\bcharge\b", r"\bpayment\b", r"\brefund\b",
-                r"\binvoice\b", r"\bcredit card\b", r"\bsubscription\b"
+                (r"\bbill(?:s|ed|ing)?\b", 1.0), (r"\bcharge[sd]?\b", 1.0), (r"\bpayment\b", 1.0),
+                (r"\brefund\b", 1.0), (r"\binvoice\b", 1.0), (r"\bcredit card\b", 1.0),
+                (r"\bsubscription\b", 1.0)
             ]
         }
     
@@ -412,7 +424,7 @@ class IntentResolver(DeliberativeAgent):
         
         # Send results to next agent
         await self.send_message(
-            recipients=[message.metadata.get("next_agent", "urgency_scorer")],
+            recipients=message.sender,
             content={
                 "query": query,
                 "tone_analysis": tone_analysis,
@@ -433,13 +445,13 @@ class IntentResolver(DeliberativeAgent):
         # Detect intents
         intent_scores = {}
         for intent, patterns in self.intent_patterns.items():
-            score = 0
+            score = 0.0
             matches = []
-            for pattern in patterns:
+            for pattern, weight in patterns:
                 pattern_matches = re.findall(pattern, text, re.IGNORECASE)
                 if pattern_matches:
                     matches.extend(pattern_matches)
-                    score += len(pattern_matches)
+                    score += len(pattern_matches) * weight
             
             if score > 0:
                 intent_scores[intent] = score
@@ -453,31 +465,14 @@ class IntentResolver(DeliberativeAgent):
             primary_intent = max(intent_scores, key=intent_scores.get)
             primary_score = intent_scores[primary_intent]
             
-            # Calculate confidence based on difference between primary and secondary intents
-            all_scores = list(intent_scores.values())
-            if len(all_scores) > 1:
-                all_scores.sort(reverse=True)
-                score_difference = all_scores[0] - all_scores[1]
-                confidence = min(1.0, 0.5 + (score_difference / 5.0))
-            else:
-                confidence = min(1.0, 0.5 + (primary_score / 5.0))
+            # Confidence is the primary intent's share of all intent evidence
+            confidence = primary_score / sum(intent_scores.values())
             
             analysis["primary_intent"] = primary_intent
             analysis["intent_confidence"] = confidence
-        
-        # Calculate ambiguity level
-        num_intents = len(intent_scores)
-        if num_intents == 0:
-            analysis["ambiguity_level"] = 0.8  # High ambiguity with no clear intent
-        elif num_intents == 1:
-            analysis["ambiguity_level"] = 0.2  # Low ambiguity with single intent
+            analysis["ambiguity_level"] = 1.0 - confidence
         else:
-            # Calculate ambiguity based on intent score distribution
-            primary_score = max(intent_scores.values())
-            total_score = sum(intent_scores.values())
-            score_ratio = primary_score / total_score if total_score > 0 else 0
-            
-            analysis["ambiguity_level"] = 1.0 - score_ratio
+            analysis["ambiguity_level"] = 0.8  # High ambiguity with no clear intent
         
         # Infer implied urgency based on tone analysis
         if tone_analysis.get("tone_masking_detected", False) or tone_analysis.get("urgency_score", 0) > 0.4:

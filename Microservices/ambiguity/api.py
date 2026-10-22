@@ -3,12 +3,11 @@ from pydantic import BaseModel
 import asyncio
 import uvicorn
 import json
-from ambiguity_resolver import AmbiguityResolverMicroservice, load_config
+from Microservices.ambiguity.ambiguity_resolver import AmbiguityResolverMicroservice
 
 app = FastAPI(title="Ambiguity Resolver API")
 
 # Initialize microservice
-config = load_config()
 resolver = AmbiguityResolverMicroservice(
     name="Ambiguity Resolver API",
     description="API for resolving ambiguity in user queries"
@@ -54,4 +53,4 @@ async def get_metrics():
     return resolver.get_metrics()
 
 if __name__ == "__main__":
-    uvicorn.run("api:app", host="0.0.0.0", port=8000, reload=True)
+    uvicorn.run("Microservices.ambiguity.api:app", host="0.0.0.0", port=8000, reload=True)
