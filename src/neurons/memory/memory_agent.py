@@ -22,6 +22,8 @@ class MemoryAgent:
             # Basic validation for the key
             return {"status": "error", "message": "Key must be a non-empty string."}
         try:
+            # Reject values that could not be persisted as JSON.
+            json.dumps(value)
             # Attempt to serialize complex objects to JSON for storage,
             # simulating data transformation for persistence.
             stored_value = json.dumps(value) if isinstance(value, (dict, list)) else value
