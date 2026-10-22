@@ -81,7 +81,10 @@ class StandardAgent:
         # Agent configuration
         self.model = config.openai_model
         self.max_tokens = 150
-        self.temperature = 0.1
+        self.temperature = 0.1  # not sent; see process_message
+        # Current OpenAI models reason before answering; "none" skips that for
+        # the lowest latency and leaves the token budget for the answer.
+        self.reasoning_effort = "none"
         
         # Health tracking
         self.total_requests = 0
@@ -113,8 +116,10 @@ class StandardAgent:
                         "content": prompt
                     }
                 ],
-                max_tokens=self.max_tokens,
-                temperature=self.temperature,
+                # Reasoning models take max_completion_tokens (not max_tokens)
+                # and only their default temperature.
+                max_completion_tokens=self.max_tokens,
+                reasoning_effort=self.reasoning_effort,
                 response_format={"type": "json_object"}
             )
             
@@ -279,8 +284,11 @@ class UltraFastAgent:
         
         # Agent configuration
         self.model = config.groq_model
-        self.max_tokens = 100  # Shorter responses for speed
+        # gpt-oss models reason before answering (effort low/medium/high), and
+        # the reasoning shares the token budget with the short JSON answer.
+        self.max_tokens = 1024
         self.temperature = 0.0  # Deterministic for speed
+        self.reasoning_effort = "low"
         
         # Health tracking
         self.total_requests = 0
@@ -314,8 +322,10 @@ class UltraFastAgent:
                             "content": prompt
                         }
                     ],
-                    "max_tokens": self.max_tokens,
+                    "max_completion_tokens": self.max_tokens,
                     "temperature": self.temperature,
+                    "reasoning_effort": self.reasoning_effort,
+                    "include_reasoning": False,
                     "response_format": {"type": "json_object"}
                 }
             )
@@ -513,25 +523,29 @@ class AgentManager:
         if datetime.now() - self.last_health_check > self.health_check_interval:
             asyncio.create_task(self._perform_health_checks())
         
-        # Try preferred agent first
-        if self._is_agent_healthy(preferred_agent):
+        # Try the preferred agent, then the other healthy agents. Agents report
+        # API errors as success=False rather than raising, so an unsuccessful
+        # response falls back too (previously only exceptions did).
+        candidates = [preferred_agent] + [a for a in AgentType if a != preferred_agent]
+        last_failure = None
+        for agent_type in candidates:
+            if not self._is_agent_healthy(agent_type):
+                continue
+            if agent_type != preferred_agent:
+                self.logger.info(f"Falling back to agent: {agent_type.value}")
             try:
-                response = await self._route_to_agent(message, preferred_agent)
-                self.request_count_by_agent[preferred_agent] += 1
-                return response
+                response = await self._route_to_agent(message, agent_type)
             except Exception as e:
-                self.logger.warning(f"Preferred agent {preferred_agent.value} failed: {e}")
+                self.logger.warning(f"Agent {agent_type.value} failed: {e}")
+                continue
+            self.request_count_by_agent[agent_type] += 1
+            if response.success:
+                return response
+            self.logger.warning(f"Agent {agent_type.value} returned an error: {response.error_message}")
+            last_failure = response
         
-        # Fallback to other healthy agents
-        for agent_type in AgentType:
-            if agent_type != preferred_agent and self._is_agent_healthy(agent_type):
-                try:
-                    self.logger.info(f"Falling back to agent: {agent_type.value}")
-                    response = await self._route_to_agent(message, agent_type)
-                    self.request_count_by_agent[agent_type] += 1
-                    return response
-                except Exception as e:
-                    self.logger.warning(f"Fallback agent {agent_type.value} failed: {e}")
+        if last_failure is not None:
+            return last_failure
         
         # All agents failed
         error_msg = "All agents unavailable"

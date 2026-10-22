@@ -20,8 +20,6 @@ from src.agent_manager import AgentManager, AgentType, StandardAgent, UltraFastA
 from src.config_manager import PipelineConfig
 from src.synthetic_market_data import MarketMessage, MarketCondition
 
-# Pytest marker for asyncio tests
-pytestmark = pytest.mark.asyncio
 
 @pytest.fixture
 def mock_config() -> PipelineConfig:
@@ -78,6 +76,7 @@ def test_ultra_fast_agent_initialization(mock_httpx_client, mock_config):
     )
     assert agent.model == mock_config.groq_model
 
+@pytest.mark.asyncio
 async def test_agent_manager_routing_and_fallback(mock_config, mock_market_message):
     """
     Tests the AgentManager's core logic:
@@ -112,6 +111,7 @@ async def test_agent_manager_routing_and_fallback(mock_config, mock_market_messa
     assert response.success is True
     assert response.agent_type == AgentType.ULTRA_FAST
 
+@pytest.mark.asyncio
 async def test_agent_manager_no_healthy_agents(mock_config, mock_market_message):
     """Tests that the AgentManager returns a failure if no agents are healthy."""
     # Arrange

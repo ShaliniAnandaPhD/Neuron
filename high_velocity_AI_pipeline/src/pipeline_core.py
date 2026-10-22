@@ -412,6 +412,8 @@ class HighVelocityPipeline:
                 continue
             except Exception as e:
                 self.logger.error(f"Message processing error: {e}")
+                # Back off so a repeating error cannot spin without yielding
+                await asyncio.sleep(1.0)
     
     async def _batch_processing_loop(self):
         """Process message batches"""
@@ -435,6 +437,8 @@ class HighVelocityPipeline:
                 
             except Exception as e:
                 self.logger.error(f"Batch processing error: {e}")
+                # Back off so a repeating error cannot spin without yielding
+                await asyncio.sleep(1.0)
     
     async def _process_message_batch(self, messages: List[MarketMessage]):
         """Process a batch of messages"""
@@ -543,6 +547,8 @@ class HighVelocityPipeline:
                 
             except Exception as e:
                 self.logger.error(f"Monitoring loop error: {e}")
+                # Back off so a repeating error cannot spin without yielding
+                await asyncio.sleep(1.0)
     
     async def _swap_evaluation_loop(self):
         """Agent swap evaluation loop"""
@@ -560,6 +566,8 @@ class HighVelocityPipeline:
                 
             except Exception as e:
                 self.logger.error(f"Swap evaluation error: {e}")
+                # Back off so a repeating error cannot spin without yielding
+                await asyncio.sleep(1.0)
     
     def get_performance_summary(self) -> Dict[str, Any]:
         """Get comprehensive performance summary"""

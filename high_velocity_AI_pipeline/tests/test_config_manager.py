@@ -109,12 +109,14 @@ def test_config_validation_logic():
     config.default_agent = "invalid_agent"
     assert config.validate() is False
 
-def test_config_manager_update_and_rollback():
+def test_config_manager_update_and_rollback(monkeypatch):
     """
     Tests the dynamic update and rollback functionality of the
     ConfigurationManager, ensuring state is managed correctly.
     """
-    # Arrange
+    # Arrange: a valid configuration needs API keys; placeholders will do
+    monkeypatch.setenv("OPENAI_API_KEY", "test-openai-key")
+    monkeypatch.setenv("GROQ_API_KEY", "test-groq-key")
     manager = ConfigurationManager()
     # Load initial config (will be from defaults/empty env)
     initial_config = manager.get_config()

@@ -14,6 +14,7 @@ This module provides:
 
 import asyncio
 import time
+import math
 import statistics
 import logging
 import csv
@@ -137,10 +138,15 @@ class LatencyTracker:
         sorted_latencies = sorted(successful_latencies)
         n = len(sorted_latencies)
         
+        def nearest_rank(p: float) -> float:
+            # Nearest-rank method: the smallest value with at least p of the
+            # data at or below it. int(p * n) was one position too high.
+            return sorted_latencies[max(0, math.ceil(p * n) - 1)]
+        
         percentiles = {
-            "p50": sorted_latencies[int(0.50 * n)] if n > 0 else 0.0,
-            "p95": sorted_latencies[int(0.95 * n)] if n > 0 else 0.0,
-            "p99": sorted_latencies[int(0.99 * n)] if n > 0 else 0.0,
+            "p50": nearest_rank(0.50),
+            "p95": nearest_rank(0.95),
+            "p99": nearest_rank(0.99),
             "mean": statistics.mean(successful_latencies)
         }
         

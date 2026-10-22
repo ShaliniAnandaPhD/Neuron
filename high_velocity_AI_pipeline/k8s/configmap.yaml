@@ -15,7 +15,7 @@ data:
   PIPELINE_DEFAULT_AGENT: "standard"
   DEPLOYMENT_ENV: "kubernetes"
   PIPELINE_LOG_LEVEL: "INFO"
-  OPENAI_MODEL: "gpt-4-turbo-preview"
-  GROQ_MODEL: "llama3-70b-8192"
+  OPENAI_MODEL: "gpt-5.6-sol"
+  GROQ_MODEL: "openai/gpt-oss-120b"
   PIPELINE_ENABLE_CSV_EXPORT: "true"
   PIPELINE_EXPORT_DIRECTORY: "/app/exports" # Use an in-container path

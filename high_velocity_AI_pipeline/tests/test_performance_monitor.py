@@ -82,14 +82,16 @@ def test_throughput_tracking():
     # Arrange: Use a short window for easier testing
     tracker = ThroughputTracker(window_size_seconds=1.0)
 
-    # Act 1: Record 50 messages over ~0.5 seconds
+    # Act 1: Record 50 messages roughly 10 ms apart
+    started = time.time()
     for _ in range(50):
         tracker.record_message()
         time.sleep(0.01)
+    achieved = 50 / (time.time() - started)
     
-    # Assert 1: Throughput should be approximately 50 msg/sec
-    # (It will be slightly less than 100 because the window is 1s but we only filled 0.5s)
-    assert 90 < tracker.get_current_throughput() < 110
+    # Assert 1: Throughput matches the rate actually achieved (~100 msg/s,
+    # lower on machines where sleep(0.01) overshoots)
+    assert 0.85 * achieved < tracker.get_current_throughput() < 1.15 * achieved
 
     # Act 2: Wait for the time window to slide past the recorded messages
     time.sleep(1.1)

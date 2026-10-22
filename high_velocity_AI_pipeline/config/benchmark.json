@@ -18,8 +18,8 @@
   "agent_configuration": {
     "default_agent": "ultra_fast",
     "max_agent_swaps": 100,
-    "openai_model": "gpt-4-turbo-preview",
-    "groq_model": "llama3-70b-8192",
+    "openai_model": "gpt-5.6-sol",
+    "groq_model": "openai/gpt-oss-120b",
     "api_timeout_seconds": 20.0,
     "api_max_retries": 1
   },

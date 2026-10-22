@@ -55,8 +55,8 @@ class PipelineConfig:
     # =============================================================================
     default_agent: str = "standard"
     max_agent_swaps: int = 50
-    openai_model: str = "gpt-4-turbo-preview"
-    groq_model: str = "llama3-70b-8192"
+    openai_model: str = "gpt-5.6-sol"
+    groq_model: str = "openai/gpt-oss-120b"
     api_timeout_seconds: float = 30.0
     api_max_retries: int = 3
     
@@ -348,7 +348,7 @@ class PipelineConfig:
                 flattened.update(PipelineConfig._flatten_config(value, full_key))
             else:
                 # Map nested keys to flat field names
-                mapped_key = cls._map_nested_key(full_key)
+                mapped_key = PipelineConfig._map_nested_key(full_key)
                 if mapped_key:
                     flattened[mapped_key] = value
         

@@ -195,6 +195,7 @@ class CircuitBreaker:
         )
         
         self._record_state_change(event)
+        self.success_count = 0
         self.logger.info(f"Circuit breaker '{self.name}' closed after recovery")
     
     def _record_state_change(self, event: CircuitBreakerEvent):

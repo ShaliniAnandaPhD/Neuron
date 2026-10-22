@@ -7,6 +7,8 @@ focusing on the AdaptiveHotSwapController and the interaction between
 the main pipeline components.
 """
 
+import asyncio
+
 import pytest
 from unittest.mock import MagicMock, AsyncMock, patch
 
@@ -106,11 +108,13 @@ async def test_swap_back_to_standard_on_performance_recovery(hot_swap_controller
     assert trigger == SwapTrigger.RECOVERY_COMPLETE
     assert hot_swap_controller.recovery_confirmation_count == 5
 
-@patch('src.pipeline_core.AgentManager', new_callable=AsyncMock)
-@patch('src.pipeline_core.MarketDataGenerator', new_callable=AsyncMock)
-@patch('src.pipeline_core.PerformanceMonitor', new_callable=AsyncMock)
-@patch('src.pipeline_core.SystemCircuitBreaker')
-@patch('src.pipeline_core.AdaptiveHotSwapController', new_callable=AsyncMock)
+# autospec keeps the classes' synchronous constructors and makes their async
+# methods AsyncMocks (new_callable=AsyncMock made construction return a coroutine).
+@patch('src.pipeline_core.AgentManager', autospec=True)
+@patch('src.pipeline_core.MarketDataGenerator', autospec=True)
+@patch('src.pipeline_core.PerformanceMonitor', autospec=True)
+@patch('src.pipeline_core.SystemCircuitBreaker', autospec=True)
+@patch('src.pipeline_core.AdaptiveHotSwapController', autospec=True)
 async def test_pipeline_initialization_and_shutdown(mock_swap_ctrl, mock_cb, mock_perf_mon, mock_data_gen, mock_agent_mgr, mock_config):
     """
     Tests the high-level start and stop logic of the main HighVelocityPipeline class,
@@ -119,27 +123,34 @@ async def test_pipeline_initialization_and_shutdown(mock_swap_ctrl, mock_cb, moc
     # Arrange
     pipeline = HighVelocityPipeline(mock_config)
 
-    # Mock the infinite loops to allow the test to complete
-    pipeline._message_generation_loop = AsyncMock()
-    pipeline._batch_processing_loop = AsyncMock()
-    
-    # Act
-    # Run the start method but time it out, as it's designed to run forever.
-    # This is enough to check that initialization logic is called.
-    try:
-        await asyncio.wait_for(pipeline.start(), timeout=0.1)
-    except asyncio.TimeoutError:
-        pass # Expected behavior
+    # Replace the background loops with stubs that idle until the pipeline stops
+    async def idle():
+        while pipeline.is_running:
+            await asyncio.sleep(0.01)
 
-    # Assert: Check that components were initialized
+    for loop_name in (
+        "_message_generation_loop",
+        "_message_processing_loop",
+        "_batch_processing_loop",
+        "_monitoring_loop",
+        "_swap_evaluation_loop",
+    ):
+        setattr(pipeline, loop_name, idle)
+
+    # Act: start runs until stopped, so run it in the background
+    run = asyncio.create_task(pipeline.start())
+    await asyncio.sleep(0.05)
+
+    # Assert: components were initialized and the pipeline is running
     assert pipeline.is_running is True
     mock_agent_mgr.return_value.initialize.assert_awaited_once()
     mock_perf_mon.return_value.start.assert_awaited_once()
 
-    # Act: Stop the pipeline
+    # Act: stop the pipeline; start() then cleans up and returns
     await pipeline.stop()
+    await asyncio.wait_for(run, timeout=5)
 
-    # Assert: Check that cleanup logic was called
+    # Assert: cleanup ran exactly once
     assert pipeline.is_running is False
     mock_perf_mon.return_value.stop.assert_awaited_once()
     mock_agent_mgr.return_value.cleanup.assert_awaited_once()
