@@ -9,11 +9,12 @@ Thank you for your interest in contributing to **Neuron** — a brain-inspired m
 1. **Fork the repository**
 2. **Clone your fork**: `git clone https://github.com/yourusername/neuron.git`
 3. **Create a new branch**: `git checkout -b feature/your-feature-name`
-4. **Make your changes**
-5. **Test your changes**: Run `pytest` to ensure all tests pass
-6. **Commit your changes**: `git commit -m "Add your descriptive commit message"`
-7. **Push to your fork**: `git push origin feature/your-feature-name`
-8. **Open a Pull Request**
+4. **Install for development**: `pip install -e ".[dev]"`
+5. **Make your changes**
+6. **Test your changes**: `python -m pytest tests agents src/neurons` (CI also runs each sub-project's tests and `flake8 . --select=E9,F63,F7,F82`)
+7. **Commit your changes**: `git commit -m "Add your descriptive commit message"`
+8. **Push to your fork**: `git push origin feature/your-feature-name`
+9. **Open a Pull Request**
 
 ### Types of Contributions
 
@@ -47,15 +48,20 @@ We love building against real-world failure modes — your contribution could be
 
 ```
 src/neuron/
-├── agents/             # Modular agent types
-├── core/               # Core system logic
-├── memory/             # Memory systems
-├── observability/      # Monitoring and tracing
-└── integration/        # External integrations
+├── agent.py            # BaseAgent and the built-in agent types
+├── synaptic_bus.py     # Message passing between agents
+├── circuit_designer.py # Circuits, connections and templates
+├── memory.py           # Memory systems
+├── neuro_monitor.py    # Health and metrics
+├── cli.py              # The `neuron` command
+├── agents/             # Specialised agents (fallback, simulation)
+├── core/               # Routing helpers
+├── observability/      # Tracing
+└── integration/        # Agent voting and reliability routing
 
-tests/                  # Test files
+tests/                  # Framework tests
+examples/               # Runnable examples
 docs/                   # Documentation
-examples/               # Example usage
 ```
 
 ## Pull Request Guidelines

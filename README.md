@@ -8,7 +8,7 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 
 📄 For full legal terms and enforcement policy, read the [Neuron Legal Notice & Enforcement Terms](https://www.notion.so/shalini-ananda-phd/LEGAL-NOTICE-ENFORCEMENT-TERMS-NEURON-FRAMEWORK-200c18ea2aa1803aa07ddbb41cd9080d).
 
- [!WARNING]
+> [!WARNING]
 > **This repository is no longer actively maintained.**
 >
 > The author has since begun using it for a specific use case and is no longer developing it as a general project. Issues and pull requests may not receive a response.
@@ -16,25 +16,11 @@ The license above is a *modified MIT LICENSE* for the purpose of this project �
 
 # Neuron: AI Framework for Complex Reasoning
 
-[![🔧 Sanity Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/sanity_check.yml)
-[![🧠 Run Ambiguity Audit](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/run_ambiguity_audit.yml)
-[![📦 Verify Microservices Layout](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify_microservices_layout.yml)
-[![🎨 Ambiguity Visual Blueprint Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_visual_asset_check.yml)
-[![🧠 Agent Reference Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/verify-agent-names.yml)
-[![🛠️ Ambiguity CI Setup Check](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_ci_setup_check.yml)
-[![📥 Validate Input Test Files](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ambiguity_input_validation.yml)
+[![CI](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ci.yml)
 [![IP Protection Plus](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-protection-plus.yml)
-[![IP Monitoring Simple](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/ip-monitoring.yml)
-[![🧱🧱🧱 Neuron LEGO Agent Builder](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-agent-builder.yml)
-[![🏪 LEGO Agent Marketplace](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/lego-marketplace.yml)
-[![🎭 Politeness Phrase Detection](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check-tone-phrase.yml)
-[![🚀 Performance-Based Auto-Swapping System](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/performance-auto-swap.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/performance-auto-swap.yml)
-[![📝 Neuron Log Writer](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/neuron_log_writer.yml)
-[![🔬 Neuron Fine-Tuning Workflow](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/finetune.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/finetune.yml)
-[![🔬 Neuron Agent Factory](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/agent_factory.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/agent_factory.yml)
-[![🧠 Intent Phrase Scan (Safe)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/check_message_intent_keyword.yml)
+[![🧱⚡ Neuron LEGO Agent Builder](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/advanced-lego-agent-builder.yml/badge.svg)](https://github.com/ShaliniAnandaPhD/Neuron/actions/workflows/advanced-lego-agent-builder.yml)
 
-## LatestL 🦀🧠 Reliability First: Introducing Series 1 of 🦀 OpenClaw x 🧠 Neuron
+## Latest: 🦀🧠 Reliability First: Introducing Series 1 of 🦀 OpenClaw x 🧠 Neuron
 
 After about **20+ reachouts** from the developer community, I’m excited to officially drop **Series 1** of our OpenClaw x Neuron notebook system.
 
@@ -66,9 +52,6 @@ This is only the beginning. While Series 1 hardens your foundation with Neuron�
 🔗 **Explore Series 1 at:** https://neuronsystems.org/openclaw-neuron
 
 ---
-
-Would you like me to help you draft a follow-up post or a technical summary for one of these specific notebooks?
-
 
 
 > **Neuron is a composable AI framework that thinks in circuits, not chains.**
@@ -176,7 +159,8 @@ Currently live and serving **325+ content creators** during NFL primetime, this 
 ```bash
 git clone https://github.com/ShaliniAnandaPhD/Neuron.git
 cd Neuron
-pip install -e .
+pip install -e .            # the framework (numpy, psutil, PyYAML)
+pip install -e ".[dev]"     # plus pytest and linters
 ```
 
 ### Your First Agent Circuit
@@ -282,319 +266,160 @@ in the connection's `metadata`), or `transformed` (an expression that rewrites
 the content). Expressions are evaluated with `eval`, so only deploy circuit
 definitions you trust.
 
-## 🏗️ Core Agent Architecture
+### Run the tests
 
-### Specialized Agent Types
-
-Neuron provides specialized agents for different cognitive functions:
-
-```python
-# Quick response pattern-matching agents
-reflex_agent = create_agent(ReflexAgent, 
-    name="IntakeAgent",
-    capabilities=["sentiment_analysis", "classification"])
-
-# Deep reasoning and analysis agents  
-deliberative_agent = create_agent(DeliberativeAgent,
-    name="ReasoningAgent", 
-    capabilities=["logical_inference", "contradiction_detection"])
-
-# Learning and adaptation agents
-learning_agent = create_agent(LearningAgent,
-    name="AdaptiveAgent",
-    capabilities=["pattern_recognition", "strategy_evolution"])
-
-# Coordination and orchestration agents
-coordinator_agent = create_agent(CoordinatorAgent,
-    name="OrchestratorAgent",
-    capabilities=["resource_allocation", "priority_management"])
+```bash
+python -m pytest tests agents src/neurons
 ```
 
-### Multi-Layered Memory Systems
+CI runs these on Python 3.10 and 3.13, plus each sub-project's tests and a
+repository-wide lint, on every push ([workflow](.github/workflows/ci.yml)).
 
-Neuron implements sophisticated memory architecture for agent coordination:
+## 🗺️ What's in This Repository
+
+| Folder | What it is | Run it | In CI |
+|--------|------------|--------|-------|
+| [`src/neuron`](src/neuron) | The framework: agents, SynapticBus, circuits, memory, monitoring, CLI | `pip install -e .`, then [Quick Start](#-quick-start) | ✅ |
+| [`examples`](examples) | Runnable examples (the Quick Start circuit) | `python examples/quickstart.py` | ✅ |
+| [`agents`](agents) | Industry use case agents (healthcare, financial, insurance, legal, manufacturing, retail) | `python agents/neuron_agent.py --list` | ✅ |
+| [`Microservices`](Microservices) | Ambiguity resolution, healthcare record integration, multilingual documentation, each a Neuron circuit | [Microservices README](Microservices/Readme.md) | ✅ |
+| [`hallucination_detection`](hallucination_detection) | Uncertainty, self-consistency and fact verification checks | `python hallucination_detection/examples.py` | ✅ |
+| [`high_velocity_AI_pipeline`](high_velocity_AI_pipeline) | Real-time pipeline with hot-swapping between OpenAI and Groq agents | [its README](high_velocity_AI_pipeline/Readme.md) | ✅ |
+| [`neuron-framework-t1`](neuron-framework-t1) | Vision model hot-swap test (OpenAI primary, Claude fallback) | [its quick start](neuron-framework-t1/QUICK_START.md) | ✅ |
+| [`src/neurons`](src/neurons) | Small memory and decision agents | `python -m pytest src/neurons` | ✅ |
+| [`neuron-bench`](neuron-bench) | Benchmark datasets and analysis scripts | [its README](neuron-bench/Readme.md) | |
+| [`chaos_engineering`](chaos_engineering) | Chaos scenarios for agent pools (failures, partitions, exhaustion) | [its README](chaos_engineering/Readme.md) | |
+| [`llam3-neuron-framework`](llam3-neuron-framework) | Multi-agent REST service on a self-hosted LLaMA 3 | `docker compose up` ([README](llam3-neuron-framework/Readme.md)) | |
+| [`FFSapp`](FFSapp), [`FS_Neuron`](FS_Neuron) | Fantasy Football Neuron app and its NFL data pipeline | [FFSapp README](FFSapp/Readme.md) | |
+| [`safety`](safety) | Safety monitor for agent health | `python safety/safety_monitor.py` | |
+| [`Tutorials`](Tutorials) | Colab notebooks (self-contained) | Open in Colab | |
+| [`scripts`](scripts), [`configs`](configs), [`data`](data), [`compliance_rules`](compliance_rules) | Fine-tuning pipeline and IP protection toolkit | [Fine-tuning workflow](.github/workflows/finetune.yml), [IP toolkit docs](docs/ip-protection/README.md) | |
+| [`Integrations/Oxen.ai`](Integrations/Oxen.ai) | Dataset versioning walkthrough with screenshots | Read | |
+| [`sandbox`](sandbox) | Sandbox notes | Read | |
+
+## 🏗️ Core Agent Architecture
+
+### Agents
+
+Every agent subclasses `BaseAgent` and implements `process_message`; it
+replies with `send_message`. The framework ships four built-in types:
+`ReflexAgent` (rule-based, fast), `DeliberativeAgent` (multi-step
+reasoning), `LearningAgent` (adapts from feedback) and `CoordinatorAgent`
+(runs workflows across other agents). Register your own types and use them
+by name in circuits, as in the [Quick Start](#your-first-agent-circuit).
 
 ```python
-# Access different memory types for agents
-memory_manager = core.memory_manager
+from neuron import ReflexAgent, create_agent
 
-# Immediate context and active processing
-working_memory = memory_manager.get_memory_system(MemoryType.WORKING)
+# inside a coroutine, after initialize() and core.start()
+agent_id = create_agent(ReflexAgent, name="Intake", description="Classifies requests")
+core.agent_manager.register_agent_type(MyAgent)   # a BaseAgent subclass
+```
 
-# Sequential events and interaction history  
-episodic_memory = memory_manager.get_memory_system(MemoryType.EPISODIC)
+### Multi-Layered Memory
 
-# Conceptual knowledge and relationships
-semantic_memory = memory_manager.get_memory_system(MemoryType.SEMANTIC)
+Five memory systems, inspired by human memory: `WORKING`, `EPISODIC`,
+`SEMANTIC`, `PROCEDURAL` and `EMOTIONAL`.
 
-# Learned processes and strategies
-procedural_memory = memory_manager.get_memory_system(MemoryType.PROCEDURAL)
+```python
+from neuron import MemoryType
 
-# Store and retrieve contextual information across agents
-episodic_memory.store({
-    "event": "customer_complaint",
-    "timestamp": "2024-01-15T10:30:00Z",
-    "context": {"customer_id": "12345", "sentiment": "frustrated"},
-    "resolution": "product_replacement_offered"
-})
+memory = core.memory_manager
 
-# Retrieve relevant past interactions for agent reasoning
-relevant_history = episodic_memory.query(
-    context={"customer_id": "12345"},
-    timeframe="last_30_days"
+await memory.store(
+    {"event": "customer_complaint", "resolution": "replacement_offered"},
+    MemoryType.EPISODIC,
+    importance=0.8,
+    metadata={"customer_id": "12345"},
+)
+
+history = await memory.query(
+    {"metadata.customer_id": "12345"}, memory_type=MemoryType.EPISODIC
 )
 ```
 
-### SynapticBus Agent Communication
+### SynapticBus Communication
 
-Agents communicate through a brain-inspired message passing system:
+Agents exchange `Message`s over the SynapticBus. Inside a circuit, an agent
+replies to whoever sent it a message and the circuit forwards the reply
+along its connections. Outside a circuit, address agents directly:
 
 ```python
 from neuron import Message
 
-# Create and send messages between agents
-message = Message.create(
+await core.synaptic_bus.send(Message.create(
     sender="intake_agent",
-    recipients=["reasoning_agent", "memory_agent"],
-    content={
-        "type": "customer_issue",
-        "data": {"sentiment": "mixed", "intent": "unclear"},
-        "confidence": 0.75,
-        "requires_reasoning": True
-    },
-    metadata={
-        "priority": "high",
-        "timeout": 30,
-        "fallback_required": True
-    }
-)
-
-await core.synaptic_bus.send(message)
+    recipients=[reasoning_agent_id],
+    content={"type": "customer_issue", "sentiment": "mixed"},
+    metadata={"priority": "high"},
+))
 ```
 
-### Dynamic Agent Circuit Composition
+### Circuits and Connections
 
-Build adaptive processing pipelines that reconfigure agent routing based on context:
+A circuit wires agents together. Each connection has a type:
+
+| Type | Behaviour |
+|------|-----------|
+| `direct`, `weighted` | Forward every message |
+| `conditional`, `filtered` | Forward when a Python expression over `message` is true (`metadata.condition_code` / `metadata.filter_condition`) |
+| `transformed` | Rewrite the content first (`metadata.transform_code`) |
 
 ```python
-# Create circuits that adapt agent routing to complexity
-adaptive_circuit = CircuitDefinition.create(
-    name="AdaptiveReasoningCircuit",
-    routing_strategy="confidence_based",
-    fallback_strategy="graceful_degradation",
-    agents={
-        "simple_classifier": {
-            "type": "ReflexAgent",
-            "activation_threshold": 0.8,  # High confidence required
-            "capabilities": ["quick_classification"]
-        },
-        "deep_reasoner": {
-            "type": "DeliberativeAgent", 
-            "activation_threshold": 0.3,  # Handles uncertain cases
-            "capabilities": ["complex_reasoning", "uncertainty_quantification"]
-        },
-        "contradiction_resolver": {
-            "type": "DeliberativeAgent",
-            "activation_condition": "contradiction_detected",
-            "capabilities": ["conflict_resolution", "clarification_generation"]
-        }
-    },
-    decision_rules=[
-        {
-            "condition": "confidence > 0.8",
-            "route": "simple_classifier"
-        },
-        {
-            "condition": "contradiction_detected == True", 
-            "route": "contradiction_resolver"
-        },
-        {
-            "default": True,
-            "route": "deep_reasoner"
-        }
-    ]
-)
+{"source": "intake", "target": "escalation", "connection_type": "conditional",
+ "metadata": {"condition_code": "message.content['urgency'] == 'high'"}}
 ```
+
+Built-in templates (`sequential_pipeline`, `star_network`) are listed by
+`neuron circuit list`. Expressions are evaluated with `eval`; only deploy
+circuit definitions you trust.
+
+### Command Line
+
+```bash
+neuron --help
+neuron agent list      # available agent types
+neuron circuit list    # circuit templates
+neuron start           # run the framework until Ctrl+C
+```
+
+Each command runs in its own process, so state (such as a deployed
+circuit) does not carry over from one command to the next; use the Python
+API for anything stateful.
 
 ## 🎯 Real-World Agent Applications
 
-### Healthcare: Modular Compliance & Clinical Decision Support
+Working implementations in this repository:
 
-```python
-# HIPAA-aware healthcare agent circuit
-healthcare_circuit = CircuitDefinition.create(
-    name="ClinicalDecisionSupport",
-    compliance_modules=["hipaa_monitor", "clinical_guidelines"],
-    agents={
-        "triage": {"type": "ReflexAgent", "capabilities": ["symptom_analysis"]},
-        "risk_scorer": {"type": "DeliberativeAgent", "capabilities": ["risk_assessment"]},
-        "compliance_checker": {"type": "ValidatorAgent", "capabilities": ["hipaa_validation"]}
-    }
-)
-```
-
-### Emergency Response: Multi-Modal Crisis Processing
-
-```python
-# Crisis response with multi-format input handling agents
-crisis_circuit = CircuitDefinition.create(
-    name="EmergencyResponseSystem", 
-    input_types=["text", "voice", "social_media", "sensor_data"],
-    agents={
-        "input_processor": {"capabilities": ["multi_modal_parsing"]},
-        "priority_ranker": {"capabilities": ["urgency_assessment", "resource_allocation"]},
-        "response_coordinator": {"capabilities": ["dispatch_optimization", "status_tracking"]}
-    }
-)
-```
-
-### Customer Support: Multi-Session Relationship Management
-
-```python
-# Customer retention with cross-session memory agents
-support_circuit = CircuitDefinition.create(
-    name="CustomerRetentionIntelligence",
-    memory_integration=True,
-    agents={
-        "relationship_analyzer": {"capabilities": ["sentiment_tracking", "churn_prediction"]},
-        "issue_resolver": {"capabilities": ["problem_solving", "escalation_management"]},
-        "retention_strategist": {"capabilities": ["intervention_planning", "satisfaction_optimization"]}
-    }
-)
-```
+- **Healthcare, finance, insurance, legal, manufacturing, retail**: one
+  configurable agent per industry use case, with the compliance standards
+  that apply ([`agents/`](agents)).
+- **Ambiguity resolution**: detects politeness that masks urgency in
+  support requests and resolves intent and urgency
+  ([`Microservices/ambiguity`](Microservices/ambiguity)).
+- **Healthcare record integration**: merges multilingual patient records
+  from several providers, standardizes units and terminology, and flags
+  care gaps ([`Microservices/healthcare`](Microservices/healthcare)).
+- **Medical device documentation**: adapts technical documents across
+  languages while preserving safety-critical content
+  ([`Microservices/multilingual`](Microservices/multilingual)).
+- **Hallucination detection**: uncertainty quantification, self-consistency
+  and fact verification ([`hallucination_detection/`](hallucination_detection)).
 
 ## 🔧 Advanced Agent Features
 
-### Self-Monitoring and Error Detection
-
-Neuron includes built-in agent reliability mechanisms:
-
-```python
-# Configure agent monitoring and fallback behavior
-monitoring_config = {
-    "hallucination_detection": True,
-    "uncertainty_quantification": True,
-    "contradiction_detection": True,
-    "automatic_fallback": True,
-    "explanation_generation": True
-}
-
-# Monitor agent health in real-time
-health_status = core.neuro_monitor.get_health_status()
-performance_metrics = core.neuro_monitor.get_metrics("circuit.*")
-```
-
-### Temporal Reasoning and Causal Analysis
-
-```python
-# Enable temporal reasoning capabilities in agents
-temporal_agent = create_agent(DeliberativeAgent,
-    capabilities=[
-        "timeline_reconstruction",
-        "causal_chain_analysis", 
-        "dependency_tracking",
-        "scenario_projection"
-    ]
-)
-
-# Analyze complex temporal scenarios
-timeline_analysis = temporal_agent.process({
-    "events": mixed_chronological_data,
-    "analysis_type": "causal_dependencies",
-    "projection_horizon": "30_days"
-})
-```
-
-### Agent Explainability Dashboard
-
-Every agent decision in Neuron is fully traceable:
-
-```python
-# Access detailed agent reasoning paths
-explanation = core.explainability.get_decision_trace(
-    circuit_id="customer_support_001",
-    request_id="req_12345"
-)
-
-print(explanation.reasoning_tree)      # Step-by-step agent logic
-print(explanation.confidence_scores)   # Certainty at each agent step  
-print(explanation.alternative_paths)   # Other agent options considered
-print(explanation.evidence_sources)    # Supporting information used by agents
-```
-
-## 🔌 Agent Microservices & Extensions
-
-Neuron's modular architecture supports plug-and-play agent microservices:
-
-### Available Agent Microservices
-
-- **🔍 Ambiguity Resolution Agent**: Detects and handles unclear inputs
-- **⚖️ Contradiction Detection Agent**: Identifies logical conflicts  
-- **🧠 Memory Optimization Agent**: Manages contextual memory efficiently
-- **📊 Performance Analytics Agent**: Tracks system-wide agent metrics
-- **🔧 Dynamic Reconfiguration Agent**: Adapts agent circuits in real-time
-
-### Custom Agent Development
-
-```python
-from neuron.microservices import BaseAgent
-
-class CustomAnalysisAgent(BaseAgent):
-    """Custom domain-specific analysis agent"""
-    
-    def __init__(self):
-        super().__init__(name="domain_analyzer")
-        
-    async def process(self, input_data):
-        # Your custom agent logic here
-        analysis_result = self.analyze_domain_specifics(input_data)
-        return {
-            "analysis": analysis_result,
-            "confidence": self.calculate_confidence(analysis_result),
-            "recommendations": self.generate_recommendations(analysis_result)
-        }
-
-# Register and deploy your agent
-core.agent_manager.register(CustomAnalysisAgent())
-```
-
-## 🧪 Agent Testing and Evaluation
-
-### Built-in Agent Testing Framework
-
-```python
-# Test agent circuit resilience
-test_results = core.testing.run_stress_tests(
-    circuit_id="customer_support_001",
-    test_scenarios=[
-        "contradictory_inputs",
-        "incomplete_information", 
-        "component_failures",
-        "high_load_conditions"
-    ]
-)
-
-# Evaluate agent memory persistence
-memory_tests = core.testing.evaluate_memory_systems(
-    retention_periods=["1_hour", "1_day", "1_week"],
-    decay_patterns=["importance_weighted", "recency_based"]
-)
-```
-
-### Agent Performance Benchmarking
-
-```python
-# Compare agent performance against other frameworks
-benchmark_results = core.benchmarking.compare_against([
-    "langchain_equivalent",
-    "direct_api_calls", 
-    "custom_pipeline"
-], test_cases="real_world_scenarios")
-```
-
-
-## 🌟 Why Choose Neuron?
-
+- **Health monitoring**: `core.neuro_monitor.get_health_status()` reports
+  system, agent, communication and circuit health; `get_metrics(pattern)`
+  returns collected metrics.
+- **Tracing**: [`neuron.observability`](src/neuron/observability) records
+  and visualizes message traces through a circuit.
+- **Fallback and simulation**: [`neuron.agents.fallback_handler`](src/neuron/agents/fallback_handler.py)
+  and [`neuron.agents.simulation_planner`](src/neuron/agents/simulation_planner.py).
+- **Model providers**: Hugging Face models as agents
+  (`pip install -e ".[models]"`, see [`neuron.model_providers`](src/neuron/model_providers)).
+- **Resilience testing**: [`chaos_engineering/`](chaos_engineering) injects
+  failures into agent pools; [`neuron-bench/`](neuron-bench) analyses
+  benchmark results across architectures.
 
 ## 🌟 Why Choose Neuron's Agent Architecture?
 
@@ -618,7 +443,7 @@ benchmark_results = core.benchmarking.compare_against([
 
 ## 🚀 Getting Started
 
-1. **[Install Neuron](#installation)** and run the quick start example
+1. **[Install Neuron](#installation)** and run the [quick start example](examples/quickstart.py)
 2. **[Go through the Tutorials in Google Colab](Tutorials/)** to understand the architecture
 3. **[Read the Evaluation Notebook](https://shalini-ananda-phd.notion.site/NEURON-EVALUATION-NOTEBOOK-1cec18ea2aa18002b7acf9c1791ca8ea)** to understand capabilities
 4. **[Join the Community](https://github.com/ShaliniAnandaPhD/Neuron/discussions)** for support and contributions
@@ -629,7 +454,7 @@ We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## 📄 License
 
-MIT License - see [LICENSE](LICENSE) for details.
+Modified MIT License, see [LICENSE.md](LICENSE.md) for the terms.
 
 References
 
