@@ -118,7 +118,7 @@ async def lifespan(app: FastAPI):
     if not validate_config():
         raise RuntimeError("Invalid configuration")
     
-    global agents, message_bus, task_queue, orchestrator, monitoring, llama_client, rate_limiter
+    global message_bus, task_queue, orchestrator, monitoring, llama_client, rate_limiter
     
     try:
         # Initialize LLaMA client

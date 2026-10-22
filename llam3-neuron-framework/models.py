@@ -61,7 +61,9 @@ class TaskStatus(Enum):
     CANCELLED = "cancelled"
     TIMEOUT = "timeout"
 
-@dataclass
+# kw_only: BaseModel's fields have defaults, so required fields here must be
+# keyword-only (otherwise the class definition raises TypeError on import).
+@dataclass(kw_only=True)
 class Task(BaseModel):
     """
     Represents a processing task in the system
@@ -117,7 +119,7 @@ class AgentStatus(Enum):
     ERROR = "error"
     MAINTENANCE = "maintenance"
 
-@dataclass
+@dataclass(kw_only=True)
 class AgentState(BaseModel):
     """
     Current state of an agent
@@ -165,7 +167,7 @@ class AgentState(BaseModel):
 # MESSAGE MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class Message(BaseModel):
     """
     Inter-agent message
@@ -202,7 +204,7 @@ class Message(BaseModel):
 # ORCHESTRATION MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class OrchestrationEvent(BaseModel):
     """
     Event in the orchestration system
@@ -230,7 +232,7 @@ class OrchestrationEvent(BaseModel):
     error_message: Optional[str] = None
     metrics: Dict[str, Any] = field(default_factory=dict)
 
-@dataclass
+@dataclass(kw_only=True)
 class PatternMetrics(BaseModel):
     """
     Metrics for an orchestration pattern
@@ -295,7 +297,7 @@ class PatternMetrics(BaseModel):
 # ANALYSIS MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class AnalysisResult(BaseModel):
     """
     Result of pattern analysis
@@ -331,7 +333,7 @@ class AnalysisResult(BaseModel):
 # REQUEST/RESPONSE MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class ProcessingRequest(BaseModel):
     """
     Request for processing
@@ -367,7 +369,7 @@ class ProcessingRequest(BaseModel):
         text = self.get_content_as_text()
         return len(text) // 4
 
-@dataclass
+@dataclass(kw_only=True)
 class ProcessingResponse(BaseModel):
     """
     Response from processing
@@ -401,7 +403,7 @@ class ProcessingResponse(BaseModel):
 # BATCH MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class BatchRequest(BaseModel):
     """
     Batch processing request
@@ -430,7 +432,7 @@ class BatchRequest(BaseModel):
         """Estimate total tokens in batch"""
         return sum(req.estimate_tokens() for req in self.requests)
 
-@dataclass
+@dataclass(kw_only=True)
 class BatchResponse(BaseModel):
     """
     Batch processing response
@@ -465,7 +467,7 @@ class BatchResponse(BaseModel):
 # MONITORING MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class HealthStatus(BaseModel):
     """
     System health status
@@ -504,7 +506,7 @@ class HealthStatus(BaseModel):
             self.status = "unhealthy"
             self.message = "All checks failed"
 
-@dataclass
+@dataclass(kw_only=True)
 class MetricSnapshot(BaseModel):
     """
     Performance metric snapshot
@@ -528,7 +530,7 @@ class MetricSnapshot(BaseModel):
 # ERROR MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class ErrorDetail(BaseModel):
     """
     Detailed error information
@@ -562,7 +564,7 @@ class ErrorDetail(BaseModel):
 # CACHE MODELS
 # ============================================================================
 
-@dataclass
+@dataclass(kw_only=True)
 class CacheEntry(BaseModel):
     """
     Cache entry

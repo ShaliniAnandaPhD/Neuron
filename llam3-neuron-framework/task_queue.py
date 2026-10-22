@@ -17,6 +17,7 @@ from config import (
     MessagePriority,
     get_logger,
     REDIS_URL,
+    REDIS_PREFIX,
     REDIS_TASK_PREFIX,
     REDIS_RESULT_PREFIX,
     TASK_EXPIRY,

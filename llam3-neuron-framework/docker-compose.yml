@@ -32,9 +32,10 @@ services:
       timeout: 5s
       retries: 5
 
-  # LLaMA3 API (placeholder - replace with actual LLaMA3 service)
+  # LLaMA 3 served by llama.cpp (put a GGUF model at ./models/llama3.gguf).
+  # The :server image is CPU only; use :server-cuda for NVIDIA GPUs.
   llama3:
-    image: ghcr.io/ggerganov/llama.cpp:server
+    image: ghcr.io/ggml-org/llama.cpp:server
     volumes:
       - ./models:/models
     environment:
@@ -51,7 +52,9 @@ services:
 
   # Neuron API
   neuron-api:
-    build: .
+    build:
+      context: .
+      dockerfile: neuron-dockerfile.txt
     depends_on:
       postgres:
         condition: service_healthy
@@ -73,8 +76,10 @@ services:
     command: python main.py --host 0.0.0.0 --port 8000 --workers 4
 
   # Prometheus (optional)
+  # Monitoring is optional: docker compose --profile monitoring up
   prometheus:
     image: prom/prometheus:latest
+    profiles: ["monitoring"]
     ports:
       - "9091:9090"
     volumes:
@@ -89,14 +94,13 @@ services:
   # Grafana (optional)
   grafana:
     image: grafana/grafana:latest
+    profiles: ["monitoring"]
     depends_on:
       - prometheus
     ports:
       - "3000:3000"
     volumes:
       - grafana_data:/var/lib/grafana
-      - ./grafana/dashboards:/etc/grafana/provisioning/dashboards
-      - ./grafana/datasources:/etc/grafana/provisioning/datasources
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
       - GF_USERS_ALLOW_SIGN_UP=false

@@ -1,0 +1,9 @@
+# Scrapes the API's /metrics endpoint (docker compose --profile monitoring up)
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: neuron-api
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["neuron-api:8000"]
