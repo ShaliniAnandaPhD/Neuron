@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint and dependency check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install flake8
+      - name: Syntax errors and undefined names (whole repository)
+        run: flake8 . --select=E9,F63,F7,F82 --show-source --statistics
+      - name: Every requirements file names real PyPI packages
+        run: python scripts/check_requirements.py
+
+  core:
+    name: Framework (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - run: pip install -e ".[dev]"
+      - name: Framework, examples and CLI
+        run: python -m pytest tests -v
+      - name: Industry use case agents
+        run: python -m pytest agents -v
+      - name: Memory and decision agents
+        run: python -m pytest src/neurons -v
+
+  projects:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Microservices
+            install: pip install -e ".[dev]"
+            test: python -m pytest Microservices/ambiguity/tests -v
+          - name: hallucination_detection
+            install: pip install -r hallucination_detection/requirements.txt
+            test: cd hallucination_detection && python -m pytest -v
+          - name: high_velocity_AI_pipeline
+            install: pip install openai httpx aiohttp psutil pyyaml rich pytest pytest-asyncio pytest-timeout
+            test: cd high_velocity_AI_pipeline && python -m pytest tests -v --timeout=120
+          - name: neuron-framework-t1
+            install: pip install openai anthropic python-dotenv pytest pytest-asyncio
+            test: cd neuron-framework-t1 && python -m pytest tests -v
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: ${{ matrix.install }}
+      - run: ${{ matrix.test }}

@@ -21,9 +21,9 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
       
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
       
       - name: Install tools
         run: pip install safety bandit pip-licenses
@@ -110,9 +110,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - uses: actions/setup-python@v4
+      - uses: actions/setup-python@v5
         with:
-          python-version: '3.9'
+          python-version: '3.12'
       
       - name: Install security tools
         run: pip install safety bandit
