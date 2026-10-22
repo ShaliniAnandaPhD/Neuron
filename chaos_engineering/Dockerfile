@@ -53,6 +53,9 @@ HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
     CMD python -c "import sys; sys.exit(0)"
 
 # Entry point
+# main.py and the scenario modules live in "health states/"; agent.py is one level up
+WORKDIR "/app/health states"
+ENV PYTHONPATH=/app
 ENTRYPOINT ["python", "main.py"]
 
 # Default arguments

@@ -49,15 +49,20 @@ chaos_engineering/
 
 1. Install dependencies:
 ```bash
-pip install -r requirements.txt
+pip install -r chaos_engineering/requirements.txt
 ```
 
-2. Configure your test scenario in `config.yaml`
-
-3. Run the chaos test:
+2. Run a scenario (each takes about 90 seconds). `main.py` lives in
+   `health states/` and imports `agent.py` from the folder above, hence
+   `PYTHONPATH=..`:
 ```bash
-python main.py --scenario cascade-failure
+cd "chaos_engineering/health states"
+PYTHONPATH=.. python main.py --scenario cascade-failure --report-dir ../reports
 ```
+
+Scenario parameters (duration, failure counts, success thresholds) are defined
+in `SCENARIOS` in `health states/test_scenarios.py`. `config.yaml` sketches a
+configuration format but is not read yet.
 
 ## Test Scenarios
 
@@ -86,13 +91,10 @@ Gradual degradation leading to eventual failure.
 ### With Observability Platforms
 
 ```python
-# Example: W&B Weave integration
-from chaos_engineering import ChaosTest
-import weave
+# Run a scenario from Python (repository root on sys.path)
+from chaos_engineering import SCENARIOS, get_scenario
 
-weave.init('chaos-test')
-test = ChaosTest(trace_enabled=True)
-results = await test.run_scenario('cascade-failure')
+print(list(SCENARIOS))  # cascade-failure, network-partition, ...
 ```
 
 ### With CI/CD
@@ -101,7 +103,8 @@ results = await test.run_scenario('cascade-failure')
 # Example: GitHub Actions
 - name: Run Chaos Tests
   run: |
-    python main.py --scenario all --report junit
+    cd "chaos_engineering/health states"
+    PYTHONPATH=.. python main.py --scenario all --report-dir ../reports
 ```
 
 ## Monitoring
@@ -127,7 +130,7 @@ The suite provides real-time monitoring during test execution:
 
 ## Configuration
 
-Edit `config.yaml` to customize test parameters:
+`config.yaml` sketches the intended configuration format. It is not read yet; today the parameters live in `SCENARIOS` in `health states/test_scenarios.py`.
 
 ```yaml
 chaos:

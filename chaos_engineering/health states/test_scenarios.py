@@ -5,6 +5,7 @@ Collection of chaos engineering test scenarios for different failure patterns.
 """
 
 import asyncio
+from datetime import datetime
 import random
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass
@@ -64,7 +65,7 @@ class TestScenario(ABC):
         """Run the test scenario"""
         logger.info(f"Starting scenario: {self.config.name}")
         
-        start_time = asyncio.get_event_loop().time()
+        start_time = datetime.now()
         
         try:
             # Start task generation
@@ -139,9 +140,12 @@ class TestScenario(ABC):
                 break
             await asyncio.sleep(0.5)
     
-    async def _calculate_results(self, start_time: float) -> TestResult:
+    async def _calculate_results(self, start_time: datetime) -> TestResult:
         """Calculate test results"""
-        end_time = asyncio.get_event_loop().time()
+        # TestResult and the reporter expect wall-clock datetimes; this used to
+        # pass the event loop's monotonic clock (a float) for both, which
+        # crashed report generation and recorded a zero duration.
+        end_time = datetime.now()
         
         # Get metrics from components
         detection_stats = await self.monitor.get_failure_detection_stats()
@@ -155,10 +159,10 @@ class TestScenario(ABC):
         
         # Build result
         result = TestResult(
-            test_id=f"{self.config.name}_{int(start_time)}",
+            test_id=f"{self.config.name}_{int(start_time.timestamp())}",
             scenario=self.config.name,
-            start_time=asyncio.get_event_loop().time(),
-            end_time=asyncio.get_event_loop().time(),
+            start_time=start_time,
+            end_time=end_time,
             success=True,  # Will be updated based on criteria
             failure_detection_time=detection_stats["average_detection_time"],
             recovery_time=recovery_stats["average_recovery_time"],
@@ -171,7 +175,7 @@ class TestScenario(ABC):
                 "total_lost": lost_tasks,
                 "detection_stats": detection_stats,
                 "recovery_stats": recovery_stats,
-                "duration": end_time - start_time
+                "duration": (end_time - start_time).total_seconds()
             }
         )
         

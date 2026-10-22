@@ -242,7 +242,7 @@ class TestReporter:
     
     def __init__(self, output_dir: str = "chaos_reports"):
         self.output_dir = Path(output_dir)
-        self.output_dir.mkdir(exist_ok=True)
+        self.output_dir.mkdir(parents=True, exist_ok=True)
         logger.info(f"TestReporter initialized, output: {self.output_dir}")
     
     def generate_report(self, result: TestResult) -> Path:

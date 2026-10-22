@@ -39,14 +39,14 @@ class ChaosTestRunner:
     Main test runner that coordinates all components.
     """
     
-    def __init__(self, agent_count: int = 6):
+    def __init__(self, agent_count: int = 6, report_dir: str = "chaos_reports"):
         self.agent_count = agent_count
         self.agent_pool = None
         self.chaos_injector = None
         self.monitor = None
         self.orchestrator = None
         self.metrics = None
-        self.reporter = TestReporter()
+        self.reporter = TestReporter(report_dir)
         
         # Shutdown handling
         self._shutdown = False
@@ -253,7 +253,7 @@ async def main():
     print("="*60 + "\n")
     
     # Create runner
-    runner = ChaosTestRunner(agent_count=args.agents)
+    runner = ChaosTestRunner(agent_count=args.agents, report_dir=args.report_dir)
     
     try:
         # Setup

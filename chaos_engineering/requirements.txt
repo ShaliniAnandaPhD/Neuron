@@ -1,0 +1,2 @@
+# The suite uses the standard library plus psutil (resource monitoring).
+psutil>=5.9.0
