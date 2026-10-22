@@ -425,6 +425,50 @@ Part of the Neuron Framework project.
             dirs[:] = [d for d in dirs if not self._should_skip_directory(os.path.join(root, d))]
             
             for file in files:
+                if file.endswith(('.py', '.js', '.yml', '.yaml', '.json', '.env')):
+                    filepath = os.path.join(root, file)
+                    
+                    try:
+                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
+                            content = f.read()
+                        
+                        for secret_type, pattern in secrets_patterns.items():
+                            matches = re.finditer(pattern, content, re.IGNORECASE)
+                            for match in matches:
+                                # Skip obvious false positives
+                                matched_text = match.group(0)
+                                if any(fp in matched_text.lower() for fp in ['example', 'placeholder', 'your_', 'xxx', '123']):
+                                    continue
+                                
+                                findings.append({
+                                    'file': os.path.relpath(filepath),
+                                    'type': secret_type,
+                                    'line': content[:match.start()].count('\n') + 1,
+                                    'preview': matched_text[:50] + '...' if len(matched_text) > 50 else matched_text
+                                })
+                    except Exception:
+                        continue
+        
+        return findings
+    
+    def analyze_innovations(self) -> Dict[str, Any]:
+        """Analyze code for potentially patentable innovations"""
+        self._print_header("INNOVATION ANALYSIS")
+        
+        results = {
+            'total_files': 0,
+            'innovations': [],
+            'classes': [],
+            'functions': [],
+            'algorithms': []
+        }
+        
+        innovation_keywords = self.config['innovation_keywords']
+        
+        for root, dirs, files in os.walk(self.project_root):
+            dirs[:] = [d for d in dirs if not self._should_skip_directory(os.path.join(root, d))]
+            
+            for file in files:
                 if file.endswith(('.py', '.js', '.md')):
                     filepath = os.path.join(root, file)
                     results['total_files'] += 1
@@ -882,48 +926,4 @@ Examples:
         sys.exit(1)
 
 if __name__ == '__main__':
-    main().join(root, d))]
-            
-            for file in files:
-                if file.endswith(('.py', '.js', '.yml', '.yaml', '.json', '.env')):
-                    filepath = os.path.join(root, file)
-                    
-                    try:
-                        with open(filepath, 'r', encoding='utf-8', errors='ignore') as f:
-                            content = f.read()
-                        
-                        for secret_type, pattern in secrets_patterns.items():
-                            matches = re.finditer(pattern, content, re.IGNORECASE)
-                            for match in matches:
-                                # Skip obvious false positives
-                                matched_text = match.group(0)
-                                if any(fp in matched_text.lower() for fp in ['example', 'placeholder', 'your_', 'xxx', '123']):
-                                    continue
-                                
-                                findings.append({
-                                    'file': os.path.relpath(filepath),
-                                    'type': secret_type,
-                                    'line': content[:match.start()].count('\n') + 1,
-                                    'preview': matched_text[:50] + '...' if len(matched_text) > 50 else matched_text
-                                })
-                    except Exception:
-                        continue
-        
-        return findings
-    
-    def analyze_innovations(self) -> Dict[str, Any]:
-        """Analyze code for potentially patentable innovations"""
-        self._print_header("INNOVATION ANALYSIS")
-        
-        results = {
-            'total_files': 0,
-            'innovations': [],
-            'classes': [],
-            'functions': [],
-            'algorithms': []
-        }
-        
-        innovation_keywords = self.config['innovation_keywords']
-        
-        for root, dirs, files in os.walk(self.project_root):
-            dirs[:] = [d for d in dirs if not self._should_skip_directory(os.path
+    main()
