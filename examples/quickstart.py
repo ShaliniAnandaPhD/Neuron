@@ -84,7 +84,7 @@ async def main():
     print(f"{output['agent']}: {output['content']['reply']}")
 
     await core.circuit_designer.terminate_circuit(circuit_id)
-    core.shutdown()
+    await core.shutdown_async()
 
 
 if __name__ == "__main__":

@@ -60,7 +60,7 @@ async def run_circuit(definition, inputs, outputs_expected, timeout=3):
         await core.circuit_designer.terminate_circuit(circuit_id)
         return outputs
     finally:
-        core.shutdown()
+        await core.shutdown_async()
 
 
 def test_every_module_imports():
@@ -188,7 +188,7 @@ def test_disconnected_and_invalid_circuits_are_rejected():
         try:
             await core.circuit_designer.create_circuit(definition)
         finally:
-            core.shutdown()
+            await core.shutdown_async()
 
     with pytest.raises(ValidationError):
         asyncio.run(deploy())
@@ -203,3 +203,16 @@ def test_readme_quick_start_matches_the_example_file():
         for block in blocks
         if "CustomerSupportCircuit" in block
     )
+
+
+def test_shutdown_async_leaves_no_pending_tasks():
+    # Callers that drive the event loop themselves (instead of asyncio.run)
+    # must not be left with framework tasks still pending.
+    definition = circuit([{"source": "a", "target": "b", "connection_type": "direct"}])
+    loop = asyncio.new_event_loop()
+    try:
+        [output] = loop.run_until_complete(run_circuit(definition, ["x"], 1))
+        assert output["content"] == "X!"
+        assert [t for t in asyncio.all_tasks(loop) if not t.done()] == []
+    finally:
+        loop.close()

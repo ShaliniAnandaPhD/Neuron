@@ -269,7 +269,30 @@ class NeuronCore:
                 # Clear instance reference to allow re-initialization if needed
                 type(self)._instance = None
                 logger.info("Neuron framework shutdown complete")
-    
+
+    async def shutdown_async(self) -> None:
+        """
+        Shut down from async code and wait until the framework's tasks have
+        finished cancelling, so nothing is left pending on the event loop.
+
+        Prefer this over shutdown() inside a coroutine, especially when the
+        caller manages the event loop itself instead of using asyncio.run().
+        """
+        tasks = []
+        bus_task = getattr(getattr(self, "synaptic_bus", None), "_processing_task", None)
+        if bus_task is not None:
+            tasks.append(bus_task)
+        agent_manager = getattr(self, "agent_manager", None)
+        for agent in getattr(agent_manager, "_agents", {}).values():
+            if getattr(agent, "_processing_task", None) is not None:
+                tasks.append(agent._processing_task)
+
+        self.shutdown()
+
+        pending = [task for task in tasks if not task.done()]
+        if pending:
+            await asyncio.gather(*pending, return_exceptions=True)
+
     def add_shutdown_hook(self, hook: Callable[[], None]) -> None:
         """
         Add a function to be called during framework shutdown.
