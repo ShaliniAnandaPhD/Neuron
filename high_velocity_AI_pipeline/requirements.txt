@@ -13,7 +13,7 @@ python-dotenv>=1.0.0
 pydantic>=2.5.0
 
 # Monitoring and observability (optional)
-weave-python>=0.50.0
+weave>=0.50.0
 wandb>=0.16.0
 prometheus-client>=0.19.0
 

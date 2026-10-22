@@ -1,7 +1,5 @@
 # Core Dependencies
-asyncio>=3.4.3
 aiofiles>=23.0.0
-dataclasses>=0.6;python_version<"3.7"
 
 # Monitoring and Metrics
 psutil>=5.9.0

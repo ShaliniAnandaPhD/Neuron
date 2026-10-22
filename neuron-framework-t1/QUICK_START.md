@@ -10,7 +10,7 @@ chmod +x setup_project.sh
 ```
 
 ### 2. Add API Keys
-Edit `.env` file:
+Copy `.env.example` to `.env` and fill in your keys:
 ```bash
 OPENAI_API_KEY=sk-your-openai-key-here
 ANTHROPIC_API_KEY=sk-ant-your-anthropic-key-here
